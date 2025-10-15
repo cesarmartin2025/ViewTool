@@ -4,13 +4,14 @@
 
 package martin.viewtool;
 
+import martin.viewtool.ui.ViewToolApp;
+
 /**
  *
  * @author cesar
  */
 public class ViewTool {
-
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+         javax.swing.SwingUtilities.invokeLater(() -> new ViewToolApp().setVisible(true));
     }
 }
