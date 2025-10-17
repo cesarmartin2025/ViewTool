@@ -54,6 +54,7 @@ public class ViewToolApp extends javax.swing.JFrame {
         DialogAbout.setTitle("About");
         DialogAbout.setSize(new java.awt.Dimension(300, 300));
 
+        TextAreaAbout.setEditable(false);
         TextAreaAbout.setColumns(20);
         TextAreaAbout.setRows(5);
         TextAreaAbout.setText("Author: César Martín Pérez.\nSubject: DI - DAM 2025/2026\nDate: 27/10/2025\n\nRecourses:\n- yt-dlp\n- ffmpeg/ffprobe\n");
@@ -81,6 +82,7 @@ public class ViewToolApp extends javax.swing.JFrame {
         });
         getContentPane().setLayout(null);
 
+        TextArea.setEditable(false);
         TextArea.setColumns(20);
         TextArea.setRows(5);
         ScrollPanelText.setViewportView(TextArea);

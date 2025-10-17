@@ -34,6 +34,7 @@
           <SubComponents>
             <Component class="javax.swing.JTextArea" name="TextAreaAbout">
               <Properties>
+                <Property name="editable" type="boolean" value="false"/>
                 <Property name="columns" type="int" value="20"/>
                 <Property name="rows" type="int" value="5"/>
                 <Property name="text" type="java.lang.String" value="Author: C&#xe9;sar Mart&#xed;n P&#xe9;rez.&#xa;Subject: DI - DAM 2025/2026&#xa;Date: 27/10/2025&#xa;&#xa;Recourses:&#xa;- yt-dlp&#xa;- ffmpeg/ffprobe&#xa;"/>
@@ -143,6 +144,7 @@
       <SubComponents>
         <Component class="javax.swing.JTextArea" name="TextArea">
           <Properties>
+            <Property name="editable" type="boolean" value="false"/>
             <Property name="columns" type="int" value="20"/>
             <Property name="rows" type="int" value="5"/>
           </Properties>
