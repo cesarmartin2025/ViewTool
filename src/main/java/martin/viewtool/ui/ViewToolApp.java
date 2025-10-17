@@ -39,6 +39,7 @@ public class ViewToolApp extends javax.swing.JFrame {
         jCheckBox1 = new javax.swing.JCheckBox();
         jLabel1 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -58,6 +59,7 @@ public class ViewToolApp extends javax.swing.JFrame {
 
         jPanel1.setLayout(null);
 
+        buttonGroup2.add(jRadioButton1);
         jRadioButton1.setText("MP3");
         jRadioButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -67,6 +69,7 @@ public class ViewToolApp extends javax.swing.JFrame {
         jPanel1.add(jRadioButton1);
         jRadioButton1.setBounds(50, 90, 49, 21);
 
+        buttonGroup2.add(jRadioButton2);
         jRadioButton2.setText("MP4");
         jRadioButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -99,7 +102,16 @@ public class ViewToolApp extends javax.swing.JFrame {
             }
         });
         jPanel1.add(jButton1);
-        jButton1.setBounds(350, 90, 170, 27);
+        jButton1.setBounds(260, 90, 170, 27);
+
+        jButton2.setText("Play last video");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButton2);
+        jButton2.setBounds(460, 90, 130, 27);
 
         jMenu1.setText("File");
 
@@ -178,6 +190,10 @@ public class ViewToolApp extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jRadioButton2ActionPerformed
 
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton2ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -185,6 +201,7 @@ public class ViewToolApp extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup2;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu1;
@@ -201,4 +218,4 @@ public class ViewToolApp extends javax.swing.JFrame {
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
-
+}
