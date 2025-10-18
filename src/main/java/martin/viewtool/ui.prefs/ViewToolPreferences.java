@@ -32,8 +32,9 @@ public class ViewToolPreferences extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jFileChooser1 = new javax.swing.JFileChooser();
+        fileChooserDirDown = new javax.swing.JFileChooser();
         jOptionPane1 = new javax.swing.JOptionPane();
+        fileChooserYt = new javax.swing.JFileChooser();
         panelMain = new javax.swing.JPanel();
         buttonDirectory = new javax.swing.JButton();
         buttonM3u = new javax.swing.JButton();
@@ -42,10 +43,12 @@ public class ViewToolPreferences extends javax.swing.JFrame {
         textFieldLimDown = new javax.swing.JTextField();
         labelLimDown = new javax.swing.JLabel();
 
-        jFileChooser1.setAcceptAllFileFilterUsed(false);
-        jFileChooser1.setCurrentDirectory(new java.io.File("C:\\Users\\cesar\\ViewToolDownloads"));
-        jFileChooser1.setDialogTitle("Select download directory");
-        jFileChooser1.setFileSelectionMode(javax.swing.JFileChooser.DIRECTORIES_ONLY);
+        fileChooserDirDown.setAcceptAllFileFilterUsed(false);
+        fileChooserDirDown.setCurrentDirectory(new java.io.File("C:\\Users\\cesar\\ViewToolDownloads"));
+        fileChooserDirDown.setDialogTitle("Select download directory");
+        fileChooserDirDown.setFileSelectionMode(javax.swing.JFileChooser.DIRECTORIES_ONLY);
+
+        fileChooserYt.setAcceptAllFileFilterUsed(false);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Preferences");
@@ -73,6 +76,11 @@ public class ViewToolPreferences extends javax.swing.JFrame {
         buttonLimitDownload.setBounds(270, 127, 220, 30);
 
         buttonDirYt.setText("Choose a directory where is \"yt-dlb.exe\"");
+        buttonDirYt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonDirYtActionPerformed(evt);
+            }
+        });
         panelMain.add(buttonDirYt);
         buttonDirYt.setBounds(40, 180, 270, 27);
 
@@ -91,9 +99,9 @@ public class ViewToolPreferences extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void buttonDirectoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDirectoryActionPerformed
-        int result = jFileChooser1.showOpenDialog(this); // si esto es un JDialog, también vale
+        int result = fileChooserDirDown.showOpenDialog(this); // si esto es un JDialog, también vale
     if (result == javax.swing.JFileChooser.APPROVE_OPTION) {
-        File selectedDir = jFileChooser1.getSelectedFile();
+        File selectedDir = fileChooserDirDown.getSelectedFile();
         
         preferencesService.setOutputDir(selectedDir.toPath());
         jOptionPane1.showMessageDialog(this, 
@@ -101,6 +109,18 @@ public class ViewToolPreferences extends javax.swing.JFrame {
             "Download folder", jOptionPane1.INFORMATION_MESSAGE); // o guárdalo en tu modelo
     }
     }//GEN-LAST:event_buttonDirectoryActionPerformed
+
+    private void buttonDirYtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDirYtActionPerformed
+       int result = fileChooserYt.showOpenDialog(this); // si esto es un JDialog, también vale
+    if (result == javax.swing.JFileChooser.APPROVE_OPTION) {
+        File selectedDir = fileChooserYt.getSelectedFile();
+        
+        preferencesService.setYtDlpPath(selectedDir.toPath());
+        jOptionPane1.showMessageDialog(this, 
+            "Selected directory:\n" + selectedDir.getAbsolutePath(),
+            "Download folder", jOptionPane1.INFORMATION_MESSAGE); // o guárdalo en tu modelo
+    }
+    }//GEN-LAST:event_buttonDirYtActionPerformed
 
     /**
      * @param args the command line arguments
@@ -132,7 +152,8 @@ public class ViewToolPreferences extends javax.swing.JFrame {
     private javax.swing.JButton buttonDirectory;
     private javax.swing.JButton buttonLimitDownload;
     private javax.swing.JButton buttonM3u;
-    private javax.swing.JFileChooser jFileChooser1;
+    private javax.swing.JFileChooser fileChooserDirDown;
+    private javax.swing.JFileChooser fileChooserYt;
     private javax.swing.JOptionPane jOptionPane1;
     private javax.swing.JLabel labelLimDown;
     private javax.swing.JPanel panelMain;

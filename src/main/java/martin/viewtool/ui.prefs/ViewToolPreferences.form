@@ -2,7 +2,7 @@
 
 <Form version="1.3" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
   <NonVisualComponents>
-    <Component class="javax.swing.JFileChooser" name="jFileChooser1">
+    <Component class="javax.swing.JFileChooser" name="fileChooserDirDown">
       <Properties>
         <Property name="acceptAllFileFilterUsed" type="boolean" value="false"/>
         <Property name="currentDirectory" type="java.io.File" editor="org.netbeans.beaninfo.editors.FileEditor">
@@ -13,6 +13,11 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JOptionPane" name="jOptionPane1">
+    </Component>
+    <Component class="javax.swing.JFileChooser" name="fileChooserYt">
+      <Properties>
+        <Property name="acceptAllFileFilterUsed" type="boolean" value="false"/>
+      </Properties>
     </Component>
   </NonVisualComponents>
   <Properties>
@@ -95,6 +100,9 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Choose a directory where is &quot;yt-dlb.exe&quot;"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="buttonDirYtActionPerformed"/>
+          </Events>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
               <AbsoluteConstraints x="40" y="180" width="270" height="-1"/>
