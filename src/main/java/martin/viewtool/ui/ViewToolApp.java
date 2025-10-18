@@ -259,6 +259,7 @@ public class ViewToolApp extends javax.swing.JFrame {
     private void buttonDownloadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDownloadActionPerformed
  
         buttonDownload.setEnabled(false);
+        textArea.setText("");
         progressBar.setValue(0);
 
         new javax.swing.SwingWorker<Integer, Integer>() {
@@ -269,12 +270,13 @@ public class ViewToolApp extends javax.swing.JFrame {
 
             @Override
             protected Integer doInBackground() throws Exception {
-                // Callback que recibe el % desde ProcessRunner (hilo de background)
+                
                 java.util.function.IntConsumer onPercent =  pct -> publish(pct);
-                    // manda al EDT
-
-                // Validación y descarga
+   
                 controller.validateUrl(textFieldURL.getText());
+                
+                Alerts.info(ViewToolApp.this, "Ha comenzado la descarga, por favor, espere");
+                
                 return controller.startDownload(
                         textFieldURL.getText(),
                         buttonMP3.isSelected() ? MediaFormat.MP3 : MediaFormat.MP4,
@@ -283,6 +285,10 @@ public class ViewToolApp extends javax.swing.JFrame {
                         log,
                         onPercent
                 );
+                
+                
+                
+                
             }
 
             @Override
@@ -302,7 +308,7 @@ public class ViewToolApp extends javax.swing.JFrame {
                 try {
                     int exit = get();
                     if (exit == 0) {
-                        Alerts.info(ViewToolApp.this, "✅ Descarga completada.");
+                        Alerts.info(ViewToolApp.this, "Descarga completada.");
                         progressBar.setValue(100);
                     } else {
                         Alerts.warn(ViewToolApp.this, "El proceso terminó con código " + exit);

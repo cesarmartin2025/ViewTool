@@ -4,6 +4,9 @@
  */
 package martin.viewtool.ui;
 
+import java.io.File;
+import martin.viewtool.config.PreferencesService;
+
 /**
  *
  * @author cesar
@@ -11,6 +14,7 @@ package martin.viewtool.ui;
 public class ViewToolPreferences extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ViewToolPreferences.class.getName());
+    private PreferencesService preferencesService = new PreferencesService();
 
     /**
      * Creates new form ViewToolPreferences
@@ -28,51 +32,75 @@ public class ViewToolPreferences extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jTextField1 = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
+        jFileChooser1 = new javax.swing.JFileChooser();
+        jOptionPane1 = new javax.swing.JOptionPane();
+        panelMain = new javax.swing.JPanel();
+        buttonDirectory = new javax.swing.JButton();
+        buttonM3u = new javax.swing.JButton();
+        buttonLimitDownload = new javax.swing.JButton();
+        buttonDirYt = new javax.swing.JButton();
+        textFieldLimDown = new javax.swing.JTextField();
+        labelLimDown = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        jFileChooser1.setAcceptAllFileFilterUsed(false);
+        jFileChooser1.setCurrentDirectory(new java.io.File("C:\\Users\\cesar\\ViewToolDownloads"));
+        jFileChooser1.setDialogTitle("Select download directory");
+        jFileChooser1.setFileSelectionMode(javax.swing.JFileChooser.DIRECTORIES_ONLY);
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Preferences");
         setResizable(false);
         setSize(new java.awt.Dimension(800, 600));
         getContentPane().setLayout(null);
 
-        jPanel1.setLayout(null);
+        panelMain.setLayout(null);
 
-        jButton1.setText("Choose a directory for to store the file downloaded");
-        jPanel1.add(jButton1);
-        jButton1.setBounds(30, 30, 320, 30);
+        buttonDirectory.setText("Choose a directory for to store the file downloaded");
+        buttonDirectory.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonDirectoryActionPerformed(evt);
+            }
+        });
+        panelMain.add(buttonDirectory);
+        buttonDirectory.setBounds(30, 30, 320, 30);
 
-        jButton2.setText("create a .m3u for playlist");
-        jPanel1.add(jButton2);
-        jButton2.setBounds(30, 80, 320, 27);
+        buttonM3u.setText("create a .m3u for playlist");
+        panelMain.add(buttonM3u);
+        buttonM3u.setBounds(30, 80, 320, 27);
 
-        jButton3.setText("Limite download");
-        jPanel1.add(jButton3);
-        jButton3.setBounds(270, 127, 220, 30);
+        buttonLimitDownload.setText("Limite download");
+        panelMain.add(buttonLimitDownload);
+        buttonLimitDownload.setBounds(270, 127, 220, 30);
 
-        jButton4.setText("Choose a directory where is \"yt-dlb.exe\"");
-        jPanel1.add(jButton4);
-        jButton4.setBounds(40, 180, 270, 27);
+        buttonDirYt.setText("Choose a directory where is \"yt-dlb.exe\"");
+        panelMain.add(buttonDirYt);
+        buttonDirYt.setBounds(40, 180, 270, 27);
 
-        jTextField1.setText("0");
-        jPanel1.add(jTextField1);
-        jTextField1.setBounds(140, 126, 120, 30);
+        textFieldLimDown.setText("0");
+        panelMain.add(textFieldLimDown);
+        textFieldLimDown.setBounds(140, 126, 120, 30);
 
-        jLabel1.setText("Limit download: ");
-        jPanel1.add(jLabel1);
-        jLabel1.setBounds(30, 130, 100, 16);
+        labelLimDown.setText("Limit download: ");
+        panelMain.add(labelLimDown);
+        labelLimDown.setBounds(30, 130, 100, 16);
 
-        getContentPane().add(jPanel1);
-        jPanel1.setBounds(0, 0, 800, 370);
+        getContentPane().add(panelMain);
+        panelMain.setBounds(0, 0, 800, 370);
 
         setBounds(0, 0, 816, 561);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void buttonDirectoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDirectoryActionPerformed
+        int result = jFileChooser1.showOpenDialog(this); // si esto es un JDialog, también vale
+    if (result == javax.swing.JFileChooser.APPROVE_OPTION) {
+        File selectedDir = jFileChooser1.getSelectedFile();
+        
+        preferencesService.setOutputDir(selectedDir.toPath());
+        jOptionPane1.showMessageDialog(this, 
+            "Selected directory:\n" + selectedDir.getAbsolutePath(),
+            "Download folder", jOptionPane1.INFORMATION_MESSAGE); // o guárdalo en tu modelo
+    }
+    }//GEN-LAST:event_buttonDirectoryActionPerformed
 
     /**
      * @param args the command line arguments
@@ -100,12 +128,14 @@ public class ViewToolPreferences extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JButton buttonDirYt;
+    private javax.swing.JButton buttonDirectory;
+    private javax.swing.JButton buttonLimitDownload;
+    private javax.swing.JButton buttonM3u;
+    private javax.swing.JFileChooser jFileChooser1;
+    private javax.swing.JOptionPane jOptionPane1;
+    private javax.swing.JLabel labelLimDown;
+    private javax.swing.JPanel panelMain;
+    private javax.swing.JTextField textFieldLimDown;
     // End of variables declaration//GEN-END:variables
 }

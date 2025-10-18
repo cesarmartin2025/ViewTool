@@ -18,10 +18,6 @@ import java.util.stream.Stream;
  */
 public class PlayService {
 
-    /**
-     * Busca el último archivo modificado dentro del directorio dado
-     * y lo abre con el reproductor predeterminado del sistema.
-     */
     public void playLastDownloaded(Path downloadDir) throws IOException {
         if (!Files.isDirectory(downloadDir)) {
             throw new IOException("El directorio de descargas no existe: " + downloadDir);
