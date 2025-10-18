@@ -4,7 +4,7 @@
   <NonVisualComponents>
     <Component class="javax.swing.ButtonGroup" name="buttonGroup2">
     </Component>
-    <Container class="javax.swing.JDialog" name="DialogAbout">
+    <Container class="javax.swing.JDialog" name="dialogAbout">
       <Properties>
         <Property name="title" type="java.lang.String" value="About"/>
         <Property name="size" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -44,7 +44,7 @@
         </Container>
       </SubComponents>
     </Container>
-    <Menu class="javax.swing.JMenuBar" name="MenuBarMain">
+    <Menu class="javax.swing.JMenuBar" name="menuBarMain">
       <SubComponents>
         <Menu class="javax.swing.JMenu" name="MenuFile">
           <Properties>
@@ -70,6 +70,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Preferences"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="MenuItemPreferencesActionPerformed"/>
+              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>
@@ -103,8 +106,8 @@
     </Property>
   </Properties>
   <SyntheticProperties>
-    <SyntheticProperty name="menuBar" type="java.lang.String" value="MenuBarMain"/>
-    <SyntheticProperty name="formSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,2,-81,0,0,3,-88"/>
+    <SyntheticProperty name="menuBar" type="java.lang.String" value="menuBarMain"/>
+    <SyntheticProperty name="formSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,3,45,0,0,4,55"/>
     <SyntheticProperty name="formPosition" type="java.awt.Point" value="-84,-19,0,5,115,114,0,14,106,97,118,97,46,97,119,116,46,80,111,105,110,116,-74,-60,-118,114,52,126,-56,38,2,0,2,73,0,1,120,73,0,1,121,120,112,0,0,0,0,0,0,0,0"/>
     <SyntheticProperty name="formSizePolicy" type="int" value="0"/>
     <SyntheticProperty name="generatePosition" type="boolean" value="true"/>
@@ -130,19 +133,19 @@
     <Property name="useNullLayout" type="boolean" value="true"/>
   </Layout>
   <SubComponents>
-    <Container class="javax.swing.JScrollPane" name="ScrollPanelText">
+    <Container class="javax.swing.JScrollPane" name="scrollPanelText">
       <AuxValues>
         <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
       </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-          <AbsoluteConstraints x="6" y="123" width="709" height="502"/>
+          <AbsoluteConstraints x="10" y="230" width="709" height="502"/>
         </Constraint>
       </Constraints>
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
       <SubComponents>
-        <Component class="javax.swing.JTextArea" name="TextArea">
+        <Component class="javax.swing.JTextArea" name="textArea">
           <Properties>
             <Property name="editable" type="boolean" value="false"/>
             <Property name="columns" type="int" value="20"/>
@@ -151,7 +154,7 @@
         </Component>
       </SubComponents>
     </Container>
-    <Container class="javax.swing.JPanel" name="PanelMain">
+    <Container class="javax.swing.JPanel" name="panelMain">
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
           <AbsoluteConstraints x="0" y="0" width="-1" height="-1"/>
@@ -164,24 +167,24 @@
               <Group type="102" attributes="0">
                   <EmptySpace min="18" pref="18" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="LabelUrl" min="-2" pref="38" max="-2" attributes="0"/>
+                      <Component id="labelUrl" min="-2" pref="38" max="-2" attributes="0"/>
                       <Group type="102" attributes="0">
                           <EmptySpace min="32" pref="32" max="-2" attributes="0"/>
-                          <Component id="TextFieldURL" min="-2" pref="470" max="-2" attributes="0"/>
+                          <Component id="textFieldURL" min="-2" pref="470" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace min="10" pref="10" max="-2" attributes="0"/>
-                  <Component id="CheckBoxOnlyAudio" min="-2" pref="87" max="-2" attributes="0"/>
+                  <Component id="checkBoxOnlyAudio" min="-2" pref="87" max="-2" attributes="0"/>
               </Group>
               <Group type="102" attributes="0">
                   <EmptySpace min="40" pref="40" max="-2" attributes="0"/>
-                  <Component id="ButtonMP3" min="-2" max="-2" attributes="0"/>
+                  <Component id="buttonMP3" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="51" pref="51" max="-2" attributes="0"/>
-                  <Component id="ButtonMP4" min="-2" max="-2" attributes="0"/>
+                  <Component id="buttonMP4" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="71" pref="71" max="-2" attributes="0"/>
-                  <Component id="ButtonDownload" min="-2" pref="170" max="-2" attributes="0"/>
+                  <Component id="buttonDownload" min="-2" pref="170" max="-2" attributes="0"/>
                   <EmptySpace min="30" pref="30" max="-2" attributes="0"/>
-                  <Component id="ButtonPlayVideo" min="-2" pref="130" max="-2" attributes="0"/>
+                  <Component id="buttonPlayVideo" min="-2" pref="130" max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -190,23 +193,23 @@
               <Group type="102" attributes="0">
                   <EmptySpace min="50" pref="50" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="LabelUrl" min="-2" pref="28" max="-2" attributes="0"/>
-                      <Component id="TextFieldURL" min="-2" max="-2" attributes="0"/>
-                      <Component id="CheckBoxOnlyAudio" min="-2" max="-2" attributes="0"/>
+                      <Component id="labelUrl" min="-2" pref="28" max="-2" attributes="0"/>
+                      <Component id="textFieldURL" min="-2" max="-2" attributes="0"/>
+                      <Component id="checkBoxOnlyAudio" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace min="12" pref="12" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="ButtonMP3" min="-2" max="-2" attributes="0"/>
-                      <Component id="ButtonMP4" min="-2" max="-2" attributes="0"/>
-                      <Component id="ButtonDownload" min="-2" max="-2" attributes="0"/>
-                      <Component id="ButtonPlayVideo" min="-2" max="-2" attributes="0"/>
+                      <Component id="buttonMP3" min="-2" max="-2" attributes="0"/>
+                      <Component id="buttonMP4" min="-2" max="-2" attributes="0"/>
+                      <Component id="buttonDownload" min="-2" max="-2" attributes="0"/>
+                      <Component id="buttonPlayVideo" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
           </Group>
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Component class="javax.swing.JRadioButton" name="ButtonMP3">
+        <Component class="javax.swing.JRadioButton" name="buttonMP3">
           <Properties>
             <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
               <ComponentRef name="buttonGroup2"/>
@@ -214,10 +217,10 @@
             <Property name="text" type="java.lang.String" value="MP3"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ButtonMP3ActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="buttonMP3ActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JRadioButton" name="ButtonMP4">
+        <Component class="javax.swing.JRadioButton" name="buttonMP4">
           <Properties>
             <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
               <ComponentRef name="buttonGroup2"/>
@@ -226,41 +229,56 @@
             <Property name="text" type="java.lang.String" value="MP4"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ButtonMP4ActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="buttonMP4ActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JTextField" name="TextFieldURL">
+        <Component class="javax.swing.JTextField" name="textFieldURL">
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="TextFieldURLActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="textFieldURLActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JCheckBox" name="CheckBoxOnlyAudio">
+        <Component class="javax.swing.JCheckBox" name="checkBoxOnlyAudio">
           <Properties>
             <Property name="text" type="java.lang.String" value="Only audio"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JLabel" name="LabelUrl">
+        <Component class="javax.swing.JLabel" name="labelUrl">
           <Properties>
             <Property name="text" type="java.lang.String" value="URL: "/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JButton" name="ButtonDownload">
+        <Component class="javax.swing.JButton" name="buttonDownload">
           <Properties>
             <Property name="text" type="java.lang.String" value="Download"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ButtonDownloadActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="buttonDownloadActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="ButtonPlayVideo">
+        <Component class="javax.swing.JButton" name="buttonPlayVideo">
           <Properties>
             <Property name="text" type="java.lang.String" value="Play last video"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ButtonPlayVideoActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="buttonPlayVideoActionPerformed"/>
           </Events>
         </Component>
       </SubComponents>
     </Container>
+    <Component class="javax.swing.JProgressBar" name="progressBar">
+      <Properties>
+        <Property name="toolTipText" type="java.lang.String" value=""/>
+        <Property name="name" type="java.lang.String" value="Progress" noResource="true"/>
+        <Property name="stringPainted" type="boolean" value="true"/>
+      </Properties>
+      <AccessibilityProperties>
+        <Property name="AccessibleContext.accessibleName" type="java.lang.String" value=""/>
+      </AccessibilityProperties>
+      <Constraints>
+        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
+          <AbsoluteConstraints x="10" y="170" width="660" height="30"/>
+        </Constraint>
+      </Constraints>
+    </Component>
   </SubComponents>
 </Form>

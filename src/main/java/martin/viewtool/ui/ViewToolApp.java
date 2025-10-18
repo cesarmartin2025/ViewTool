@@ -4,20 +4,33 @@
  */
 package martin.viewtool.ui;
 
+import java.io.IOException;
+import martin.viewtool.config.PreferencesService;
+import martin.viewtool.core.DownloadController;
+import martin.viewtool.core.MediaFormat;
+import martin.viewtool.core.YtDlpService;
+import martin.viewtool.core.PlayService;
+
 /**
  *
  * @author cesar
  */
 public class ViewToolApp extends javax.swing.JFrame {
-    
+
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ViewToolApp.class.getName());
+
+    private final PreferencesService prefSvc = new PreferencesService();
+    private final DownloadController controller
+            = new DownloadController(new YtDlpService(prefSvc.getYtDlpPath()));
+    
+    private final PlayService playService = new PlayService();
 
     /**
      * Creates new form ViewToolApp
      */
     public ViewToolApp() {
         initComponents();
-        
+
     }
 
     /**
@@ -30,20 +43,21 @@ public class ViewToolApp extends javax.swing.JFrame {
     private void initComponents() {
 
         buttonGroup2 = new javax.swing.ButtonGroup();
-        DialogAbout = new javax.swing.JDialog();
+        dialogAbout = new javax.swing.JDialog();
         ScrollPaneAbout = new javax.swing.JScrollPane();
         TextAreaAbout = new javax.swing.JTextArea();
-        ScrollPanelText = new javax.swing.JScrollPane();
-        TextArea = new javax.swing.JTextArea();
-        PanelMain = new javax.swing.JPanel();
-        ButtonMP3 = new javax.swing.JRadioButton();
-        ButtonMP4 = new javax.swing.JRadioButton();
-        TextFieldURL = new javax.swing.JTextField();
-        CheckBoxOnlyAudio = new javax.swing.JCheckBox();
-        LabelUrl = new javax.swing.JLabel();
-        ButtonDownload = new javax.swing.JButton();
-        ButtonPlayVideo = new javax.swing.JButton();
-        MenuBarMain = new javax.swing.JMenuBar();
+        scrollPanelText = new javax.swing.JScrollPane();
+        textArea = new javax.swing.JTextArea();
+        panelMain = new javax.swing.JPanel();
+        buttonMP3 = new javax.swing.JRadioButton();
+        buttonMP4 = new javax.swing.JRadioButton();
+        textFieldURL = new javax.swing.JTextField();
+        checkBoxOnlyAudio = new javax.swing.JCheckBox();
+        labelUrl = new javax.swing.JLabel();
+        buttonDownload = new javax.swing.JButton();
+        buttonPlayVideo = new javax.swing.JButton();
+        progressBar = new javax.swing.JProgressBar();
+        menuBarMain = new javax.swing.JMenuBar();
         MenuFile = new javax.swing.JMenu();
         MenuItemExit = new javax.swing.JMenuItem();
         MenuEdit = new javax.swing.JMenu();
@@ -51,8 +65,8 @@ public class ViewToolApp extends javax.swing.JFrame {
         MenuHelp = new javax.swing.JMenu();
         MenuItemAbout = new javax.swing.JMenuItem();
 
-        DialogAbout.setTitle("About");
-        DialogAbout.setSize(new java.awt.Dimension(300, 300));
+        dialogAbout.setTitle("About");
+        dialogAbout.setSize(new java.awt.Dimension(300, 300));
 
         TextAreaAbout.setEditable(false);
         TextAreaAbout.setColumns(20);
@@ -60,14 +74,14 @@ public class ViewToolApp extends javax.swing.JFrame {
         TextAreaAbout.setText("Author: César Martín Pérez.\nSubject: DI - DAM 2025/2026\nDate: 27/10/2025\n\nRecourses:\n- yt-dlp\n- ffmpeg/ffprobe\n");
         ScrollPaneAbout.setViewportView(TextAreaAbout);
 
-        javax.swing.GroupLayout DialogAboutLayout = new javax.swing.GroupLayout(DialogAbout.getContentPane());
-        DialogAbout.getContentPane().setLayout(DialogAboutLayout);
-        DialogAboutLayout.setHorizontalGroup(
-            DialogAboutLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout dialogAboutLayout = new javax.swing.GroupLayout(dialogAbout.getContentPane());
+        dialogAbout.getContentPane().setLayout(dialogAboutLayout);
+        dialogAboutLayout.setHorizontalGroup(
+            dialogAboutLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(ScrollPaneAbout, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
         );
-        DialogAboutLayout.setVerticalGroup(
-            DialogAboutLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        dialogAboutLayout.setVerticalGroup(
+            dialogAboutLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(ScrollPaneAbout, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
         );
 
@@ -82,96 +96,103 @@ public class ViewToolApp extends javax.swing.JFrame {
         });
         getContentPane().setLayout(null);
 
-        TextArea.setEditable(false);
-        TextArea.setColumns(20);
-        TextArea.setRows(5);
-        ScrollPanelText.setViewportView(TextArea);
+        textArea.setEditable(false);
+        textArea.setColumns(20);
+        textArea.setRows(5);
+        scrollPanelText.setViewportView(textArea);
 
-        getContentPane().add(ScrollPanelText);
-        ScrollPanelText.setBounds(6, 123, 709, 502);
+        getContentPane().add(scrollPanelText);
+        scrollPanelText.setBounds(10, 230, 709, 502);
 
-        buttonGroup2.add(ButtonMP3);
-        ButtonMP3.setText("MP3");
-        ButtonMP3.addActionListener(new java.awt.event.ActionListener() {
+        buttonGroup2.add(buttonMP3);
+        buttonMP3.setText("MP3");
+        buttonMP3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ButtonMP3ActionPerformed(evt);
+                buttonMP3ActionPerformed(evt);
             }
         });
 
-        buttonGroup2.add(ButtonMP4);
-        ButtonMP4.setSelected(true);
-        ButtonMP4.setText("MP4");
-        ButtonMP4.addActionListener(new java.awt.event.ActionListener() {
+        buttonGroup2.add(buttonMP4);
+        buttonMP4.setSelected(true);
+        buttonMP4.setText("MP4");
+        buttonMP4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ButtonMP4ActionPerformed(evt);
+                buttonMP4ActionPerformed(evt);
             }
         });
 
-        TextFieldURL.addActionListener(new java.awt.event.ActionListener() {
+        textFieldURL.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                TextFieldURLActionPerformed(evt);
+                textFieldURLActionPerformed(evt);
             }
         });
 
-        CheckBoxOnlyAudio.setText("Only audio");
+        checkBoxOnlyAudio.setText("Only audio");
 
-        LabelUrl.setText("URL: ");
+        labelUrl.setText("URL: ");
 
-        ButtonDownload.setText("Download");
-        ButtonDownload.addActionListener(new java.awt.event.ActionListener() {
+        buttonDownload.setText("Download");
+        buttonDownload.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ButtonDownloadActionPerformed(evt);
+                buttonDownloadActionPerformed(evt);
             }
         });
 
-        ButtonPlayVideo.setText("Play last video");
-        ButtonPlayVideo.addActionListener(new java.awt.event.ActionListener() {
+        buttonPlayVideo.setText("Play last video");
+        buttonPlayVideo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ButtonPlayVideoActionPerformed(evt);
+                buttonPlayVideoActionPerformed(evt);
             }
         });
 
-        javax.swing.GroupLayout PanelMainLayout = new javax.swing.GroupLayout(PanelMain);
-        PanelMain.setLayout(PanelMainLayout);
-        PanelMainLayout.setHorizontalGroup(
-            PanelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(PanelMainLayout.createSequentialGroup()
+        javax.swing.GroupLayout panelMainLayout = new javax.swing.GroupLayout(panelMain);
+        panelMain.setLayout(panelMainLayout);
+        panelMainLayout.setHorizontalGroup(
+            panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelMainLayout.createSequentialGroup()
                 .addGap(18, 18, 18)
-                .addGroup(PanelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(LabelUrl, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(PanelMainLayout.createSequentialGroup()
+                .addGroup(panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(labelUrl, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(panelMainLayout.createSequentialGroup()
                         .addGap(32, 32, 32)
-                        .addComponent(TextFieldURL, javax.swing.GroupLayout.PREFERRED_SIZE, 470, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(textFieldURL, javax.swing.GroupLayout.PREFERRED_SIZE, 470, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(10, 10, 10)
-                .addComponent(CheckBoxOnlyAudio, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addGroup(PanelMainLayout.createSequentialGroup()
+                .addComponent(checkBoxOnlyAudio, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(panelMainLayout.createSequentialGroup()
                 .addGap(40, 40, 40)
-                .addComponent(ButtonMP3)
+                .addComponent(buttonMP3)
                 .addGap(51, 51, 51)
-                .addComponent(ButtonMP4)
+                .addComponent(buttonMP4)
                 .addGap(71, 71, 71)
-                .addComponent(ButtonDownload, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(buttonDownload, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(30, 30, 30)
-                .addComponent(ButtonPlayVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(buttonPlayVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
-        PanelMainLayout.setVerticalGroup(
-            PanelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(PanelMainLayout.createSequentialGroup()
+        panelMainLayout.setVerticalGroup(
+            panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelMainLayout.createSequentialGroup()
                 .addGap(50, 50, 50)
-                .addGroup(PanelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(LabelUrl, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(TextFieldURL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(CheckBoxOnlyAudio))
+                .addGroup(panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(labelUrl, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(textFieldURL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(checkBoxOnlyAudio))
                 .addGap(12, 12, 12)
-                .addGroup(PanelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(ButtonMP3)
-                    .addComponent(ButtonMP4)
-                    .addComponent(ButtonDownload)
-                    .addComponent(ButtonPlayVideo)))
+                .addGroup(panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(buttonMP3)
+                    .addComponent(buttonMP4)
+                    .addComponent(buttonDownload)
+                    .addComponent(buttonPlayVideo)))
         );
 
-        getContentPane().add(PanelMain);
-        PanelMain.setBounds(0, 0, 617, 117);
+        getContentPane().add(panelMain);
+        panelMain.setBounds(0, 0, 617, 117);
+
+        progressBar.setToolTipText("");
+        progressBar.setName("Progress"); // NOI18N
+        progressBar.setStringPainted(true);
+        getContentPane().add(progressBar);
+        progressBar.setBounds(10, 170, 660, 30);
+        progressBar.getAccessibleContext().setAccessibleName("");
 
         MenuFile.setText("File");
 
@@ -183,14 +204,19 @@ public class ViewToolApp extends javax.swing.JFrame {
         });
         MenuFile.add(MenuItemExit);
 
-        MenuBarMain.add(MenuFile);
+        menuBarMain.add(MenuFile);
 
         MenuEdit.setText("Edit");
 
         MenuItemPreferences.setText("Preferences");
+        MenuItemPreferences.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MenuItemPreferencesActionPerformed(evt);
+            }
+        });
         MenuEdit.add(MenuItemPreferences);
 
-        MenuBarMain.add(MenuEdit);
+        menuBarMain.add(MenuEdit);
 
         MenuHelp.setText("Help");
         MenuHelp.addActionListener(new java.awt.event.ActionListener() {
@@ -207,40 +233,100 @@ public class ViewToolApp extends javax.swing.JFrame {
         });
         MenuHelp.add(MenuItemAbout);
 
-        MenuBarMain.add(MenuHelp);
+        menuBarMain.add(MenuHelp);
 
-        setJMenuBar(MenuBarMain);
+        setJMenuBar(menuBarMain);
 
-        setBounds(0, 0, 936, 687);
+        setBounds(0, 0, 1079, 813);
     }// </editor-fold>//GEN-END:initComponents
 
     private void MenuItemExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuItemExitActionPerformed
-       System.exit(0); // TODO add your handling code here:
+        System.exit(0); // TODO add your handling code here:
     }//GEN-LAST:event_MenuItemExitActionPerformed
 
     private void MenuItemAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuItemAboutActionPerformed
-    DialogAbout.setVisible(true);        // TODO add your handling code here:
+        dialogAbout.setVisible(true);        // TODO add your handling code here:
     }//GEN-LAST:event_MenuItemAboutActionPerformed
 
-    private void TextFieldURLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TextFieldURLActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_TextFieldURLActionPerformed
+    private void textFieldURLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFieldURLActionPerformed
 
-    private void ButtonMP3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonMP3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_ButtonMP3ActionPerformed
+    }//GEN-LAST:event_textFieldURLActionPerformed
 
-    private void ButtonDownloadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonDownloadActionPerformed
+    private void buttonMP3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonMP3ActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_ButtonDownloadActionPerformed
+    }//GEN-LAST:event_buttonMP3ActionPerformed
 
-    private void ButtonMP4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonMP4ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_ButtonMP4ActionPerformed
+    private void buttonDownloadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDownloadActionPerformed
+ 
+        buttonDownload.setEnabled(false);
+        progressBar.setValue(0);
 
-    private void ButtonPlayVideoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonPlayVideoActionPerformed
+        new javax.swing.SwingWorker<Integer, Integer>() {
+            StringBuilder log = new StringBuilder();
+            volatile boolean seenAnyPercent = false;
+            
+             
+
+            @Override
+            protected Integer doInBackground() throws Exception {
+                // Callback que recibe el % desde ProcessRunner (hilo de background)
+                java.util.function.IntConsumer onPercent =  pct -> publish(pct);
+                    // manda al EDT
+
+                // Validación y descarga
+                controller.validateUrl(textFieldURL.getText());
+                return controller.startDownload(
+                        textFieldURL.getText(),
+                        buttonMP3.isSelected() ? MediaFormat.MP3 : MediaFormat.MP4,
+                        checkBoxOnlyAudio.isSelected(),
+                        prefSvc.getOutputDir(),
+                        log,
+                        onPercent
+                );
+            }
+
+            @Override
+            protected void process(java.util.List<Integer> chunks) {
+                int last = chunks.get(chunks.size() - 1);
+                if (!seenAnyPercent) {
+                    progressBar.setIndeterminate(false);
+                    seenAnyPercent = true;
+                }
+                progressBar.setValue(last);
+            }
+
+            @Override
+            protected void done() {
+                buttonDownload.setEnabled(true);
+                textArea.append(log.toString());
+                try {
+                    int exit = get();
+                    if (exit == 0) {
+                        Alerts.info(ViewToolApp.this, "✅ Descarga completada.");
+                        progressBar.setValue(100);
+                    } else {
+                        Alerts.warn(ViewToolApp.this, "El proceso terminó con código " + exit);
+                    }
+                } catch (Exception ex) {
+                    Alerts.showException(ViewToolApp.this, ex.getCause() != null ? ex.getCause() : ex);
+                }
+            }
+        }.execute();
+       
+        
+    }//GEN-LAST:event_buttonDownloadActionPerformed
+
+    private void buttonMP4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonMP4ActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_ButtonPlayVideoActionPerformed
+    }//GEN-LAST:event_buttonMP4ActionPerformed
+
+    private void buttonPlayVideoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonPlayVideoActionPerformed
+         try{
+             playService.playLastDownloaded(prefSvc.getOutputDir());
+         } catch(IOException ex){
+             Alerts.showException(this, ex);
+         }
+    }//GEN-LAST:event_buttonPlayVideoActionPerformed
 
     private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
         // TODO add your handling code here:
@@ -250,31 +336,36 @@ public class ViewToolApp extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_MenuHelpActionPerformed
 
+    private void MenuItemPreferencesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuItemPreferencesActionPerformed
+        new ViewToolPreferences().setVisible(true);        // TODO add your handling code here:
+    }//GEN-LAST:event_MenuItemPreferencesActionPerformed
+
     /**
      * @param args the command line arguments
      */
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton ButtonDownload;
-    private javax.swing.JRadioButton ButtonMP3;
-    private javax.swing.JRadioButton ButtonMP4;
-    private javax.swing.JButton ButtonPlayVideo;
-    private javax.swing.JCheckBox CheckBoxOnlyAudio;
-    private javax.swing.JDialog DialogAbout;
-    private javax.swing.JLabel LabelUrl;
-    private javax.swing.JMenuBar MenuBarMain;
     private javax.swing.JMenu MenuEdit;
     private javax.swing.JMenu MenuFile;
     private javax.swing.JMenu MenuHelp;
     private javax.swing.JMenuItem MenuItemAbout;
     private javax.swing.JMenuItem MenuItemExit;
     private javax.swing.JMenuItem MenuItemPreferences;
-    private javax.swing.JPanel PanelMain;
     private javax.swing.JScrollPane ScrollPaneAbout;
-    private javax.swing.JScrollPane ScrollPanelText;
-    private javax.swing.JTextArea TextArea;
     private javax.swing.JTextArea TextAreaAbout;
-    private javax.swing.JTextField TextFieldURL;
+    private javax.swing.JButton buttonDownload;
     private javax.swing.ButtonGroup buttonGroup2;
+    private javax.swing.JRadioButton buttonMP3;
+    private javax.swing.JRadioButton buttonMP4;
+    private javax.swing.JButton buttonPlayVideo;
+    private javax.swing.JCheckBox checkBoxOnlyAudio;
+    private javax.swing.JDialog dialogAbout;
+    private javax.swing.JLabel labelUrl;
+    private javax.swing.JMenuBar menuBarMain;
+    private javax.swing.JPanel panelMain;
+    private javax.swing.JProgressBar progressBar;
+    private javax.swing.JScrollPane scrollPanelText;
+    private javax.swing.JTextArea textArea;
+    private javax.swing.JTextField textFieldURL;
     // End of variables declaration//GEN-END:variables
 }
