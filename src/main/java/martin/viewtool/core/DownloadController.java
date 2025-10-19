@@ -30,11 +30,11 @@ public class DownloadController {
     
 
 
-    public int startDownload(String rawUrl, MediaFormat format, boolean onlyAudio, Path outputDir, Appendable out, IntConsumer onPersent,String rawLimit)
+    public int startDownload(String rawUrl, MediaFormat format, boolean onlyAudio, Path outputDir, Appendable out, IntConsumer onPersent,String rawLimit,boolean m3uFile)
             throws Exception {
         URI url = ValidationService.requireValidUrl(rawUrl);
         String limit = ValidationService.requireValidLimit(rawLimit);
-        DownloadRequest req = new DownloadRequest(url, format, onlyAudio, outputDir,limit);
+        DownloadRequest req = new DownloadRequest(url, format, onlyAudio, outputDir,limit,m3uFile);
         return service.download(req, out, onPersent);
     }
 }

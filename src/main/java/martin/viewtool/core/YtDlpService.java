@@ -66,6 +66,12 @@ public class YtDlpService {
             commands.add(req.limit());
         }
 
+        if (req.m3uFile()) {
+            commands.add("--print-to-file");
+            commands.add("after_move:%(filepath)s");
+            commands.add(req.outputDir().resolve("playlist.m3u").toString());
+        }
+
         commands.add(req.url().toString());
 
         File fileDirectory = req.outputDir() != null ? req.outputDir().toFile() : null;

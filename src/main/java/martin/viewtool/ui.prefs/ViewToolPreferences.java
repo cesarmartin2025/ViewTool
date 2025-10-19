@@ -5,6 +5,7 @@
 package martin.viewtool.ui;
 
 import java.io.File;
+import javax.swing.JCheckBox;
 import javax.swing.JTextField;
 import martin.viewtool.config.PreferencesService;
 import martin.viewtool.core.ValidationService;
@@ -39,11 +40,11 @@ public class ViewToolPreferences extends javax.swing.JFrame {
         fileChooserYt = new javax.swing.JFileChooser();
         panelMain = new javax.swing.JPanel();
         buttonDirectory = new javax.swing.JButton();
-        buttonM3u = new javax.swing.JButton();
         buttonLimitDownload = new javax.swing.JButton();
         buttonDirYt = new javax.swing.JButton();
         textFieldLimDown = new javax.swing.JTextField();
         labelLimDown = new javax.swing.JLabel();
+        checkBoxM3u = new javax.swing.JCheckBox();
 
         fileChooserDirDown.setAcceptAllFileFilterUsed(false);
         fileChooserDirDown.setCurrentDirectory(new java.io.File("C:\\Users\\cesar\\ViewToolDownloads"));
@@ -70,10 +71,6 @@ public class ViewToolPreferences extends javax.swing.JFrame {
         panelMain.add(buttonDirectory);
         buttonDirectory.setBounds(30, 30, 320, 30);
 
-        buttonM3u.setText("create a .m3u for playlist");
-        panelMain.add(buttonM3u);
-        buttonM3u.setBounds(30, 80, 320, 27);
-
         buttonLimitDownload.setText("Limite download");
         buttonLimitDownload.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -99,6 +96,10 @@ public class ViewToolPreferences extends javax.swing.JFrame {
         labelLimDown.setText("Limit download: ");
         panelMain.add(labelLimDown);
         labelLimDown.setBounds(30, 130, 100, 16);
+
+        checkBoxM3u.setText("create a .m3u for playlist");
+        panelMain.add(checkBoxM3u);
+        checkBoxM3u.setBounds(50, 80, 190, 30);
 
         getContentPane().add(panelMain);
         panelMain.setBounds(0, 0, 800, 370);
@@ -173,7 +174,7 @@ public class ViewToolPreferences extends javax.swing.JFrame {
     private javax.swing.JButton buttonDirYt;
     private javax.swing.JButton buttonDirectory;
     private javax.swing.JButton buttonLimitDownload;
-    private javax.swing.JButton buttonM3u;
+    private javax.swing.JCheckBox checkBoxM3u;
     private javax.swing.JFileChooser fileChooserDirDown;
     private javax.swing.JFileChooser fileChooserYt;
     private javax.swing.JOptionPane jOptionPane1;
@@ -182,7 +183,9 @@ public class ViewToolPreferences extends javax.swing.JFrame {
     private javax.swing.JTextField textFieldLimDown;
     // End of variables declaration//GEN-END:variables
 
-    public JTextField getTextFieldLimDown() {
-        return textFieldLimDown;
+    public  boolean isM3uSelected(){
+        return checkBoxM3u.isSelected();
     }
+
+    
 }

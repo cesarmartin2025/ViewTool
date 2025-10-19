@@ -16,5 +16,6 @@ public record DownloadRequest(
         MediaFormat format,
         boolean audioOnly,
         Path outputDir,
-        String limit
+        String limit,
+        boolean m3uFile
 ) {}

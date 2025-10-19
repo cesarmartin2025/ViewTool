@@ -277,12 +277,13 @@ public class ViewToolApp extends javax.swing.JFrame {
                 String limit = prefSvc.getLimitSpeed();
                 
                 controller.validateSpeed(limit);
+                
+                boolean m3uSelected = viewToolPreferences.isM3uSelected();
 
                 
                
 
                 Alerts.info(ViewToolApp.this, "Ha comenzado la descarga, por favor, espere");
-                Alerts.info(ViewToolApp.this, "valor de la descarga : "+limit);
 
                 return controller.startDownload(
                         textFieldURL.getText(),
@@ -291,7 +292,9 @@ public class ViewToolApp extends javax.swing.JFrame {
                         prefSvc.getOutputDir(),
                         log,
                         onPercent,
-                        limit
+                        limit,
+                        m3uSelected
+                        
                 );
 
             }
@@ -348,7 +351,7 @@ public class ViewToolApp extends javax.swing.JFrame {
     }//GEN-LAST:event_MenuHelpActionPerformed
 
     private void MenuItemPreferencesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuItemPreferencesActionPerformed
-        new ViewToolPreferences().setVisible(true);        // TODO add your handling code here:
+        viewToolPreferences.setVisible(true);        // TODO add your handling code here:
     }//GEN-LAST:event_MenuItemPreferencesActionPerformed
 
     /**
