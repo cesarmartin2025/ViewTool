@@ -29,4 +29,14 @@ public final class ValidationService {
             throw new IllegalArgumentException("URL inválida: " + ex.getMessage(), ex);
         }
     }
+    
+    public static String requireValidLimit(String userInput) throws IllegalArgumentException {
+    if (userInput == null) return null;
+    String s = userInput.trim();
+    if (s.isEmpty() || s.equals("0")) return null;
+
+    if (s.matches("\\d+")) return s + "M";
+    
+    throw new IllegalArgumentException("Velocidad no válida. Por favor, escriba sólo dígitos");
+}
 }

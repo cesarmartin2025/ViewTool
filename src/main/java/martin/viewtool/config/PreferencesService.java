@@ -15,11 +15,22 @@ public class PreferencesService {
 
     private static final String KEY_YTDLP = "ytdlp.path";
     private static final String KEY_OUTPUT = "output.dir";
+    private static final String KEY_LIMIT_RATE = "limit_rate";
+
+    
 
     private final Preferences prefs = Preferences.userRoot().node("martin.viewtool");
 
     public void setYtDlpPath(Path p) {
         prefs.put(KEY_YTDLP, p.toString());
+    }
+    
+    public String getLimitSpeed() {
+        return prefs.get(KEY_LIMIT_RATE, ""); // vacío = sin límite
+    }
+
+    public void setLimitSpeed(String raw) {
+        prefs.put(KEY_LIMIT_RATE, raw != null ? raw : "");
     }
 
   

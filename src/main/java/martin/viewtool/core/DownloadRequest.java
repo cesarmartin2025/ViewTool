@@ -15,5 +15,6 @@ public record DownloadRequest(
         URI url,
         MediaFormat format,
         boolean audioOnly,
-        Path outputDir
+        Path outputDir,
+        String limit
 ) {}

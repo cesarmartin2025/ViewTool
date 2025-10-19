@@ -22,11 +22,19 @@ public class DownloadController {
     public void validateUrl(String raw) {
         ValidationService.requireValidUrl(raw); 
     }
+    
+    public void validateSpeed(String speed){
+        ValidationService.requireValidLimit(speed);
+    }
+    
+    
 
-    public int startDownload(String rawUrl, MediaFormat format, boolean onlyAudio, Path outputDir, Appendable out, IntConsumer onPersent)
+
+    public int startDownload(String rawUrl, MediaFormat format, boolean onlyAudio, Path outputDir, Appendable out, IntConsumer onPersent,String rawLimit)
             throws Exception {
         URI url = ValidationService.requireValidUrl(rawUrl);
-        DownloadRequest req = new DownloadRequest(url, format, onlyAudio, outputDir);
+        String limit = ValidationService.requireValidLimit(rawLimit);
+        DownloadRequest req = new DownloadRequest(url, format, onlyAudio, outputDir,limit);
         return service.download(req, out, onPersent);
     }
 }

@@ -8,8 +8,9 @@ import java.io.IOException;
 import martin.viewtool.config.PreferencesService;
 import martin.viewtool.core.DownloadController;
 import martin.viewtool.core.MediaFormat;
-import martin.viewtool.core.YtDlpService;
 import martin.viewtool.core.PlayService;
+import martin.viewtool.core.ValidationService;
+import martin.viewtool.core.YtDlpService;
 
 /**
  *
@@ -22,7 +23,7 @@ public class ViewToolApp extends javax.swing.JFrame {
     private final PreferencesService prefSvc = new PreferencesService();
     private final DownloadController controller
             = new DownloadController(new YtDlpService(prefSvc.getYtDlpPath()));
-    
+    private final ViewToolPreferences viewToolPreferences = new ViewToolPreferences();
     private final PlayService playService = new PlayService();
 
     /**
@@ -257,7 +258,7 @@ public class ViewToolApp extends javax.swing.JFrame {
     }//GEN-LAST:event_buttonMP3ActionPerformed
 
     private void buttonDownloadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDownloadActionPerformed
- 
+
         buttonDownload.setEnabled(false);
         textArea.setText("");
         progressBar.setValue(0);
@@ -265,30 +266,34 @@ public class ViewToolApp extends javax.swing.JFrame {
         new javax.swing.SwingWorker<Integer, Integer>() {
             StringBuilder log = new StringBuilder();
             volatile boolean seenAnyPercent = false;
-            
-             
 
             @Override
             protected Integer doInBackground() throws Exception {
-                
-                java.util.function.IntConsumer onPercent =  pct -> publish(pct);
-   
+
+                java.util.function.IntConsumer onPercent = pct -> publish(pct);
+
                 controller.validateUrl(textFieldURL.getText());
                 
-                Alerts.info(ViewToolApp.this, "Ha comenzado la descarga, por favor, espere");
+                String limit = prefSvc.getLimitSpeed();
                 
+                controller.validateSpeed(limit);
+
+                
+               
+
+                Alerts.info(ViewToolApp.this, "Ha comenzado la descarga, por favor, espere");
+                Alerts.info(ViewToolApp.this, "valor de la descarga : "+limit);
+
                 return controller.startDownload(
                         textFieldURL.getText(),
                         buttonMP3.isSelected() ? MediaFormat.MP3 : MediaFormat.MP4,
                         checkBoxOnlyAudio.isSelected(),
                         prefSvc.getOutputDir(),
                         log,
-                        onPercent
+                        onPercent,
+                        limit
                 );
-                
-                
-                
-                
+
             }
 
             @Override
@@ -318,8 +323,8 @@ public class ViewToolApp extends javax.swing.JFrame {
                 }
             }
         }.execute();
-       
-        
+
+
     }//GEN-LAST:event_buttonDownloadActionPerformed
 
     private void buttonMP4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonMP4ActionPerformed
@@ -327,11 +332,11 @@ public class ViewToolApp extends javax.swing.JFrame {
     }//GEN-LAST:event_buttonMP4ActionPerformed
 
     private void buttonPlayVideoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonPlayVideoActionPerformed
-         try{
-             playService.playLastDownloaded(prefSvc.getOutputDir());
-         } catch(IOException ex){
-             Alerts.showException(this, ex);
-         }
+        try {
+            playService.playLastDownloaded(prefSvc.getOutputDir());
+        } catch (IOException ex) {
+            Alerts.showException(this, ex);
+        }
     }//GEN-LAST:event_buttonPlayVideoActionPerformed
 
     private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked

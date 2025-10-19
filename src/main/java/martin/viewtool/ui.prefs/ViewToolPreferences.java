@@ -5,7 +5,9 @@
 package martin.viewtool.ui;
 
 import java.io.File;
+import javax.swing.JTextField;
 import martin.viewtool.config.PreferencesService;
+import martin.viewtool.core.ValidationService;
 
 /**
  *
@@ -49,6 +51,7 @@ public class ViewToolPreferences extends javax.swing.JFrame {
         fileChooserDirDown.setFileSelectionMode(javax.swing.JFileChooser.DIRECTORIES_ONLY);
 
         fileChooserYt.setAcceptAllFileFilterUsed(false);
+        fileChooserYt.setCurrentDirectory(new java.io.File("C:\\Program Files"));
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Preferences");
@@ -72,6 +75,11 @@ public class ViewToolPreferences extends javax.swing.JFrame {
         buttonM3u.setBounds(30, 80, 320, 27);
 
         buttonLimitDownload.setText("Limite download");
+        buttonLimitDownload.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonLimitDownloadActionPerformed(evt);
+            }
+        });
         panelMain.add(buttonLimitDownload);
         buttonLimitDownload.setBounds(270, 127, 220, 30);
 
@@ -122,6 +130,20 @@ public class ViewToolPreferences extends javax.swing.JFrame {
     }
     }//GEN-LAST:event_buttonDirYtActionPerformed
 
+    private void buttonLimitDownloadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonLimitDownloadActionPerformed
+        String speed = textFieldLimDown.getText();
+        try{
+            ValidationService.requireValidLimit(speed);
+            Alerts.info(this, "La velocidad se ha guardado: "+speed);
+            preferencesService.setLimitSpeed(speed);
+        } catch(Exception ex){
+            Alerts.showException(this, ex.getCause() != null ? ex.getCause() : ex);
+            }
+        
+        
+        
+    }//GEN-LAST:event_buttonLimitDownloadActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -159,4 +181,8 @@ public class ViewToolPreferences extends javax.swing.JFrame {
     private javax.swing.JPanel panelMain;
     private javax.swing.JTextField textFieldLimDown;
     // End of variables declaration//GEN-END:variables
+
+    public JTextField getTextFieldLimDown() {
+        return textFieldLimDown;
+    }
 }

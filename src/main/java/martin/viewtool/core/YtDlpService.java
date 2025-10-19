@@ -25,7 +25,7 @@ public class YtDlpService {
         this.ytDplPath = ytDlpPath;
     }
 
-    public int download(DownloadRequest req, Appendable out,IntConsumer onPersent) throws IOException, InterruptedException {
+    public int download(DownloadRequest req, Appendable out, IntConsumer onPersent) throws IOException, InterruptedException {
         List<String> commands = new ArrayList<>();
         commands.add(ytDplPath.toString());
 
@@ -57,9 +57,14 @@ public class YtDlpService {
             commands.add("m4a");
         }
 
-        commands.add("--newline"); 
+        commands.add("--newline");
         commands.add("--progress-template");
         commands.add("%(progress._percent_str)s");
+
+        if (req.limit() != null) {
+            commands.add("--limit-rate");
+            commands.add(req.limit());
+        }
 
         commands.add(req.url().toString());
 
