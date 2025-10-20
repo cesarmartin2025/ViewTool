@@ -26,7 +26,7 @@ public class PreferencesService {
     }
     
     public String getLimitSpeed() {
-        return prefs.get(KEY_LIMIT_RATE, ""); // vacío = sin límite
+        return prefs.get(KEY_LIMIT_RATE, "");
     }
 
     public void setLimitSpeed(String raw) {
@@ -44,18 +44,16 @@ public class PreferencesService {
     }
 
     public Path getOutputDir() {
-        // Ruta por defecto → user.home/ViewToolDownloads
+       
         Path defaultPath = Path.of(System.getProperty("user.home"), "ViewToolDownloads");
-
-        // Leer de preferencias (o usar la ruta por defecto)
+        
         Path path = Path.of(prefs.get(KEY_OUTPUT, defaultPath.toString()));
 
-        // Crear carpeta si no existe
         if (!java.nio.file.Files.exists(path)) {
             try {
                 java.nio.file.Files.createDirectories(path);
             } catch (Exception e) {
-               System.err.print("No se pudo crear el directorio de salida: " + e.getMessage());
+               System.err.print("The output directory could not be created.: " + e.getMessage());
             }
         }
 

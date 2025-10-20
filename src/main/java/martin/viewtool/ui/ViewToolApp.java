@@ -346,14 +346,14 @@ public class ViewToolApp extends javax.swing.JFrame {
     }//GEN-LAST:event_MenuItemPreferencesActionPerformed
 
     private void buttonDirectoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDirectoryActionPerformed
-        int result = fileChooserDirDown.showOpenDialog(this); // si esto es un JDialog, también vale
+        int result = fileChooserDirDown.showOpenDialog(this); 
         if (result == javax.swing.JFileChooser.APPROVE_OPTION) {
             File selectedDir = fileChooserDirDown.getSelectedFile();
 
             prefSvc.setOutputDir(selectedDir.toPath());
             jOptionPane1.showMessageDialog(this,
                     "Selected directory:\n" + selectedDir.getAbsolutePath(),
-                    "Download folder", jOptionPane1.INFORMATION_MESSAGE); // o guárdalo en tu modelo
+                    "Download folder", jOptionPane1.INFORMATION_MESSAGE); 
         }
     }//GEN-LAST:event_buttonDirectoryActionPerformed
 
@@ -361,7 +361,7 @@ public class ViewToolApp extends javax.swing.JFrame {
         String speed = textFieldLimDown.getText();
         try {
             ValidationService.requireValidLimit(speed);
-            Alerts.info(this, "La velocidad se ha guardado: " + speed);
+            Alerts.info(this, "You have limited the speed in: " + speed+" // Default: 0=no limit");
             prefSvc.setLimitSpeed(speed);
         } catch (Exception ex) {
             Alerts.showException(this, ex.getCause() != null ? ex.getCause() : ex);
@@ -370,14 +370,14 @@ public class ViewToolApp extends javax.swing.JFrame {
     }//GEN-LAST:event_buttonLimitDownloadActionPerformed
 
     private void buttonDirYtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDirYtActionPerformed
-        int result = fileChooserYt.showOpenDialog(this); // si esto es un JDialog, también vale
+        int result = fileChooserYt.showOpenDialog(this); 
         if (result == javax.swing.JFileChooser.APPROVE_OPTION) {
             File selectedDir = fileChooserYt.getSelectedFile();
 
             prefSvc.setYtDlpPath(selectedDir.toPath());
             jOptionPane1.showMessageDialog(this,
                     "Selected directory:\n" + selectedDir.getAbsolutePath(),
-                    "Download folder", jOptionPane1.INFORMATION_MESSAGE); // o guárdalo en tu modelo
+                    "Download folder", jOptionPane1.INFORMATION_MESSAGE); 
         }
     }//GEN-LAST:event_buttonDirYtActionPerformed
 
@@ -443,10 +443,10 @@ public class ViewToolApp extends javax.swing.JFrame {
                 try {
                     int exit = get();
                     if (exit == 0) {
-                        Alerts.info(ViewToolApp.this, "Descarga completada.");
+                        Alerts.info(ViewToolApp.this, "Download complete.");
                         progressBar.setValue(100);
                     } else {
-                        Alerts.warn(ViewToolApp.this, "El proceso terminó con código " + exit);
+                        Alerts.warn(ViewToolApp.this, "Process finished with some error, code : " + exit);
                     }
                 } catch (Exception ex) {
                     Alerts.showException(ViewToolApp.this, ex.getCause() != null ? ex.getCause() : ex);

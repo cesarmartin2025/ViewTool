@@ -42,10 +42,10 @@ public class ProcessRunner {
                 }
                 if (onPercent != null) {
                     String t = line.trim();
-                    if (t.endsWith("%") && t.length() <= 8) { // p.ej. "42.3%" o "7%"
+                    if (t.endsWith("%") && t.length() <= 8) { 
                         parseAndSendPercent(t.substring(0, t.length() - 1).trim(), onPercent);
                     } else {
-                        // Respaldo por regex si no vino “limpio”
+                        
                         Matcher m = PERCENTAGE.matcher(line);
                         if (m.find()) {
                             parseAndSendPercent(m.group(1), onPercent);

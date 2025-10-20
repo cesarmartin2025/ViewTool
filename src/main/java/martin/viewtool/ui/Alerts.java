@@ -15,12 +15,12 @@ public final class Alerts {
     private Alerts() {}
 
     public static void info(Component parent, String msg) {
-        JOptionPane.showMessageDialog(parent, msg, "Información",
+        JOptionPane.showMessageDialog(parent, msg, "Information",
                 JOptionPane.INFORMATION_MESSAGE);
     }
 
     public static void warn(Component parent, String msg) {
-        JOptionPane.showMessageDialog(parent, msg, "Aviso",
+        JOptionPane.showMessageDialog(parent, msg, "Warning",
                 JOptionPane.WARNING_MESSAGE);
     }
 

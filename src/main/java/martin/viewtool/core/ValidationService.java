@@ -15,7 +15,7 @@ public final class ValidationService {
 
     public static void requireHasText(String s, String field) {
         if (s == null || s.isBlank())
-            throw new IllegalArgumentException(field + " no puede estar vacío");
+            throw new IllegalArgumentException(field + " Can't be empty");
     }
 
     public static URI requireValidUrl(String raw) {
@@ -23,10 +23,10 @@ public final class ValidationService {
         try {
             URI uri = URI.create(raw.trim());
             if (uri.getScheme() == null || uri.getHost() == null)
-                throw new IllegalArgumentException("URL inválida");
+                throw new IllegalArgumentException("invalid URL");
             return uri;
         } catch (IllegalArgumentException ex) {
-            throw new IllegalArgumentException("URL inválida: " + ex.getMessage(), ex);
+            throw new IllegalArgumentException("invalid URL: " + ex.getMessage(), ex);
         }
     }
     
@@ -37,6 +37,6 @@ public final class ValidationService {
 
     if (s.matches("\\d+")) return s + "M";
     
-    throw new IllegalArgumentException("Velocidad no válida. Por favor, escriba sólo dígitos");
+    throw new IllegalArgumentException("invalid speed. Please, write only digits number example: 1 , 20 , 30 .");
 }
 }

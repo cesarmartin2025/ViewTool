@@ -29,13 +29,13 @@ public class YtDlpService {
         List<String> commands = new ArrayList<>();
         commands.add(ytDplPath.toString());
 
-        // Salida: título.ext en la carpeta elegida
+        
         commands.add("-o");
         commands.add("%(title)s.%(ext)s");
 
         switch (req.format()) {
             case MP3 -> {
-                // Extraer audio a MP3
+                
                 commands.add("-x");
                 commands.add("--audio-format");
                 commands.add("mp3");
@@ -43,7 +43,7 @@ public class YtDlpService {
                 commands.add("0"); // mejor calidad
             }
             case MP4 -> {
-                // Forzar MP4 lo mejor posible
+                
                 commands.add("-f");
                 commands.add("bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4");
             }
@@ -51,7 +51,7 @@ public class YtDlpService {
         }
 
         if (req.audioOnly() && req.format() == MediaFormat.MP4) {
-            // Si marcaste "Only audio" pero elegiste MP4, podrías decidir forzar M4A:
+           
             commands.add("-x");
             commands.add("--audio-format");
             commands.add("m4a");

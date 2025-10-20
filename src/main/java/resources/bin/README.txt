@@ -1,8 +1,8 @@
-Esta carpeta debe contener los ejecutables necesarios para que el programa funcione:
+This app should has the executables necessary for to run:
 
 - yt-dlp.exe
 - ffmpeg.exe
 - ffprobe.exe
 
-Por motivos de licencia y tamaño, estos archivos no se incluyen en el repositorio.
-Descárgalos desde sus webs oficiales y colócalos aquí antes de ejecutar el programa.
+For licensing and size reasons, these files are not included in the repository.
+Download them from their official websites before running the program and use Edit>Preferences for to choose the directory that contains "yt-dlp.exe".

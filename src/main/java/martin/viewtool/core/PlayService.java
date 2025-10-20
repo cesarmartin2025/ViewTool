@@ -20,7 +20,7 @@ public class PlayService {
 
     public void playLastDownloaded(Path downloadDir) throws IOException {
         if (!Files.isDirectory(downloadDir)) {
-            throw new IOException("El directorio de descargas no existe: " + downloadDir);
+            throw new IOException("The download directory does not exist: " + downloadDir);
         }
 
         try (Stream<Path> files = Files.list(downloadDir)) {
@@ -34,10 +34,10 @@ public class PlayService {
 
             if (newest.isPresent()) {
                 Path file = newest.get();
-                System.out.println("Reproduciendo: " + file);
+                System.out.println("Opening..." + file);
                 Desktop.getDesktop().open(file.toFile());
             } else {
-                throw new IOException("No se encontraron vídeos o audios en " + downloadDir);
+                throw new IOException("No videos or audios were found in " + downloadDir);
             }
         }
     }
