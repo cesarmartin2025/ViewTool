@@ -120,11 +120,11 @@ Todos los derechos de las librerías y recursos externos pertenecen a sus respec
 ```
 ViewTool/
  ├─ src/main/java/martin/viewtool/
- │   ├─ core/          → Lógica
- │   ├─ ui/            → Interfaz gráfica y controladores Swing
- │   └─ util/          → Clases auxiliares
- ├─ resources/         → Recursos utilizados
- ├─ yt-dlp.exe         → Binario externo utilizado por la aplicación
+ │   ├─ core/          → logic
+ │   ├─ ui/            → GUI and Swing controllers
+ │   └─ util/          → Aux classes
+ ├─ resources/         → Recourses
+ ├─ yt-dlp.exe         → Executable used for the app
  └─ README.md
 ```
 
