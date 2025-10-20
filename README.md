@@ -79,7 +79,6 @@ java -jar ViewTool.jar
 ```
 
 o desde el IDE.
-```
 
 ---
 
@@ -90,8 +89,7 @@ Todos los derechos de las librerías y recursos externos pertenecen a sus respec
 
 ---
 
-# 🇬🇧 English Version
-
+# 🇬🇧 English Version 🇬🇧
 ## Project description
 
 **ViewTool** is a desktop application developed in **Java Swing** that allows users to **download and manage multimedia content** from the Internet using **yt-dlp**.  
@@ -117,18 +115,17 @@ Todos los derechos de las librerías y recursos externos pertenecen a sus respec
   - **Help > About** → author and project information.  
 ---
 
-## Project structure
+## 🧩 Estructura del proyecto
 
 ```
 ViewTool/
  ├─ src/main/java/martin/viewtool/
- │   ├─ core/      → logic
- │   ├─ ui/        → Swing GUI and controllers
- │   └─ util/      → Utility classes
- ├─ resources/     → Recourses
- ├─ yt-dlp.exe     → Binary extern
+ │   ├─ core/          → Lógica
+ │   ├─ ui/            → Interfaz gráfica y controladores Swing
+ │   └─ util/          → Clases auxiliares
+ ├─ resources/         → Recursos utilizados
+ ├─ yt-dlp.exe         → Binario externo utilizado por la aplicación
  └─ README.md
- 
 ```
 
 ---
