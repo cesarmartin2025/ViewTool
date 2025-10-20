@@ -126,8 +126,9 @@ ViewTool/
  │   ├─ ui/        → Swing GUI and controllers
  │   └─ util/      → Utility classes
  ├─ resources/     → Recourses
- ├─ yt-dlp.exe     → binary extern
+ ├─ yt-dlp.exe     → Binary extern
  └─ README.md
+ 
 ```
 
 ---
