@@ -170,7 +170,7 @@ java -cp dist/ViewTool.jar martin.viewtool.ui.ViewToolApp
 
 ## License
 
-Educational project by **César Martín Pérez** for the **Multiplatform Application Development** program (DAM).  
+Educational project by **César Martín Pérez** for the **Tnterface development** program (DAM).  
 All third-party resources belong to their respective authors.
 
 ---
