@@ -123,7 +123,7 @@ ViewTool/
  │   ├─ core/          → logic
  │   ├─ ui/            → GUI and Swing controllers
  │   └─ util/          → Aux classes
- ├─ resources/         → Recourses
+ ├─ resources/         → Resources
  ├─ yt-dlp.exe         → Executable used for the app
  └─ README.md
 ```
