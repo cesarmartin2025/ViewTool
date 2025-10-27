@@ -6,9 +6,17 @@ package martin.viewtool.ui;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.util.List;
+import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
 import martin.viewtool.config.PreferencesService;
 import martin.viewtool.core.DownloadController;
+import martin.viewtool.core.LibraryService;
 import martin.viewtool.core.MediaFormat;
+import martin.viewtool.core.MediaItem;
+import martin.viewtool.core.MediaLibrary;
+import martin.viewtool.core.MediaTableModel;
 import martin.viewtool.core.PlayService;
 import martin.viewtool.core.ValidationService;
 import martin.viewtool.core.YtDlpService;
@@ -21,10 +29,12 @@ public class ViewToolApp extends javax.swing.JFrame {
 
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ViewToolApp.class.getName());
 
-    private final PreferencesService prefSvc = new PreferencesService();
+    private final PreferencesService prefService = new PreferencesService();
     private final DownloadController controller
-            = new DownloadController(new YtDlpService(prefSvc.getYtDlpPath()));
+            = new DownloadController(new YtDlpService(prefService.getYtDlpPath()));
     private final PlayService playService = new PlayService();
+
+    private final LibraryService libraryService = new LibraryService(Path.of(prefService.getOutputDir().toString()));
 
     /**
      * Creates new form ViewToolApp
@@ -32,6 +42,22 @@ public class ViewToolApp extends javax.swing.JFrame {
     public ViewToolApp() {
         initComponents();
 
+    }
+
+    private void columnPrefs() {
+        var columnModel = tableFiles.getColumnModel();
+
+        // Columna 0: Name
+        columnModel.getColumn(0).setPreferredWidth(300);
+
+        // Columna 1: Size (MB)
+        columnModel.getColumn(1).setPreferredWidth(20);
+
+        // Columna 2: MIME Type
+        columnModel.getColumn(2).setPreferredWidth(20);
+        // Columna 3: Date
+        columnModel.getColumn(3).setPreferredWidth(80);
+        ;
     }
 
     /**
@@ -69,6 +95,18 @@ public class ViewToolApp extends javax.swing.JFrame {
         labelLimDown = new javax.swing.JLabel();
         checkBoxM3u = new javax.swing.JCheckBox();
         buttonBackMain = new javax.swing.JButton();
+        panelManagement = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        listFiles = new javax.swing.JList<>();
+        buttonRefreshList = new javax.swing.JButton();
+        comboFilter = new javax.swing.JComboBox<>();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tableFiles = new javax.swing.JTable();
+        buttonRefreshTable = new javax.swing.JButton();
+        textFieldFile = new javax.swing.JTextField();
+        labelSearchFile = new javax.swing.JLabel();
+        buttonDeleteFile = new javax.swing.JButton();
+        buttonBackMainMng = new javax.swing.JButton();
         menuBarMain = new javax.swing.JMenuBar();
         MenuFile = new javax.swing.JMenu();
         MenuItemExit = new javax.swing.JMenuItem();
@@ -76,6 +114,8 @@ public class ViewToolApp extends javax.swing.JFrame {
         MenuItemPreferences = new javax.swing.JMenuItem();
         MenuHelp = new javax.swing.JMenu();
         MenuItemAbout = new javax.swing.JMenuItem();
+        MenuManagement = new javax.swing.JMenu();
+        MenuManagementItem = new javax.swing.JMenuItem();
 
         dialogAbout.setTitle("About");
         dialogAbout.setModal(true);
@@ -275,8 +315,86 @@ public class ViewToolApp extends javax.swing.JFrame {
 
         panelRoot.add(panelPreferences, "PREFS");
 
+        panelManagement.setMaximumSize(new java.awt.Dimension(1920, 1080));
+        panelManagement.setMinimumSize(new java.awt.Dimension(800, 600));
+        panelManagement.setName(""); // NOI18N
+        panelManagement.setLayout(null);
+
+        jScrollPane1.setViewportView(listFiles);
+
+        panelManagement.add(jScrollPane1);
+        jScrollPane1.setBounds(0, 0, 340, 360);
+
+        buttonRefreshList.setText("Refresh list");
+        buttonRefreshList.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonRefreshListActionPerformed(evt);
+            }
+        });
+        panelManagement.add(buttonRefreshList);
+        buttonRefreshList.setBounds(0, 360, 220, 27);
+
+        comboFilter.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "All", "Videos", "Audios", "Others" }));
+        panelManagement.add(comboFilter);
+        comboFilter.setBounds(220, 360, 120, 26);
+
+        tableFiles.setAutoCreateRowSorter(true);
+        tableFiles.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+
+            }
+        ));
+        jScrollPane2.setViewportView(tableFiles);
+        if (tableFiles.getColumnModel().getColumnCount() > 0) {
+            tableFiles.getColumnModel().getColumn(0).setPreferredWidth(200);
+            tableFiles.getColumnModel().getColumn(1).setPreferredWidth(50);
+            tableFiles.getColumnModel().getColumn(2).setPreferredWidth(50);
+            tableFiles.getColumnModel().getColumn(3).setPreferredWidth(100);
+        }
+
+        panelManagement.add(jScrollPane2);
+        jScrollPane2.setBounds(390, 0, 730, 400);
+
+        buttonRefreshTable.setText("Refresh table");
+        buttonRefreshTable.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonRefreshTableActionPerformed(evt);
+            }
+        });
+        panelManagement.add(buttonRefreshTable);
+        buttonRefreshTable.setBounds(630, 400, 120, 27);
+        panelManagement.add(textFieldFile);
+        textFieldFile.setBounds(460, 400, 160, 26);
+
+        labelSearchFile.setText("Search :");
+        panelManagement.add(labelSearchFile);
+        labelSearchFile.setBounds(400, 400, 60, 30);
+
+        buttonDeleteFile.setText("Delete File");
+        buttonDeleteFile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonDeleteFileActionPerformed(evt);
+            }
+        });
+        panelManagement.add(buttonDeleteFile);
+        buttonDeleteFile.setBounds(989, 400, 130, 27);
+
+        buttonBackMainMng.setText("Back to main window");
+        buttonBackMainMng.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonBackMainMngActionPerformed(evt);
+            }
+        });
+        panelManagement.add(buttonBackMainMng);
+        buttonBackMainMng.setBounds(260, 500, 520, 30);
+
+        panelRoot.add(panelManagement, "LIBRARY");
+
         getContentPane().add(panelRoot);
-        panelRoot.setBounds(0, 0, 963, 512);
+        panelRoot.setBounds(0, 0, 1568, 600);
 
         MenuFile.setText("File");
 
@@ -319,9 +437,26 @@ public class ViewToolApp extends javax.swing.JFrame {
 
         menuBarMain.add(MenuHelp);
 
+        MenuManagement.setText("Media Management");
+        MenuManagement.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MenuManagementActionPerformed(evt);
+            }
+        });
+
+        MenuManagementItem.setText("Open management window");
+        MenuManagementItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MenuManagementItemActionPerformed(evt);
+            }
+        });
+        MenuManagement.add(MenuManagementItem);
+
+        menuBarMain.add(MenuManagement);
+
         setJMenuBar(menuBarMain);
 
-        setBounds(0, 0, 1079, 813);
+        setBounds(0, 0, 1180, 749);
     }// </editor-fold>//GEN-END:initComponents
 
     private void MenuItemExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuItemExitActionPerformed
@@ -346,14 +481,14 @@ public class ViewToolApp extends javax.swing.JFrame {
     }//GEN-LAST:event_MenuItemPreferencesActionPerformed
 
     private void buttonDirectoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDirectoryActionPerformed
-        int result = fileChooserDirDown.showOpenDialog(this); 
+        int result = fileChooserDirDown.showOpenDialog(this);
         if (result == javax.swing.JFileChooser.APPROVE_OPTION) {
             File selectedDir = fileChooserDirDown.getSelectedFile();
 
-            prefSvc.setOutputDir(selectedDir.toPath());
+            prefService.setOutputDir(selectedDir.toPath());
             jOptionPane1.showMessageDialog(this,
                     "Selected directory:\n" + selectedDir.getAbsolutePath(),
-                    "Download folder", jOptionPane1.INFORMATION_MESSAGE); 
+                    "Download folder", jOptionPane1.INFORMATION_MESSAGE);
         }
     }//GEN-LAST:event_buttonDirectoryActionPerformed
 
@@ -361,8 +496,8 @@ public class ViewToolApp extends javax.swing.JFrame {
         String speed = textFieldLimDown.getText();
         try {
             ValidationService.requireValidLimit(speed);
-            Alerts.info(this, "You have limited the speed in: " + speed+" // Default: 0=no limit");
-            prefSvc.setLimitSpeed(speed);
+            Alerts.info(this, "You have limited the speed in: " + speed + " // Default: 0=no limit");
+            prefService.setLimitSpeed(speed);
         } catch (Exception ex) {
             Alerts.showException(this, ex.getCause() != null ? ex.getCause() : ex);
         }
@@ -370,20 +505,20 @@ public class ViewToolApp extends javax.swing.JFrame {
     }//GEN-LAST:event_buttonLimitDownloadActionPerformed
 
     private void buttonDirYtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDirYtActionPerformed
-        int result = fileChooserYt.showOpenDialog(this); 
+        int result = fileChooserYt.showOpenDialog(this);
         if (result == javax.swing.JFileChooser.APPROVE_OPTION) {
             File selectedDir = fileChooserYt.getSelectedFile();
 
-            prefSvc.setYtDlpPath(selectedDir.toPath());
+            prefService.setYtDlpPath(selectedDir.toPath());
             jOptionPane1.showMessageDialog(this,
                     "Selected directory:\n" + selectedDir.getAbsolutePath(),
-                    "Download folder", jOptionPane1.INFORMATION_MESSAGE); 
+                    "Download folder", jOptionPane1.INFORMATION_MESSAGE);
         }
     }//GEN-LAST:event_buttonDirYtActionPerformed
 
     private void buttonPlayVideoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonPlayVideoActionPerformed
         try {
-            playService.playLastDownloaded(prefSvc.getOutputDir());
+            playService.playLastDownloaded(prefService.getOutputDir());
         } catch (IOException ex) {
             Alerts.showException(this, ex);
         }
@@ -406,22 +541,20 @@ public class ViewToolApp extends javax.swing.JFrame {
 
                 controller.validateUrl(textFieldURL.getText());
 
-                String limit = prefSvc.getLimitSpeed();
+                String limit = prefService.getLimitSpeed();
 
                 controller.validateSpeed(limit);
 
-
                 Alerts.info(ViewToolApp.this, "The download is starting, please, wait");
 
-                return controller.startDownload(
-                        textFieldURL.getText(),
+                return controller.startDownload(textFieldURL.getText(),
                         buttonMP3.isSelected() ? MediaFormat.MP3 : MediaFormat.MP4,
                         checkBoxOnlyAudio.isSelected(),
-                        prefSvc.getOutputDir(),
+                        prefService.getOutputDir(),
                         log,
                         onPercent,
                         limit,
-                       checkBoxM3u.isSelected()
+                        checkBoxM3u.isSelected()
                 );
 
             }
@@ -473,6 +606,91 @@ public class ViewToolApp extends javax.swing.JFrame {
         cl.show(panelRoot, "MAIN");
     }//GEN-LAST:event_buttonBackMainActionPerformed
 
+    private void MenuManagementActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuManagementActionPerformed
+
+    }//GEN-LAST:event_MenuManagementActionPerformed
+
+    private void MenuManagementItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuManagementItemActionPerformed
+        java.awt.CardLayout cl = (java.awt.CardLayout) panelRoot.getLayout();
+        cl.show(panelRoot, "LIBRARY");
+    }//GEN-LAST:event_MenuManagementItemActionPerformed
+
+    private void buttonRefreshListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRefreshListActionPerformed
+        try {
+
+            String selected = (String) comboFilter.getSelectedItem();
+            List<MediaItem> files = libraryService.getFilteredFiles(selected);
+
+            DefaultListModel<String> model = new DefaultListModel<>();
+            for (MediaItem file : files) {
+                model.addElement(file.getName());
+            }
+            listFiles.setModel(model);
+
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage());
+        }
+
+    }//GEN-LAST:event_buttonRefreshListActionPerformed
+
+    private void buttonRefreshTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRefreshTableActionPerformed
+        try {
+            String search = textFieldFile.getText().trim().toLowerCase();
+
+            java.util.List<martin.viewtool.core.MediaItem> files = libraryService.getFiles();
+
+            if (!search.isEmpty()) {
+                files = files.stream()
+                        .filter(file -> file.getName().toLowerCase().contains(search))
+                        .toList();
+            }
+
+            martin.viewtool.core.MediaTableModel model = new martin.viewtool.core.MediaTableModel(files);
+            tableFiles.setModel(model);
+
+            columnPrefs();
+
+        } catch (Exception ex) {
+            Alerts.error(this, "Error: " + ex.getMessage());
+        }
+    }//GEN-LAST:event_buttonRefreshTableActionPerformed
+
+    private void buttonDeleteFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDeleteFileActionPerformed
+        int selectedRow = tableFiles.getSelectedRow();
+        if (selectedRow < 0) {
+            JOptionPane.showMessageDialog(this, "Please select a file to delete.");
+            return;
+        }
+        int modelRow = tableFiles.convertRowIndexToModel(selectedRow);
+
+        MediaTableModel model = (martin.viewtool.core.MediaTableModel) tableFiles.getModel();
+        MediaItem file = model.getFile(modelRow);
+
+        boolean confirm = Alerts.confirm(this,
+                "Are you sure you want to delete this file?\n" + file.getName(),
+                "Confirm deletion");
+
+        if (confirm) {
+            try {
+                 MediaLibrary library = new martin.viewtool.core.MediaLibrary();
+                boolean deleted = library.delete(file);
+
+                if (deleted) {
+                    JOptionPane.showMessageDialog(this, "File deleted successfully.");
+                } else {
+                    JOptionPane.showMessageDialog(this, "File could not be deleted.");
+                }
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Error deleting file: " + ex.getMessage());
+            }
+        }
+    }//GEN-LAST:event_buttonDeleteFileActionPerformed
+
+    private void buttonBackMainMngActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonBackMainMngActionPerformed
+        java.awt.CardLayout cl = (java.awt.CardLayout) panelRoot.getLayout();
+        cl.show(panelRoot, "MAIN");
+    }//GEN-LAST:event_buttonBackMainMngActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -484,8 +702,12 @@ public class ViewToolApp extends javax.swing.JFrame {
     private javax.swing.JMenuItem MenuItemAbout;
     private javax.swing.JMenuItem MenuItemExit;
     private javax.swing.JMenuItem MenuItemPreferences;
+    private javax.swing.JMenu MenuManagement;
+    private javax.swing.JMenuItem MenuManagementItem;
     private javax.swing.JTextArea TextAreaAbout;
     private javax.swing.JButton buttonBackMain;
+    private javax.swing.JButton buttonBackMainMng;
+    private javax.swing.JButton buttonDeleteFile;
     private javax.swing.JButton buttonDirYt;
     private javax.swing.JButton buttonDirectory;
     private javax.swing.JButton buttonDownload;
@@ -494,21 +716,31 @@ public class ViewToolApp extends javax.swing.JFrame {
     private javax.swing.JRadioButton buttonMP3;
     private javax.swing.JRadioButton buttonMP4;
     private javax.swing.JButton buttonPlayVideo;
+    private javax.swing.JButton buttonRefreshList;
+    private javax.swing.JButton buttonRefreshTable;
     private javax.swing.JCheckBox checkBoxM3u;
     private javax.swing.JCheckBox checkBoxOnlyAudio;
+    private javax.swing.JComboBox<String> comboFilter;
     private javax.swing.JDialog dialogAbout;
     private javax.swing.JFileChooser fileChooserDirDown;
     private javax.swing.JFileChooser fileChooserYt;
     private javax.swing.JOptionPane jOptionPane1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel labelLimDown;
+    private javax.swing.JLabel labelSearchFile;
     private javax.swing.JLabel labelUrl;
+    private javax.swing.JList<String> listFiles;
     private javax.swing.JMenuBar menuBarMain;
     private javax.swing.JPanel panelMain;
+    private javax.swing.JPanel panelManagement;
     private javax.swing.JPanel panelPreferences;
     private javax.swing.JPanel panelRoot;
     private javax.swing.JProgressBar progressBar;
     private javax.swing.JScrollPane scrollPanelText;
+    private javax.swing.JTable tableFiles;
     private javax.swing.JTextArea textArea;
+    private javax.swing.JTextField textFieldFile;
     private javax.swing.JTextField textFieldLimDown;
     private javax.swing.JTextField textFieldURL;
     // End of variables declaration//GEN-END:variables
