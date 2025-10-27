@@ -1,7 +1,7 @@
 # ViewTool
 
 **Author:** César Martín Pérez  
-**Course:** Desarrollo de Aplicaciones Multiplataforma (DAM) – Módulo de Servicios y Procesos  
+**Course:** Desarrollo de Aplicaciones Multiplataforma (DAM) – Módulo de Desarrollo de Interfaces  
 **Date:** 27 October 2025  
 
 ---
