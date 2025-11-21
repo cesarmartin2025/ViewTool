@@ -4,6 +4,7 @@
  */
 package martin.viewtool.ui;
 
+import java.awt.CardLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedWriter;
@@ -35,9 +36,11 @@ public class Login extends JPanel {
     private ApiClient apiClient;
     private String baseUrl = "https://dimedianetapi9.azurewebsites.net/";
     private String token;
+    
+    private LoginJFrame loginFrame;
 
-    public Login() {
-
+    public Login(LoginJFrame loginFrame) {
+        this.loginFrame= loginFrame;
         setLayout(null);
         setName("Login");
 
@@ -81,47 +84,47 @@ public class Login extends JPanel {
                 boolean remember = checkBoxRemember.isSelected();
 
                 apiClient = new ApiClient(baseUrl);
-                
-                if(email.isBlank() || password.isBlank()){
+
+                if (email.isBlank() || password.isBlank()) {
                     Alerts.error(Login.this, "Login Failed. Please, write your email and your password");
                     return;
-                }
-                else {
+                } else {
 
-                try {
-                    token = apiClient.login(email, password);
-                }catch (Exception ex) {
-                    Alerts.error(Login.this, "Login failed. Please try again.");
-                    return;
-                }
-                Alerts.info(Login.this, "Login was successfull.");
-                    if (remember && token!=null) {
-                        Path p = Path.of("datos/token_txt.txt");
-                        
-                            
-                            try {
-                                if (!Files.exists(p.getParent())) {
-                                Files.createDirectories(p.getParent());
-                                }
-                            } catch (IOException ex) {
-                                Alerts.error(Login.this, "App didnt found the folder. Please, try again.");
-                            }
-                                   
-                            BufferedWriter out;
                     try {
-                        out = new BufferedWriter(new FileWriter(p.toFile()));
-                        out.write(token);
-                        out.close();
-                       
-                        
-                    } catch (IOException ex) {
-                        Alerts.error(Login.this, "Some problem occurred while saving the token. Please, login again.");
+                        token = apiClient.login(email, password);
+                    } catch (Exception ex) {
+                        Alerts.error(Login.this, "Login failed. Please try again.");
+                        return;
                     }
-                            
-                            
+                    if (token != null) {
+                       loginFrame.dispose();
+                       new ViewToolApp(token).setVisible(true);
+                    }
+                    Alerts.info(Login.this, "Login was successfull.");
+                    if (remember && token != null) {
+                        Path p = Path.of("datos/token_txt.txt");
+
+                        try {
+                            if (!Files.exists(p.getParent())) {
+                                Files.createDirectories(p.getParent());
+                            }
+                        } catch (IOException ex) {
+                            Alerts.error(Login.this, "App didnt found the folder. Please, try again.");
+                        }
+
+                        BufferedWriter out;
+                        try {
+                            out = new BufferedWriter(new FileWriter(p.toFile()));
+                            out.write(token);
+                            out.close();
+
+                        } catch (IOException ex) {
+                            Alerts.error(Login.this, "Some problem occurred while was saving the token. Please, login again.");
+                        }
+
                     }
                 }
-                 
+
             }
         });
     }

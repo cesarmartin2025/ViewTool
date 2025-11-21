@@ -35,11 +35,14 @@ public class ViewToolApp extends javax.swing.JFrame {
     private final PlayService playService = new PlayService();
 
     private final LibraryService libraryService = new LibraryService(Path.of(prefService.getOutputDir().toString()));
+    private Login loginPanel;
+    private String token;
 
     /**
      * Creates new form ViewToolApp
      */
-    public ViewToolApp() {
+    public ViewToolApp(String token) {
+        this.token=token;
         initComponents();
 
     }
@@ -670,7 +673,7 @@ public class ViewToolApp extends javax.swing.JFrame {
 
         if (confirm) {
             try {
-                 MediaLibrary library = new martin.viewtool.core.MediaLibrary();
+                MediaLibrary library = new martin.viewtool.core.MediaLibrary();
                 boolean deleted = library.delete(file);
 
                 if (deleted) {

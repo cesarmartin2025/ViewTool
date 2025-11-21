@@ -3,9 +3,7 @@
  */
 
 package martin.viewtool;
-
-import martin.viewtool.ui.TestFrameLogin;
-import martin.viewtool.ui.ViewToolApp;
+import martin.viewtool.ui.LoginJFrame;
 
 
 /**
@@ -14,7 +12,7 @@ import martin.viewtool.ui.ViewToolApp;
  */
 public class ViewTool {
     public static void main(String[] args) {
-        javax.swing.SwingUtilities.invokeLater(() -> new ViewToolApp().setVisible(true));
-         //javax.swing.SwingUtilities.invokeLater(() -> new ViewToolApp().setVisible(true));
+        
+         javax.swing.SwingUtilities.invokeLater(() -> new LoginJFrame().setVisible(true));
     }
 }
