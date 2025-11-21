@@ -217,8 +217,7 @@ public class ViewToolApp extends javax.swing.JFrame {
             panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelMainLayout.createSequentialGroup()
                 .addGap(22, 22, 22)
-                .addGroup(panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(scrollPanelText, javax.swing.GroupLayout.DEFAULT_SIZE, 660, Short.MAX_VALUE)
+                .addGroup(panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelMainLayout.createSequentialGroup()
                         .addGroup(panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(labelUrl, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -235,8 +234,8 @@ public class ViewToolApp extends javax.swing.JFrame {
                         .addComponent(buttonDownload, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(30, 30, 30)
                         .addComponent(buttonPlayVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(progressBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(886, Short.MAX_VALUE))
+                    .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 660, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(scrollPanelText, javax.swing.GroupLayout.PREFERRED_SIZE, 660, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
         panelMainLayout.setVerticalGroup(
             panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -255,8 +254,7 @@ public class ViewToolApp extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(scrollPanelText, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(scrollPanelText, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         progressBar.getAccessibleContext().setAccessibleName("");
@@ -394,7 +392,7 @@ public class ViewToolApp extends javax.swing.JFrame {
         panelRoot.add(panelManagement, "LIBRARY");
 
         getContentPane().add(panelRoot);
-        panelRoot.setBounds(0, 0, 1568, 600);
+        panelRoot.setBounds(0, 0, 800, 600);
 
         MenuFile.setText("File");
 
