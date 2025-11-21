@@ -18,7 +18,7 @@ public class TestFrameLogin extends javax.swing.JFrame {
     public TestFrameLogin() {
         initComponents();
         setContentPane(new Login());
-        setSize(600,400);
+        setSize(600,300);
     }
 
     /**

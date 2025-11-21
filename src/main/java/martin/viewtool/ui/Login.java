@@ -17,49 +17,45 @@ import martin.viewtool.core.ApiClient;
  * @author cesar
  */
 public class Login extends JPanel {
+
     private JTextField fieldEmail;
     private JPasswordField fieldPassword;
     private JCheckBox checkBoxRemember;
     private JButton buttonLogin;
     private JLabel labelEmail;
     private JLabel labelPassword;
-    
+
     private ApiClient apiClient;
     private String baseUrl;
     private String token;
-    
-    
-    
-    
-    public Login(){
+
+    public Login() {
+
         setLayout(null);
         setName("Login");
-        
+
         buttonLogin = new JButton();
-        buttonLogin.setBounds(250,250,100,50);
+        buttonLogin.setBounds(100, 150, 100, 30);
         buttonLogin.setText("Login");
-        
+
         labelEmail = new JLabel();
-        labelEmail.setBounds(WIDTH, WIDTH, WIDTH, HEIGHT);
-        
+        labelEmail.setBounds(50, 50, 50, 50);
+        labelEmail.setText("Email: ");
+
         fieldEmail = new JTextField();
-        fieldEmail.setBounds(50, 50, 200, 100);
-        
+        fieldEmail.setBounds(100, 50, 300, 40);
+
         labelPassword = new JLabel();
-        labelPassword.setBounds(WIDTH, WIDTH, WIDTH, HEIGHT);
-        
+        labelPassword.setBounds(30, 100, 80, 50);
+        labelPassword.setText("Password: ");
+
         fieldPassword = new JPasswordField();
-        fieldPassword.setBounds(WIDTH, WIDTH, WIDTH, HEIGHT);
-        
+        fieldPassword.setBounds(100, 100, 300, 40);
+
         checkBoxRemember = new JCheckBox();
-        checkBoxRemember.setBounds(WIDTH, WIDTH, WIDTH, HEIGHT);
-        
-        
-        
-        
-       
-        
-       
+        checkBoxRemember.setBounds(400,100, 150, 50);
+        checkBoxRemember.setText("Remember me");
+
         add(buttonLogin);
         add(labelEmail);
         add(fieldEmail);
