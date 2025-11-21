@@ -6,6 +6,7 @@ package martin.viewtool.ui;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import javax.swing.DefaultListModel;
@@ -119,6 +120,8 @@ public class ViewToolApp extends javax.swing.JFrame {
         MenuItemAbout = new javax.swing.JMenuItem();
         MenuManagement = new javax.swing.JMenu();
         MenuManagementItem = new javax.swing.JMenuItem();
+        MenuLogout = new javax.swing.JMenu();
+        MenuLogoutItem = new javax.swing.JMenuItem();
 
         dialogAbout.setTitle("About");
         dialogAbout.setModal(true);
@@ -455,6 +458,18 @@ public class ViewToolApp extends javax.swing.JFrame {
 
         menuBarMain.add(MenuManagement);
 
+        MenuLogout.setText("Logout");
+
+        MenuLogoutItem.setText("Logout");
+        MenuLogoutItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MenuLogoutItemActionPerformed(evt);
+            }
+        });
+        MenuLogout.add(MenuLogoutItem);
+
+        menuBarMain.add(MenuLogout);
+
         setJMenuBar(menuBarMain);
 
         setBounds(0, 0, 1180, 749);
@@ -692,6 +707,18 @@ public class ViewToolApp extends javax.swing.JFrame {
         cl.show(panelRoot, "MAIN");
     }//GEN-LAST:event_buttonBackMainMngActionPerformed
 
+    private void MenuLogoutItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuLogoutItemActionPerformed
+       Path p = Path.of("datos/token_txt.txt");
+       try{
+           if(Files.exists(p))
+               Files.delete(p);
+           
+       }catch(Exception ex){
+           Alerts.error(ViewToolApp.this, "Something was wrong while you were disconnecting.Try again");
+       }
+       Alerts.info(ViewToolApp.this, "The logout was successfull. You will need to login again the next time.");
+    }//GEN-LAST:event_MenuLogoutItemActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -703,6 +730,8 @@ public class ViewToolApp extends javax.swing.JFrame {
     private javax.swing.JMenuItem MenuItemAbout;
     private javax.swing.JMenuItem MenuItemExit;
     private javax.swing.JMenuItem MenuItemPreferences;
+    private javax.swing.JMenu MenuLogout;
+    private javax.swing.JMenuItem MenuLogoutItem;
     private javax.swing.JMenu MenuManagement;
     private javax.swing.JMenuItem MenuManagementItem;
     private javax.swing.JTextArea TextAreaAbout;
