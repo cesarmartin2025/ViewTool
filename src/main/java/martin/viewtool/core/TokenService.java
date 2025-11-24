@@ -19,8 +19,7 @@ public class TokenService {
     private final Path TOKEN_PATH = Path.of("datos/token_txt.txt");
     private String token;
 
-    public TokenService(String token) {
-        this.token = token;
+    public TokenService() {
     }
 
     public void saveToken(String token) {
@@ -50,20 +49,27 @@ public class TokenService {
             if (Files.exists(TOKEN_PATH)) {
                 Files.delete(TOKEN_PATH);
                 return true;
+            } else {
+                return false;
+
             }
-            
-            else {
-                    return false;
-                
-            }
-         
 
         } catch (Exception ex) {
             System.out.print(ex.getMessage());
         }
         return false;
     }
-    
-    
-    
+
+    public String getToken() {
+        if (Files.exists(TOKEN_PATH)) {
+            try {
+                token = Files.readString(TOKEN_PATH).trim();
+            } catch (IOException ex) {
+                System.out.print(ex.getMessage());
+            }
+            return token;
+        } else {
+            return null;
+        }
+    }
 }

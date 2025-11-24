@@ -3,11 +3,10 @@
  */
 
 package martin.viewtool;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import martin.viewtool.core.ApiClient;
-import martin.viewtool.ui.LoginJFrame;
 import martin.viewtool.ui.ViewToolApp;
+import martin.viewtool.core.TokenService;
+import martin.viewtool.ui.LoginJFrame;
 
 
 /**
@@ -16,28 +15,19 @@ import martin.viewtool.ui.ViewToolApp;
  */
 public class ViewTool {
     public static void main(String[] args) {
-        
-        Path p = Path.of("datos/token_txt.txt");
-        try{
-            if(Files.exists(p)){
-                String token = Files.readString(p).trim();
-                
+                TokenService tokenService = new TokenService();
+                String token = tokenService.getToken();
                 ApiClient apiClient =  new ApiClient("https://dimedianetapi9.azurewebsites.net/");
                 try{
-                    
                     apiClient.getMe(token);
                    javax.swing.SwingUtilities.invokeLater(() -> new ViewToolApp(token).setVisible(true));
                    return;
                    
                 }catch(Exception ex){
-                    Files.delete(p);
+                    tokenService.deleteToken();
                     
                 }
-            }
-        }catch(Exception ex){
-            System.out.println(ex.getMessage());
-        }
-        
+
          javax.swing.SwingUtilities.invokeLater(() -> new LoginJFrame().setVisible(true));
     }
     

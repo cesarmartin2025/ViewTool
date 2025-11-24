@@ -6,11 +6,6 @@ package martin.viewtool.ui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -37,7 +32,7 @@ public class Login extends JPanel {
     private String baseUrl = "https://dimedianetapi9.azurewebsites.net/";
     private LoginJFrame loginFrame;
     private String token;
-    private TokenService tokenService = new TokenService(token);
+    private TokenService tokenService = new TokenService();
 
     public Login(LoginJFrame loginFrame) {
         this.loginFrame= loginFrame;

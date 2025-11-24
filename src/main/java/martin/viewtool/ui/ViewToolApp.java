@@ -6,7 +6,6 @@ package martin.viewtool.ui;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import javax.swing.DefaultListModel;
@@ -40,7 +39,7 @@ public class ViewToolApp extends javax.swing.JFrame {
     private Login loginPanel;
     private String token;
     
-    private final TokenService tokenService = new TokenService(token);
+    private final TokenService tokenService = new TokenService();
 
     /**
      * Creates new form ViewToolApp
