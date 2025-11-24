@@ -19,6 +19,7 @@ import martin.viewtool.core.MediaItem;
 import martin.viewtool.core.MediaLibrary;
 import martin.viewtool.core.MediaTableModel;
 import martin.viewtool.core.PlayService;
+import martin.viewtool.core.TokenService;
 import martin.viewtool.core.ValidationService;
 import martin.viewtool.core.YtDlpService;
 
@@ -38,6 +39,8 @@ public class ViewToolApp extends javax.swing.JFrame {
     private final LibraryService libraryService = new LibraryService(Path.of(prefService.getOutputDir().toString()));
     private Login loginPanel;
     private String token;
+    
+    private final TokenService tokenService = new TokenService(token);
 
     /**
      * Creates new form ViewToolApp
@@ -708,15 +711,13 @@ public class ViewToolApp extends javax.swing.JFrame {
     }//GEN-LAST:event_buttonBackMainMngActionPerformed
 
     private void MenuLogoutItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuLogoutItemActionPerformed
-       Path p = Path.of("datos/token_txt.txt");
-       try{
-           if(Files.exists(p))
-               Files.delete(p);
-           
-       }catch(Exception ex){
-           Alerts.error(ViewToolApp.this, "Something was wrong while you were disconnecting.Try again");
-       }
+        boolean isRemoved = tokenService.deleteToken();
+        if(isRemoved){
        Alerts.info(ViewToolApp.this, "The logout was successfull. You will need to login again the next time.");
+       
+        } else{
+            Alerts.error(this, "You are already logout");
+        }
     }//GEN-LAST:event_MenuLogoutItemActionPerformed
 
     /**

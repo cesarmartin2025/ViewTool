@@ -18,6 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import martin.viewtool.core.ApiClient;
+import martin.viewtool.core.TokenService;
 
 /**
  *
@@ -34,9 +35,9 @@ public class Login extends JPanel {
 
     private ApiClient apiClient;
     private String baseUrl = "https://dimedianetapi9.azurewebsites.net/";
-    private String token;
-    
     private LoginJFrame loginFrame;
+    private String token;
+    private TokenService tokenService = new TokenService(token);
 
     public Login(LoginJFrame loginFrame) {
         this.loginFrame= loginFrame;
@@ -101,25 +102,8 @@ public class Login extends JPanel {
                     }
                     Alerts.info(Login.this, "Login was successfull.");
                     if (remember && token != null) {
-                        Path p = Path.of("datos/token_txt.txt");
-
-                        try {
-                            if (!Files.exists(p.getParent())) {
-                                Files.createDirectories(p.getParent());
-                            }
-                        } catch (IOException ex) {
-                            Alerts.error(Login.this, "App didnt found the folder. Please, try again.");
-                        }
-
-                        BufferedWriter out;
-                        try {
-                            out = new BufferedWriter(new FileWriter(p.toFile()));
-                            out.write(token);
-                            out.close();
-
-                        } catch (IOException ex) {
-                            Alerts.error(Login.this, "Some problem occurred while was saving the token. Please, login again.");
-                        }
+                        tokenService.saveToken(token);
+                        
 
                     }
                 }
