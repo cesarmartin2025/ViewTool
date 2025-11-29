@@ -34,8 +34,6 @@ public class Login extends JPanel {
     private String token;
     private TokenService tokenService = new TokenService();
     private ViewToolApp jframe;
-    private boolean loggin;
-
     public Login(ViewToolApp jframe) {
         this.jframe = jframe;
         setLayout(null);
@@ -95,7 +93,7 @@ public class Login extends JPanel {
                     }
                     if (token != null) {
                        jframe.showPanel(new PanelMain());
-                       loggin = true;
+                       jframe.setLoggedIn(true);
                     }
                     Alerts.info(Login.this, "Login was successfull.");
                     if (remember && token != null) {
@@ -109,9 +107,6 @@ public class Login extends JPanel {
         });
     }
     
-    public boolean getLoogin(){
-        return loggin;
-        }
     
     
 

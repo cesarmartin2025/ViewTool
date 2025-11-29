@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package martin.viewtool.ui;
+
 import javax.swing.JPanel;
 
 import martin.viewtool.core.TokenService;
@@ -15,10 +16,9 @@ public class ViewToolApp extends javax.swing.JFrame {
 
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ViewToolApp.class.getName());
 
-    
     private final TokenService tokenService = new TokenService();
     private String token;
-    private boolean loggin;
+    private boolean loggedIn = false;
 
     /**
      * Creates new form ViewToolApp
@@ -26,23 +26,30 @@ public class ViewToolApp extends javax.swing.JFrame {
     public ViewToolApp() {
         initComponents();
         token = tokenService.getToken();
-        if(token==null){
+        if (token == null) {
             Login login = new Login(this);
-        showPanel(login);
-        loggin = login.getLoogin();
-        }else{
+            showPanel(login);
+
+        } else {
+            loggedIn = true;
             showPanel(new PanelMain());
         }
 
     }
-    
-    public void showPanel(JPanel panel) {
-    this.setContentPane(panel);
-    this.revalidate();   // recalcula el layout
-    this.repaint();      // repinta la ventana
-}
 
-   
+    public boolean isLoggedIn() {
+        return loggedIn;
+    }
+
+    public void setLoggedIn(boolean loggedIn) {
+        this.loggedIn = loggedIn;
+    }
+
+    public void showPanel(JPanel panel) {
+        this.setContentPane(panel);
+        this.revalidate();   // recalcula el layout
+        this.repaint();      // repinta la ventana
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -55,6 +62,7 @@ public class ViewToolApp extends javax.swing.JFrame {
 
         dialogAbout = new javax.swing.JDialog();
         TextAreaAbout = new javax.swing.JTextArea();
+        jOptionPane1 = new javax.swing.JOptionPane();
         menuBarMain = new javax.swing.JMenuBar();
         MenuFile = new javax.swing.JMenu();
         MenuItemExit = new javax.swing.JMenuItem();
@@ -66,6 +74,8 @@ public class ViewToolApp extends javax.swing.JFrame {
         MenuManagementItem = new javax.swing.JMenuItem();
         MenuLogout = new javax.swing.JMenu();
         MenuLogoutItem = new javax.swing.JMenuItem();
+        jMenu1 = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
 
         dialogAbout.setTitle("About");
         dialogAbout.setModal(true);
@@ -171,6 +181,23 @@ public class ViewToolApp extends javax.swing.JFrame {
 
         menuBarMain.add(MenuLogout);
 
+        jMenu1.setText("Main");
+        jMenu1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenu1ActionPerformed(evt);
+            }
+        });
+
+        jMenuItem1.setText("Back to Main");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem1);
+
+        menuBarMain.add(jMenu1);
+
         setJMenuBar(menuBarMain);
 
         setBounds(0, 0, 1180, 749);
@@ -193,37 +220,50 @@ public class ViewToolApp extends javax.swing.JFrame {
     }//GEN-LAST:event_MenuHelpActionPerformed
 
     private void MenuItemPreferencesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuItemPreferencesActionPerformed
-        if(!loggin){
-            Alerts.error(this, "Please, loggin for to continue.");
+        if (isLoggedIn()) {
+            showPanel(new PanelPreferences());
+        } else {
+            Alerts.error(this, "Please login to continue.");
         }
-        else{
-        showPanel(new PanelPreferences());
-        }
+
+
     }//GEN-LAST:event_MenuItemPreferencesActionPerformed
 
     private void MenuManagementActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuManagementActionPerformed
-       
+
     }//GEN-LAST:event_MenuManagementActionPerformed
 
     private void MenuManagementItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuManagementItemActionPerformed
-        System.out.print(loggin);
-        if(!loggin){
-            Alerts.error(this, "Please, loggin for to continue.");
+        if (isLoggedIn()) {
+            showPanel(new PanelManagement());
+
+        } else {
+            Alerts.error(this, "Please login to continue.");
         }
-        else{
-        showPanel(new PanelManagement());
-        }
+
+
     }//GEN-LAST:event_MenuManagementItemActionPerformed
 
     private void MenuLogoutItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuLogoutItemActionPerformed
-        boolean isRemoved = tokenService.deleteToken();
-        if(isRemoved){
-       Alerts.info(ViewToolApp.this, "The logout was successfull. You will need to login again the next time.");
-       
-        } else{
-            Alerts.error(this, "You are already logout");
-        }
+      Alerts.info(ViewToolApp.this, "The logout was successfull. You will need to login again the next time.");
+            showPanel(new Login(this));
+            setLoggedIn(false);
+         
     }//GEN-LAST:event_MenuLogoutItemActionPerformed
+
+    private void jMenu1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenu1ActionPerformed
+
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jMenu1ActionPerformed
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        if (isLoggedIn()) {
+            showPanel(new PanelMain());
+
+        } else {
+            Alerts.error(this, "Please login to continue.");
+        }        // TODO add your handling code here:
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -242,6 +282,9 @@ public class ViewToolApp extends javax.swing.JFrame {
     private javax.swing.JMenuItem MenuManagementItem;
     private javax.swing.JTextArea TextAreaAbout;
     private javax.swing.JDialog dialogAbout;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JOptionPane jOptionPane1;
     private javax.swing.JMenuBar menuBarMain;
     // End of variables declaration//GEN-END:variables
 }
