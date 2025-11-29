@@ -34,7 +34,7 @@ public final class Alerts {
                 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION;
     }
 
-    /** Traduce Throwable a mensaje “amable” para el usuario */
+    
     public static void showException(Component parent, Throwable ex) {
         String msg = ex.getMessage() != null ? ex.getMessage() : ex.getClass().getSimpleName();
         error(parent, msg);

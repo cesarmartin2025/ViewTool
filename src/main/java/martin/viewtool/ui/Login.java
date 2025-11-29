@@ -30,12 +30,10 @@ public class Login extends JPanel {
 
     private ApiClient apiClient;
     private String baseUrl = "https://dimedianetapi9.azurewebsites.net/";
-    private LoginJFrame loginFrame;
     private String token;
     private TokenService tokenService = new TokenService();
 
-    public Login(LoginJFrame loginFrame) {
-        this.loginFrame= loginFrame;
+    public Login(ViewToolApp jframe) {
         setLayout(null);
         setName("Login");
 
@@ -92,8 +90,8 @@ public class Login extends JPanel {
                         return;
                     }
                     if (token != null) {
-                       loginFrame.dispose();
-                       new ViewToolApp(token).setVisible(true);
+                       jframe.dispose();
+                       new ViewToolApp().setVisible(true);
                     }
                     Alerts.info(Login.this, "Login was successfull.");
                     if (remember && token != null) {

@@ -30,41 +30,18 @@ public class ViewToolApp extends javax.swing.JFrame {
 
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ViewToolApp.class.getName());
 
-    private final PreferencesService prefService = new PreferencesService();
-    private final DownloadController controller
-            = new DownloadController(new YtDlpService(prefService.getYtDlpPath()));
-    private final PlayService playService = new PlayService();
-
-    private final LibraryService libraryService = new LibraryService(Path.of(prefService.getOutputDir().toString()));
-    private Login loginPanel;
-    private String token;
     
     private final TokenService tokenService = new TokenService();
 
     /**
      * Creates new form ViewToolApp
      */
-    public ViewToolApp(String token) {
-        this.token=token;
+    public ViewToolApp() {
         initComponents();
 
     }
 
-    private void columnPrefs() {
-        var columnModel = tableFiles.getColumnModel();
-
-        // Columna 0: Name
-        columnModel.getColumn(0).setPreferredWidth(300);
-
-        // Columna 1: Size (MB)
-        columnModel.getColumn(1).setPreferredWidth(20);
-
-        // Columna 2: MIME Type
-        columnModel.getColumn(2).setPreferredWidth(20);
-        // Columna 3: Date
-        columnModel.getColumn(3).setPreferredWidth(80);
-        ;
-    }
+   
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -81,38 +58,6 @@ public class ViewToolApp extends javax.swing.JFrame {
         jOptionPane1 = new javax.swing.JOptionPane();
         fileChooserYt = new javax.swing.JFileChooser();
         fileChooserDirDown = new javax.swing.JFileChooser();
-        panelRoot = new javax.swing.JPanel();
-        panelMain = new javax.swing.JPanel();
-        buttonMP3 = new javax.swing.JRadioButton();
-        buttonMP4 = new javax.swing.JRadioButton();
-        textFieldURL = new javax.swing.JTextField();
-        checkBoxOnlyAudio = new javax.swing.JCheckBox();
-        labelUrl = new javax.swing.JLabel();
-        buttonDownload = new javax.swing.JButton();
-        buttonPlayVideo = new javax.swing.JButton();
-        progressBar = new javax.swing.JProgressBar();
-        scrollPanelText = new javax.swing.JScrollPane();
-        textArea = new javax.swing.JTextArea();
-        panelPreferences = new javax.swing.JPanel();
-        buttonDirectory = new javax.swing.JButton();
-        buttonLimitDownload = new javax.swing.JButton();
-        buttonDirYt = new javax.swing.JButton();
-        textFieldLimDown = new javax.swing.JTextField();
-        labelLimDown = new javax.swing.JLabel();
-        checkBoxM3u = new javax.swing.JCheckBox();
-        buttonBackMain = new javax.swing.JButton();
-        panelManagement = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        listFiles = new javax.swing.JList<>();
-        buttonRefreshList = new javax.swing.JButton();
-        comboFilter = new javax.swing.JComboBox<>();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        tableFiles = new javax.swing.JTable();
-        buttonRefreshTable = new javax.swing.JButton();
-        textFieldFile = new javax.swing.JTextField();
-        labelSearchFile = new javax.swing.JLabel();
-        buttonDeleteFile = new javax.swing.JButton();
-        buttonBackMainMng = new javax.swing.JButton();
         menuBarMain = new javax.swing.JMenuBar();
         MenuFile = new javax.swing.JMenu();
         MenuItemExit = new javax.swing.JMenuItem();
@@ -166,241 +111,6 @@ public class ViewToolApp extends javax.swing.JFrame {
             }
         });
         getContentPane().setLayout(null);
-
-        panelRoot.setLayout(new java.awt.CardLayout());
-
-        buttonGroup2.add(buttonMP3);
-        buttonMP3.setText("MP3");
-        buttonMP3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonMP3ActionPerformed(evt);
-            }
-        });
-
-        buttonGroup2.add(buttonMP4);
-        buttonMP4.setSelected(true);
-        buttonMP4.setText("MP4");
-        buttonMP4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonMP4ActionPerformed(evt);
-            }
-        });
-
-        textFieldURL.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textFieldURLActionPerformed(evt);
-            }
-        });
-
-        checkBoxOnlyAudio.setText("Only audio");
-
-        labelUrl.setText("URL: ");
-
-        buttonDownload.setText("Download");
-        buttonDownload.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonDownloadActionPerformed(evt);
-            }
-        });
-
-        buttonPlayVideo.setText("Play last video");
-        buttonPlayVideo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonPlayVideoActionPerformed(evt);
-            }
-        });
-
-        progressBar.setToolTipText("");
-        progressBar.setName("Progress"); // NOI18N
-        progressBar.setStringPainted(true);
-
-        textArea.setEditable(false);
-        textArea.setColumns(20);
-        textArea.setRows(5);
-        scrollPanelText.setViewportView(textArea);
-
-        javax.swing.GroupLayout panelMainLayout = new javax.swing.GroupLayout(panelMain);
-        panelMain.setLayout(panelMainLayout);
-        panelMainLayout.setHorizontalGroup(
-            panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelMainLayout.createSequentialGroup()
-                .addGap(22, 22, 22)
-                .addGroup(panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panelMainLayout.createSequentialGroup()
-                        .addGroup(panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(labelUrl, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(panelMainLayout.createSequentialGroup()
-                                .addGap(32, 32, 32)
-                                .addComponent(textFieldURL, javax.swing.GroupLayout.PREFERRED_SIZE, 470, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(10, 10, 10)
-                        .addComponent(checkBoxOnlyAudio, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(panelMainLayout.createSequentialGroup()
-                        .addComponent(buttonMP3)
-                        .addGap(51, 51, 51)
-                        .addComponent(buttonMP4)
-                        .addGap(71, 71, 71)
-                        .addComponent(buttonDownload, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(30, 30, 30)
-                        .addComponent(buttonPlayVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 660, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(scrollPanelText, javax.swing.GroupLayout.PREFERRED_SIZE, 660, javax.swing.GroupLayout.PREFERRED_SIZE)))
-        );
-        panelMainLayout.setVerticalGroup(
-            panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelMainLayout.createSequentialGroup()
-                .addGap(47, 47, 47)
-                .addGroup(panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(labelUrl, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(textFieldURL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(checkBoxOnlyAudio))
-                .addGap(12, 12, 12)
-                .addGroup(panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(buttonMP3)
-                    .addComponent(buttonMP4)
-                    .addComponent(buttonDownload)
-                    .addComponent(buttonPlayVideo))
-                .addGap(18, 18, 18)
-                .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(scrollPanelText, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
-
-        progressBar.getAccessibleContext().setAccessibleName("");
-
-        panelRoot.add(panelMain, "MAIN");
-
-        panelPreferences.setLayout(null);
-
-        buttonDirectory.setText("Choose a directory for to store the file downloaded");
-        buttonDirectory.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonDirectoryActionPerformed(evt);
-            }
-        });
-        panelPreferences.add(buttonDirectory);
-        buttonDirectory.setBounds(30, 30, 320, 30);
-
-        buttonLimitDownload.setText("Limite download");
-        buttonLimitDownload.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonLimitDownloadActionPerformed(evt);
-            }
-        });
-        panelPreferences.add(buttonLimitDownload);
-        buttonLimitDownload.setBounds(270, 127, 220, 30);
-
-        buttonDirYt.setText("Choose a directory where is \"yt-dlb.exe\"");
-        buttonDirYt.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonDirYtActionPerformed(evt);
-            }
-        });
-        panelPreferences.add(buttonDirYt);
-        buttonDirYt.setBounds(40, 180, 270, 27);
-
-        textFieldLimDown.setText("0");
-        panelPreferences.add(textFieldLimDown);
-        textFieldLimDown.setBounds(140, 126, 120, 30);
-
-        labelLimDown.setText("Limit download: ");
-        panelPreferences.add(labelLimDown);
-        labelLimDown.setBounds(30, 130, 100, 16);
-
-        checkBoxM3u.setText("create a .m3u for playlist");
-        panelPreferences.add(checkBoxM3u);
-        checkBoxM3u.setBounds(50, 80, 190, 30);
-
-        buttonBackMain.setText("Back to Main");
-        buttonBackMain.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonBackMainActionPerformed(evt);
-            }
-        });
-        panelPreferences.add(buttonBackMain);
-        buttonBackMain.setBounds(30, 240, 470, 30);
-
-        panelRoot.add(panelPreferences, "PREFS");
-
-        panelManagement.setMaximumSize(new java.awt.Dimension(1920, 1080));
-        panelManagement.setMinimumSize(new java.awt.Dimension(800, 600));
-        panelManagement.setName(""); // NOI18N
-        panelManagement.setLayout(null);
-
-        jScrollPane1.setViewportView(listFiles);
-
-        panelManagement.add(jScrollPane1);
-        jScrollPane1.setBounds(0, 0, 340, 360);
-
-        buttonRefreshList.setText("Refresh list");
-        buttonRefreshList.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonRefreshListActionPerformed(evt);
-            }
-        });
-        panelManagement.add(buttonRefreshList);
-        buttonRefreshList.setBounds(0, 360, 220, 27);
-
-        comboFilter.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "All", "Videos", "Audios", "Others" }));
-        panelManagement.add(comboFilter);
-        comboFilter.setBounds(220, 360, 120, 26);
-
-        tableFiles.setAutoCreateRowSorter(true);
-        tableFiles.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-
-            }
-        ));
-        jScrollPane2.setViewportView(tableFiles);
-        if (tableFiles.getColumnModel().getColumnCount() > 0) {
-            tableFiles.getColumnModel().getColumn(0).setPreferredWidth(200);
-            tableFiles.getColumnModel().getColumn(1).setPreferredWidth(50);
-            tableFiles.getColumnModel().getColumn(2).setPreferredWidth(50);
-            tableFiles.getColumnModel().getColumn(3).setPreferredWidth(100);
-        }
-
-        panelManagement.add(jScrollPane2);
-        jScrollPane2.setBounds(390, 0, 730, 400);
-
-        buttonRefreshTable.setText("Refresh table");
-        buttonRefreshTable.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonRefreshTableActionPerformed(evt);
-            }
-        });
-        panelManagement.add(buttonRefreshTable);
-        buttonRefreshTable.setBounds(630, 400, 120, 27);
-        panelManagement.add(textFieldFile);
-        textFieldFile.setBounds(460, 400, 160, 26);
-
-        labelSearchFile.setText("Search :");
-        panelManagement.add(labelSearchFile);
-        labelSearchFile.setBounds(400, 400, 60, 30);
-
-        buttonDeleteFile.setText("Delete File");
-        buttonDeleteFile.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonDeleteFileActionPerformed(evt);
-            }
-        });
-        panelManagement.add(buttonDeleteFile);
-        buttonDeleteFile.setBounds(989, 400, 130, 27);
-
-        buttonBackMainMng.setText("Back to main window");
-        buttonBackMainMng.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonBackMainMngActionPerformed(evt);
-            }
-        });
-        panelManagement.add(buttonBackMainMng);
-        buttonBackMainMng.setBounds(260, 500, 520, 30);
-
-        panelRoot.add(panelManagement, "LIBRARY");
-
-        getContentPane().add(panelRoot);
-        panelRoot.setBounds(0, 0, 800, 600);
 
         MenuFile.setText("File");
 
@@ -498,132 +208,6 @@ public class ViewToolApp extends javax.swing.JFrame {
         cl.show(panelRoot, "PREFS");       // TODO add your handling code here:
     }//GEN-LAST:event_MenuItemPreferencesActionPerformed
 
-    private void buttonDirectoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDirectoryActionPerformed
-        int result = fileChooserDirDown.showOpenDialog(this);
-        if (result == javax.swing.JFileChooser.APPROVE_OPTION) {
-            File selectedDir = fileChooserDirDown.getSelectedFile();
-
-            prefService.setOutputDir(selectedDir.toPath());
-            jOptionPane1.showMessageDialog(this,
-                    "Selected directory:\n" + selectedDir.getAbsolutePath(),
-                    "Download folder", jOptionPane1.INFORMATION_MESSAGE);
-        }
-    }//GEN-LAST:event_buttonDirectoryActionPerformed
-
-    private void buttonLimitDownloadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonLimitDownloadActionPerformed
-        String speed = textFieldLimDown.getText();
-        try {
-            ValidationService.requireValidLimit(speed);
-            Alerts.info(this, "You have limited the speed in: " + speed + " // Default: 0=no limit");
-            prefService.setLimitSpeed(speed);
-        } catch (Exception ex) {
-            Alerts.showException(this, ex.getCause() != null ? ex.getCause() : ex);
-        }
-
-    }//GEN-LAST:event_buttonLimitDownloadActionPerformed
-
-    private void buttonDirYtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDirYtActionPerformed
-        int result = fileChooserYt.showOpenDialog(this);
-        if (result == javax.swing.JFileChooser.APPROVE_OPTION) {
-            File selectedDir = fileChooserYt.getSelectedFile();
-
-            prefService.setYtDlpPath(selectedDir.toPath());
-            jOptionPane1.showMessageDialog(this,
-                    "Selected directory:\n" + selectedDir.getAbsolutePath(),
-                    "Download folder", jOptionPane1.INFORMATION_MESSAGE);
-        }
-    }//GEN-LAST:event_buttonDirYtActionPerformed
-
-    private void buttonPlayVideoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonPlayVideoActionPerformed
-        try {
-            playService.playLastDownloaded(prefService.getOutputDir());
-        } catch (IOException ex) {
-            Alerts.showException(this, ex);
-        }
-    }//GEN-LAST:event_buttonPlayVideoActionPerformed
-
-    private void buttonDownloadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDownloadActionPerformed
-
-        buttonDownload.setEnabled(false);
-        textArea.setText("");
-        progressBar.setValue(0);
-
-        new javax.swing.SwingWorker<Integer, Integer>() {
-            StringBuilder log = new StringBuilder();
-            volatile boolean seenAnyPercent = false;
-
-            @Override
-            protected Integer doInBackground() throws Exception {
-
-                java.util.function.IntConsumer onPercent = pct -> publish(pct);
-
-                controller.validateUrl(textFieldURL.getText());
-
-                String limit = prefService.getLimitSpeed();
-
-                controller.validateSpeed(limit);
-
-                Alerts.info(ViewToolApp.this, "The download is starting, please, wait");
-
-                return controller.startDownload(textFieldURL.getText(),
-                        buttonMP3.isSelected() ? MediaFormat.MP3 : MediaFormat.MP4,
-                        checkBoxOnlyAudio.isSelected(),
-                        prefService.getOutputDir(),
-                        log,
-                        onPercent,
-                        limit,
-                        checkBoxM3u.isSelected()
-                );
-
-            }
-
-            @Override
-            protected void process(java.util.List<Integer> chunks) {
-                int last = chunks.get(chunks.size() - 1);
-                if (!seenAnyPercent) {
-                    progressBar.setIndeterminate(false);
-                    seenAnyPercent = true;
-                }
-                progressBar.setValue(last);
-            }
-
-            @Override
-            protected void done() {
-                buttonDownload.setEnabled(true);
-                textArea.append(log.toString());
-                try {
-                    int exit = get();
-                    if (exit == 0) {
-                        Alerts.info(ViewToolApp.this, "Download complete.");
-                        progressBar.setValue(100);
-                    } else {
-                        Alerts.warn(ViewToolApp.this, "Process finished with some error, code : " + exit);
-                    }
-                } catch (Exception ex) {
-                    Alerts.showException(ViewToolApp.this, ex.getCause() != null ? ex.getCause() : ex);
-                }
-            }
-        }.execute();
-
-    }//GEN-LAST:event_buttonDownloadActionPerformed
-
-    private void textFieldURLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFieldURLActionPerformed
-
-    }//GEN-LAST:event_textFieldURLActionPerformed
-
-    private void buttonMP4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonMP4ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_buttonMP4ActionPerformed
-
-    private void buttonMP3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonMP3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_buttonMP3ActionPerformed
-
-    private void buttonBackMainActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonBackMainActionPerformed
-        java.awt.CardLayout cl = (java.awt.CardLayout) panelRoot.getLayout();
-        cl.show(panelRoot, "MAIN");
-    }//GEN-LAST:event_buttonBackMainActionPerformed
-
     private void MenuManagementActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuManagementActionPerformed
 
     }//GEN-LAST:event_MenuManagementActionPerformed
@@ -632,82 +216,6 @@ public class ViewToolApp extends javax.swing.JFrame {
         java.awt.CardLayout cl = (java.awt.CardLayout) panelRoot.getLayout();
         cl.show(panelRoot, "LIBRARY");
     }//GEN-LAST:event_MenuManagementItemActionPerformed
-
-    private void buttonRefreshListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRefreshListActionPerformed
-        try {
-
-            String selected = (String) comboFilter.getSelectedItem();
-            List<MediaItem> files = libraryService.getFilteredFiles(selected);
-
-            DefaultListModel<String> model = new DefaultListModel<>();
-            for (MediaItem file : files) {
-                model.addElement(file.getName());
-            }
-            listFiles.setModel(model);
-
-        } catch (IOException ex) {
-            JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage());
-        }
-
-    }//GEN-LAST:event_buttonRefreshListActionPerformed
-
-    private void buttonRefreshTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRefreshTableActionPerformed
-        try {
-            String search = textFieldFile.getText().trim().toLowerCase();
-
-            java.util.List<martin.viewtool.core.MediaItem> files = libraryService.getFiles();
-
-            if (!search.isEmpty()) {
-                files = files.stream()
-                        .filter(file -> file.getName().toLowerCase().contains(search))
-                        .toList();
-            }
-
-            martin.viewtool.core.MediaTableModel model = new martin.viewtool.core.MediaTableModel(files);
-            tableFiles.setModel(model);
-
-            columnPrefs();
-
-        } catch (Exception ex) {
-            Alerts.error(this, "Error: " + ex.getMessage());
-        }
-    }//GEN-LAST:event_buttonRefreshTableActionPerformed
-
-    private void buttonDeleteFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDeleteFileActionPerformed
-        int selectedRow = tableFiles.getSelectedRow();
-        if (selectedRow < 0) {
-            JOptionPane.showMessageDialog(this, "Please select a file to delete.");
-            return;
-        }
-        int modelRow = tableFiles.convertRowIndexToModel(selectedRow);
-
-        MediaTableModel model = (martin.viewtool.core.MediaTableModel) tableFiles.getModel();
-        MediaItem file = model.getFile(modelRow);
-
-        boolean confirm = Alerts.confirm(this,
-                "Are you sure you want to delete this file?\n" + file.getName(),
-                "Confirm deletion");
-
-        if (confirm) {
-            try {
-                MediaLibrary library = new martin.viewtool.core.MediaLibrary();
-                boolean deleted = library.delete(file);
-
-                if (deleted) {
-                    JOptionPane.showMessageDialog(this, "File deleted successfully.");
-                } else {
-                    JOptionPane.showMessageDialog(this, "File could not be deleted.");
-                }
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Error deleting file: " + ex.getMessage());
-            }
-        }
-    }//GEN-LAST:event_buttonDeleteFileActionPerformed
-
-    private void buttonBackMainMngActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonBackMainMngActionPerformed
-        java.awt.CardLayout cl = (java.awt.CardLayout) panelRoot.getLayout();
-        cl.show(panelRoot, "MAIN");
-    }//GEN-LAST:event_buttonBackMainMngActionPerformed
 
     private void MenuLogoutItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuLogoutItemActionPerformed
         boolean isRemoved = tokenService.deleteToken();
@@ -735,43 +243,11 @@ public class ViewToolApp extends javax.swing.JFrame {
     private javax.swing.JMenu MenuManagement;
     private javax.swing.JMenuItem MenuManagementItem;
     private javax.swing.JTextArea TextAreaAbout;
-    private javax.swing.JButton buttonBackMain;
-    private javax.swing.JButton buttonBackMainMng;
-    private javax.swing.JButton buttonDeleteFile;
-    private javax.swing.JButton buttonDirYt;
-    private javax.swing.JButton buttonDirectory;
-    private javax.swing.JButton buttonDownload;
     private javax.swing.ButtonGroup buttonGroup2;
-    private javax.swing.JButton buttonLimitDownload;
-    private javax.swing.JRadioButton buttonMP3;
-    private javax.swing.JRadioButton buttonMP4;
-    private javax.swing.JButton buttonPlayVideo;
-    private javax.swing.JButton buttonRefreshList;
-    private javax.swing.JButton buttonRefreshTable;
-    private javax.swing.JCheckBox checkBoxM3u;
-    private javax.swing.JCheckBox checkBoxOnlyAudio;
-    private javax.swing.JComboBox<String> comboFilter;
     private javax.swing.JDialog dialogAbout;
     private javax.swing.JFileChooser fileChooserDirDown;
     private javax.swing.JFileChooser fileChooserYt;
     private javax.swing.JOptionPane jOptionPane1;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JLabel labelLimDown;
-    private javax.swing.JLabel labelSearchFile;
-    private javax.swing.JLabel labelUrl;
-    private javax.swing.JList<String> listFiles;
     private javax.swing.JMenuBar menuBarMain;
-    private javax.swing.JPanel panelMain;
-    private javax.swing.JPanel panelManagement;
-    private javax.swing.JPanel panelPreferences;
-    private javax.swing.JPanel panelRoot;
-    private javax.swing.JProgressBar progressBar;
-    private javax.swing.JScrollPane scrollPanelText;
-    private javax.swing.JTable tableFiles;
-    private javax.swing.JTextArea textArea;
-    private javax.swing.JTextField textFieldFile;
-    private javax.swing.JTextField textFieldLimDown;
-    private javax.swing.JTextField textFieldURL;
     // End of variables declaration//GEN-END:variables
 }

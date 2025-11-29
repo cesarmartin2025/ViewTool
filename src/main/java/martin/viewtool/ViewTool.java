@@ -28,7 +28,7 @@ public class ViewTool {
                     
                 }
 
-         javax.swing.SwingUtilities.invokeLater(() -> new LoginJFrame().setVisible(true));
+         
     }
     
     
