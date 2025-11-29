@@ -74,8 +74,8 @@ public class ViewToolApp extends javax.swing.JFrame {
         MenuManagementItem = new javax.swing.JMenuItem();
         MenuLogout = new javax.swing.JMenu();
         MenuLogoutItem = new javax.swing.JMenuItem();
-        jMenu1 = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
+        menuMain = new javax.swing.JMenu();
+        MenuItemMain = new javax.swing.JMenuItem();
 
         dialogAbout.setTitle("About");
         dialogAbout.setModal(true);
@@ -181,22 +181,22 @@ public class ViewToolApp extends javax.swing.JFrame {
 
         menuBarMain.add(MenuLogout);
 
-        jMenu1.setText("Main");
-        jMenu1.addActionListener(new java.awt.event.ActionListener() {
+        menuMain.setText("Main");
+        menuMain.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenu1ActionPerformed(evt);
+                menuMainActionPerformed(evt);
             }
         });
 
-        jMenuItem1.setText("Back to Main");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+        MenuItemMain.setText("Back to Main");
+        MenuItemMain.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
+                MenuItemMainActionPerformed(evt);
             }
         });
-        jMenu1.add(jMenuItem1);
+        menuMain.add(MenuItemMain);
 
-        menuBarMain.add(jMenu1);
+        menuBarMain.add(menuMain);
 
         setJMenuBar(menuBarMain);
 
@@ -248,22 +248,23 @@ public class ViewToolApp extends javax.swing.JFrame {
       Alerts.info(ViewToolApp.this, "The logout was successfull. You will need to login again the next time.");
             showPanel(new Login(this));
             setLoggedIn(false);
+            tokenService.deleteToken();
          
     }//GEN-LAST:event_MenuLogoutItemActionPerformed
 
-    private void jMenu1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenu1ActionPerformed
+    private void menuMainActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuMainActionPerformed
 
         // TODO add your handling code here:
-    }//GEN-LAST:event_jMenu1ActionPerformed
+    }//GEN-LAST:event_menuMainActionPerformed
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+    private void MenuItemMainActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuItemMainActionPerformed
         if (isLoggedIn()) {
             showPanel(new PanelMain());
 
         } else {
             Alerts.error(this, "Please login to continue.");
         }        // TODO add your handling code here:
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
+    }//GEN-LAST:event_MenuItemMainActionPerformed
 
     /**
      * @param args the command line arguments
@@ -275,6 +276,7 @@ public class ViewToolApp extends javax.swing.JFrame {
     private javax.swing.JMenu MenuHelp;
     private javax.swing.JMenuItem MenuItemAbout;
     private javax.swing.JMenuItem MenuItemExit;
+    private javax.swing.JMenuItem MenuItemMain;
     private javax.swing.JMenuItem MenuItemPreferences;
     private javax.swing.JMenu MenuLogout;
     private javax.swing.JMenuItem MenuLogoutItem;
@@ -282,9 +284,8 @@ public class ViewToolApp extends javax.swing.JFrame {
     private javax.swing.JMenuItem MenuManagementItem;
     private javax.swing.JTextArea TextAreaAbout;
     private javax.swing.JDialog dialogAbout;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JOptionPane jOptionPane1;
     private javax.swing.JMenuBar menuBarMain;
+    private javax.swing.JMenu menuMain;
     // End of variables declaration//GEN-END:variables
 }
