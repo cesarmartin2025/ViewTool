@@ -3,24 +3,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package martin.viewtool.ui;
+import javax.swing.JPanel;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.List;
-import javax.swing.DefaultListModel;
-import javax.swing.JOptionPane;
-import martin.viewtool.config.PreferencesService;
-import martin.viewtool.core.DownloadController;
-import martin.viewtool.core.LibraryService;
-import martin.viewtool.core.MediaFormat;
-import martin.viewtool.core.MediaItem;
-import martin.viewtool.core.MediaLibrary;
-import martin.viewtool.core.MediaTableModel;
-import martin.viewtool.core.PlayService;
 import martin.viewtool.core.TokenService;
-import martin.viewtool.core.ValidationService;
-import martin.viewtool.core.YtDlpService;
 
 /**
  *
@@ -32,14 +17,30 @@ public class ViewToolApp extends javax.swing.JFrame {
 
     
     private final TokenService tokenService = new TokenService();
+    private String token;
+    private boolean loggin;
 
     /**
      * Creates new form ViewToolApp
      */
     public ViewToolApp() {
         initComponents();
+        token = tokenService.getToken();
+        if(token==null){
+            Login login = new Login(this);
+        showPanel(login);
+        loggin = login.getLoogin();
+        }else{
+            showPanel(new PanelMain());
+        }
 
     }
+    
+    public void showPanel(JPanel panel) {
+    this.setContentPane(panel);
+    this.revalidate();   // recalcula el layout
+    this.repaint();      // repinta la ventana
+}
 
    
 
@@ -52,12 +53,8 @@ public class ViewToolApp extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        buttonGroup2 = new javax.swing.ButtonGroup();
         dialogAbout = new javax.swing.JDialog();
         TextAreaAbout = new javax.swing.JTextArea();
-        jOptionPane1 = new javax.swing.JOptionPane();
-        fileChooserYt = new javax.swing.JFileChooser();
-        fileChooserDirDown = new javax.swing.JFileChooser();
         menuBarMain = new javax.swing.JMenuBar();
         MenuFile = new javax.swing.JMenu();
         MenuItemExit = new javax.swing.JMenuItem();
@@ -92,14 +89,6 @@ public class ViewToolApp extends javax.swing.JFrame {
             dialogAboutLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(TextAreaAbout, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
         );
-
-        fileChooserYt.setAcceptAllFileFilterUsed(false);
-        fileChooserYt.setCurrentDirectory(new java.io.File("C:\\Program Files"));
-
-        fileChooserDirDown.setAcceptAllFileFilterUsed(false);
-        fileChooserDirDown.setCurrentDirectory(new java.io.File("C:\\Users\\cesar\\ViewToolDownloads"));
-        fileChooserDirDown.setDialogTitle("Select download directory");
-        fileChooserDirDown.setFileSelectionMode(javax.swing.JFileChooser.DIRECTORIES_ONLY);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("ViewTool");
@@ -204,17 +193,26 @@ public class ViewToolApp extends javax.swing.JFrame {
     }//GEN-LAST:event_MenuHelpActionPerformed
 
     private void MenuItemPreferencesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuItemPreferencesActionPerformed
-        java.awt.CardLayout cl = (java.awt.CardLayout) panelRoot.getLayout();
-        cl.show(panelRoot, "PREFS");       // TODO add your handling code here:
+        if(!loggin){
+            Alerts.error(this, "Please, loggin for to continue.");
+        }
+        else{
+        showPanel(new PanelPreferences());
+        }
     }//GEN-LAST:event_MenuItemPreferencesActionPerformed
 
     private void MenuManagementActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuManagementActionPerformed
-
+       
     }//GEN-LAST:event_MenuManagementActionPerformed
 
     private void MenuManagementItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuManagementItemActionPerformed
-        java.awt.CardLayout cl = (java.awt.CardLayout) panelRoot.getLayout();
-        cl.show(panelRoot, "LIBRARY");
+        System.out.print(loggin);
+        if(!loggin){
+            Alerts.error(this, "Please, loggin for to continue.");
+        }
+        else{
+        showPanel(new PanelManagement());
+        }
     }//GEN-LAST:event_MenuManagementItemActionPerformed
 
     private void MenuLogoutItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuLogoutItemActionPerformed
@@ -243,11 +241,7 @@ public class ViewToolApp extends javax.swing.JFrame {
     private javax.swing.JMenu MenuManagement;
     private javax.swing.JMenuItem MenuManagementItem;
     private javax.swing.JTextArea TextAreaAbout;
-    private javax.swing.ButtonGroup buttonGroup2;
     private javax.swing.JDialog dialogAbout;
-    private javax.swing.JFileChooser fileChooserDirDown;
-    private javax.swing.JFileChooser fileChooserYt;
-    private javax.swing.JOptionPane jOptionPane1;
     private javax.swing.JMenuBar menuBarMain;
     // End of variables declaration//GEN-END:variables
 }

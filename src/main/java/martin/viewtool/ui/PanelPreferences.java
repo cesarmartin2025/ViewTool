@@ -56,7 +56,6 @@ public class PanelPreferences extends javax.swing.JPanel {
         textFieldLimDown = new javax.swing.JTextField();
         labelLimDown = new javax.swing.JLabel();
         checkBoxM3u = new javax.swing.JCheckBox();
-        buttonBackMain = new javax.swing.JButton();
 
         fileChooserDirDown.setAcceptAllFileFilterUsed(false);
         fileChooserDirDown.setCurrentDirectory(new java.io.File("C:\\Users\\cesar\\ViewToolDownloads"));
@@ -112,15 +111,6 @@ public class PanelPreferences extends javax.swing.JPanel {
         panelPreferences.add(checkBoxM3u);
         checkBoxM3u.setBounds(50, 80, 190, 30);
 
-        buttonBackMain.setText("Back to Main");
-        buttonBackMain.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonBackMainActionPerformed(evt);
-            }
-        });
-        panelPreferences.add(buttonBackMain);
-        buttonBackMain.setBounds(30, 240, 470, 30);
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -172,17 +162,12 @@ public class PanelPreferences extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_buttonDirYtActionPerformed
 
-    private void buttonBackMainActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonBackMainActionPerformed
-        
-    }//GEN-LAST:event_buttonBackMainActionPerformed
-
     private void checkBoxM3uActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkBoxM3uActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_checkBoxM3uActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton buttonBackMain;
     private javax.swing.JButton buttonDirYt;
     private javax.swing.JButton buttonDirectory;
     private javax.swing.JButton buttonLimitDownload;

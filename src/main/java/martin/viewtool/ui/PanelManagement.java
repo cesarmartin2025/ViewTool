@@ -23,7 +23,7 @@ public class PanelManagement extends javax.swing.JPanel {
     private final PreferencesService prefService = new PreferencesService();
     
     private final LibraryService libraryService = new LibraryService(Path.of(prefService.getOutputDir().toString()));
-
+   
     /**
      * Creates new form PanelManagement
      */
@@ -67,7 +67,6 @@ public class PanelManagement extends javax.swing.JPanel {
         textFieldFile = new javax.swing.JTextField();
         labelSearchFile = new javax.swing.JLabel();
         buttonDeleteFile = new javax.swing.JButton();
-        buttonBackMainMng = new javax.swing.JButton();
 
         panelManagement.setMaximumSize(new java.awt.Dimension(1920, 1080));
         panelManagement.setMinimumSize(new java.awt.Dimension(800, 600));
@@ -129,15 +128,6 @@ public class PanelManagement extends javax.swing.JPanel {
         });
         panelManagement.add(buttonDeleteFile);
         buttonDeleteFile.setBounds(989, 400, 130, 27);
-
-        buttonBackMainMng.setText("Back to main window");
-        buttonBackMainMng.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonBackMainMngActionPerformed(evt);
-            }
-        });
-        panelManagement.add(buttonBackMainMng);
-        buttonBackMainMng.setBounds(260, 500, 520, 30);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -225,13 +215,8 @@ public class PanelManagement extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_buttonDeleteFileActionPerformed
 
-    private void buttonBackMainMngActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonBackMainMngActionPerformed
-       
-    }//GEN-LAST:event_buttonBackMainMngActionPerformed
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton buttonBackMainMng;
     private javax.swing.JButton buttonDeleteFile;
     private javax.swing.JButton buttonRefreshList;
     private javax.swing.JButton buttonRefreshTable;

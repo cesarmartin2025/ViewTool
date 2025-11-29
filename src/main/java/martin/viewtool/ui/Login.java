@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
@@ -32,8 +33,11 @@ public class Login extends JPanel {
     private String baseUrl = "https://dimedianetapi9.azurewebsites.net/";
     private String token;
     private TokenService tokenService = new TokenService();
+    private ViewToolApp jframe;
+    private boolean loggin;
 
     public Login(ViewToolApp jframe) {
+        this.jframe = jframe;
         setLayout(null);
         setName("Login");
 
@@ -90,8 +94,8 @@ public class Login extends JPanel {
                         return;
                     }
                     if (token != null) {
-                       jframe.dispose();
-                       new ViewToolApp().setVisible(true);
+                       jframe.showPanel(new PanelMain());
+                       loggin = true;
                     }
                     Alerts.info(Login.this, "Login was successfull.");
                     if (remember && token != null) {
@@ -104,5 +108,11 @@ public class Login extends JPanel {
             }
         });
     }
+    
+    public boolean getLoogin(){
+        return loggin;
+        }
+    
+    
 
 }
