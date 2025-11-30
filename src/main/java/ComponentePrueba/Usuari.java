@@ -1,7 +1,6 @@
 
-package martin.viewtool.core;
+package ComponentePrueba;
 
-import ComponentePrueba.*;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
