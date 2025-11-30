@@ -4,10 +4,13 @@
  */
 package ComponentePrueba;
 
+import java.awt.BorderLayout;
 import java.io.File;
 import java.io.Serializable;
 import java.util.List;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
 /**
  *
@@ -22,8 +25,16 @@ public class Componente extends JPanel implements Serializable {
     private String lastChecked; // date and time
 
     private ApiClient apiClient;
+    
+    private JLabel jLabel;
+    
+    private Timer timer;
 
     public Componente() {
+        setLayout(new BorderLayout());
+        jLabel = new JLabel("Server Media");
+        add(jLabel,BorderLayout.CENTER);
+        
     }
 
     public String getApiUrl() {
@@ -31,7 +42,12 @@ public class Componente extends JPanel implements Serializable {
     }
 
     public void setApiUrl(String apiUrl) {
+        if(apiUrl==null || apiUrl.isBlank()){
+            throw new IllegalArgumentException("apiUrl cannot be null");
+        }
         this.apiUrl = apiUrl;
+        apiClient = new ApiClient(apiUrl);
+        
     }
 
     public boolean isRunning() {
@@ -40,6 +56,11 @@ public class Componente extends JPanel implements Serializable {
 
     public void setRunning(boolean running) {
         this.running = running;
+        if(running){
+            timer.start();
+        }else{
+            timer.stop();
+        }
     }
 
     public int getPollingInterval() {
@@ -65,6 +86,8 @@ public class Componente extends JPanel implements Serializable {
     public void setLastChecked(String lastChecked) {
         this.lastChecked = lastChecked;
     }
+    
+    public void checkListMedia(){}
 
     public String login(String email, String password) {
         if(email==null || email.isBlank()){
