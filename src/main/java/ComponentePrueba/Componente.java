@@ -25,10 +25,15 @@ public class Componente extends JPanel implements Serializable {
     private String lastChecked; // date and time
 
     private ApiClient apiClient;
+    private List<Media> mediaList;
     
     private JLabel jLabel;
     
     private Timer timer;
+    
+    private CustomEventListener receptor;
+    
+    
 
     public Componente() {
         setLayout(new BorderLayout());
@@ -87,7 +92,33 @@ public class Componente extends JPanel implements Serializable {
         this.lastChecked = lastChecked;
     }
     
-    public void checkListMedia(){}
+    public void addCustomEventListener(CustomEventListener receptor){
+        this.receptor=receptor;
+    }
+    
+    public void removeCustomEventListener(CustomEventListener receptor){
+        this.receptor=null;
+    }
+    
+    public void checkNewMedia(){
+        //Need to check IllegalArgumentExceptions
+        try{
+        mediaList = apiClient.getMediaAddedSince(lastChecked, token);
+        if(mediaList.isEmpty()){
+           // nothing for now update lastChecked
+        }else{
+           lastChecked = ""; // update lastChecked
+           CustomEvent customEvent = new CustomEvent(this,mediaList,lastChecked);
+           if(receptor!=null)
+           receptor.customEventReceived(customEvent);
+           
+        }
+        }catch(Exception e){
+            System.out.print(e.getMessage());
+        }
+    }
+    
+    
 
     public String login(String email, String password) {
         if(email==null || email.isBlank()){

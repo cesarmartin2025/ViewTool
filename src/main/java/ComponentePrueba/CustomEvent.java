@@ -4,7 +4,6 @@
  */
 package ComponentePrueba;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.List;
@@ -15,18 +14,18 @@ import java.util.List;
  */
 public class CustomEvent extends EventObject {
     private final List<Media> mediaList;
-    private final LocalDateTime dateTime;
+    private final String dateTime;
     
     
     
-    public CustomEvent(Object source,List<Media> mediaList, LocalDateTime dateTime) {
+    public CustomEvent(Object source,List<Media> mediaList, String dateTime) {
         super(source);
         this.mediaList=mediaList;
         this.dateTime=dateTime;
         
     }
 
-    public LocalDateTime getDateTime() {
+    public String getDateTime() {
         return dateTime;
     }
     public List<Media> getMediaList(){

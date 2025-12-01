@@ -9,5 +9,7 @@ package ComponentePrueba;
  * @author cesar
  */
 public interface CustomEventListener {
+    public void customEventReceived(CustomEvent evt);
+    
     
 }
