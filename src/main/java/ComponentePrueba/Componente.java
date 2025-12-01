@@ -5,9 +5,14 @@
 package ComponentePrueba;
 
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.Serializable;
+import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -19,27 +24,27 @@ import javax.swing.Timer;
 public class Componente extends JPanel implements Serializable {
 
     private String apiUrl;
-    private boolean running;
-    private int pollingInterval; // seconds
+    private boolean running = false;
+    private int pollingInterval = 5; // seconds
     private String token;
     private String lastChecked; // date and time
 
     private ApiClient apiClient;
-    private List<Media> mediaList;
-    
+
     private JLabel jLabel;
-    
+
     private Timer timer;
-    
-    private CustomEventListener receptor;
-    
-    
+
+    private ArrayList<CustomEventListener> listeners = new ArrayList<>();
 
     public Componente() {
         setLayout(new BorderLayout());
         jLabel = new JLabel("Server Media");
-        add(jLabel,BorderLayout.CENTER);
-        
+
+        jLabel.setIcon(new ImageIcon(getClass().getResource("/datos/iconimagen.png")));
+
+        add(jLabel, BorderLayout.CENTER);
+
     }
 
     public String getApiUrl() {
@@ -47,12 +52,12 @@ public class Componente extends JPanel implements Serializable {
     }
 
     public void setApiUrl(String apiUrl) {
-        if(apiUrl==null || apiUrl.isBlank()){
+        if (apiUrl == null || apiUrl.isBlank()) {
             throw new IllegalArgumentException("apiUrl cannot be null");
         }
         this.apiUrl = apiUrl;
         apiClient = new ApiClient(apiUrl);
-        
+
     }
 
     public boolean isRunning() {
@@ -61,9 +66,23 @@ public class Componente extends JPanel implements Serializable {
 
     public void setRunning(boolean running) {
         this.running = running;
-        if(running){
+        int intervalMs = pollingInterval * 1000;
+        if (timer == null) {
+            timer = new Timer(intervalMs, new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    checkNewMedia();
+                }
+            });
+
+        } else {
+            timer.setDelay(intervalMs);
+            timer.setInitialDelay(intervalMs);
+        }
+
+        if (running) {
             timer.start();
-        }else{
+        } else {
             timer.stop();
         }
     }
@@ -73,7 +92,16 @@ public class Componente extends JPanel implements Serializable {
     }
 
     public void setPollingInterval(int pollingInterval) {
+        if (pollingInterval <= 0) {
+            throw new IllegalArgumentException("this number must be >0 ");
+        }
         this.pollingInterval = pollingInterval;
+
+        if (timer != null) {
+            int intervalMs = pollingInterval * 1000;
+            timer.setDelay(intervalMs);
+            timer.setInitialDelay(intervalMs);
+        }
     }
 
     public String getToken() {
@@ -91,112 +119,119 @@ public class Componente extends JPanel implements Serializable {
     public void setLastChecked(String lastChecked) {
         this.lastChecked = lastChecked;
     }
-    
-    public void addCustomEventListener(CustomEventListener receptor){
-        this.receptor=receptor;
+
+    public void addCustomEventListener(CustomEventListener listener) {
+        listeners.add(listener);
     }
-    
-    public void removeCustomEventListener(CustomEventListener receptor){
-        this.receptor=null;
+
+    public void removeCustomEventListener(CustomEventListener listener) {
+        listeners.remove(listener);
     }
-    
-    public void checkNewMedia(){
+
+    public void checkNewMedia() {
         //Need to check IllegalArgumentExceptions
-        try{
-        mediaList = apiClient.getMediaAddedSince(lastChecked, token);
-        if(mediaList.isEmpty()){
-           // nothing for now update lastChecked
-        }else{
-           lastChecked = ""; // update lastChecked
-           CustomEvent customEvent = new CustomEvent(this,mediaList,lastChecked);
-           if(receptor!=null)
-           receptor.customEventReceived(customEvent);
-           
-        }
-        }catch(Exception e){
+        String formIso = Instant.now().toString();
+        try {
+            if (lastChecked == null || lastChecked.isEmpty()) {
+                setLastChecked(formIso);
+                return;
+            }
+            if (token == null || token.isBlank()) {
+                return;
+            }
+            if (apiClient == null) {
+                return;
+            }
+            List<Media> mediaList = apiClient.getMediaAddedSince(lastChecked, token);
+            if (mediaList.isEmpty()) {
+                setLastChecked(formIso);
+            } else {
+                setLastChecked(formIso);
+                for (CustomEventListener listener : listeners) {
+                    CustomEvent customEvent = new CustomEvent(this, mediaList, lastChecked);
+                    listener.customEventReceived(customEvent);
+                }
+
+            }
+        } catch (Exception e) {
             System.out.print(e.getMessage());
         }
     }
-    
-    
 
     public String login(String email, String password) {
-        if(email==null || email.isBlank()){
+        if (email == null || email.isBlank()) {
             throw new IllegalArgumentException("Email must be ingresed");
         }
-        if(password==null || password.isBlank()){
-            throw new IllegalArgumentException("You must to write a password");  
+        if (password == null || password.isBlank()) {
+            throw new IllegalArgumentException("You must to write a password");
         }
-        try{
+        try {
             token = apiClient.login(email, password);
             return token;
-        }catch(Exception e){
-            throw new RuntimeException("Api Error: "+e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException("Api Error: " + e.getMessage());
         }
 
     }
 
-    public String getNickName(int id, String jwt){
-        if(id<0){
+    public String getNickName(int id, String jwt) {
+        if (id < 0) {
             throw new IllegalArgumentException("Id must > 0");
         }
-        if(jwt==null || jwt.isBlank()){
+        if (jwt == null || jwt.isBlank()) {
             throw new IllegalArgumentException("jwt is null");
         }
-        try{
-            String nickName =apiClient.getNickName(id, jwt);
+        try {
+            String nickName = apiClient.getNickName(id, jwt);
             return nickName;
-        }catch(Exception e){
-            throw new RuntimeException("Api Error: "+e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException("Api Error: " + e.getMessage());
         }
-        
-        
+
     }
 
-    public List<Media> getMediaByUser(int userId, String jwt){
-        if(userId<0){
-            throw new IllegalArgumentException("id must be > 0");
-        }
-        if(jwt==null || jwt.isBlank()){
+    public List<Media> getAllMedia(String jwt) {
+        if (jwt == null || jwt.isBlank()) {
             throw new IllegalArgumentException("jwt is null");
         }
-        try{
-            List mediaListUser = apiClient.getMediaByUser(userId, jwt);
-            return mediaListUser;
-        }catch(Exception e){
-            throw new RuntimeException("Api error: "+e.getMessage());
+        try {
+            List mediaList = apiClient.getAllMedia(jwt);
+            return mediaList;
+        } catch (Exception e) {
+            throw new RuntimeException("Api error: " + e.getMessage());
         }
-        
+
     }
 
-    public void download(int id, File destFile, String jwt){
-        if(id<0){
+    public void download(int id, File destFile, String jwt) {
+        if (id < 0) {
             throw new IllegalArgumentException("id must be >0");
         }
-        if(jwt==null || jwt.isBlank()){
+        if (jwt == null || jwt.isBlank()) {
             throw new IllegalArgumentException("jwt is null");
         }
-        try{
+        try {
             apiClient.download(id, destFile, jwt);
-        }catch(Exception e){
-            throw new RuntimeException("Api Error: "+e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException("Api Error: " + e.getMessage());
         }
-        
 
     }
-    
-    public String uploadFileMultipart(File file, String downloadFromUrl,String jwt){
-        if(file==null){
+
+    public String uploadFileMultipart(File file, String downloadFromUrl, String jwt) {
+        if (file == null) {
             throw new IllegalArgumentException("File not found");
         }
-        try{
-           String response = apiClient.uploadFileMultipart(file, downloadFromUrl, jwt);
-           return response;
-        }catch(Exception e){
-            throw new RuntimeException("Api error: "+e.getMessage());
+        if (jwt == null || jwt.isBlank()) {
+            throw new IllegalArgumentException("jwt is null");
         }
-        
-        
+        try {
+            String response = apiClient.uploadFileMultipart(file, downloadFromUrl, jwt);
+            return response;
+        } catch (Exception e) {
+            throw new RuntimeException("Api error: " + e.getMessage());
+        }
+
     }
 
 }
