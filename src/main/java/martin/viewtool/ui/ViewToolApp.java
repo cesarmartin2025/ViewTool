@@ -36,16 +36,7 @@ public class ViewToolApp extends javax.swing.JFrame {
             loggedIn = true;
             showPanel(new PanelMain());
 
-            componente2.addCustomEventListener(new CustomEventListener() {
-                @Override
-                public void customEventReceived(CustomEvent evt) {
-                    System.out.print("Evento OK" + evt.getMediaList());
-                }
-            });
-            componente2.setApiUrl("https://dimedianetapi9.azurewebsites.net/");
-            componente2.setToken(tokenService.getToken());
-            componente2.setPollingInterval(5);
-            componente2.setRunning(true);
+            
         }
 
     }
