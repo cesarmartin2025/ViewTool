@@ -40,10 +40,11 @@ public class Componente extends JPanel implements Serializable {
     public Componente() {
         setLayout(new BorderLayout());
         jLabel = new JLabel("Server Media");
-
-        jLabel.setIcon(new ImageIcon(getClass().getResource("/resources/images/iconimagen.png")));
+        jLabel.setIcon(new ImageIcon(getClass().getResource("/images/iconimagen.png")));
+        
 
         add(jLabel, BorderLayout.CENTER);
+        
 
     }
 

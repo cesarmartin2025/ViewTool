@@ -4,6 +4,8 @@
  */
 package martin.viewtool.ui;
 
+import ComponentePrueba.CustomEvent;
+import ComponentePrueba.CustomEventListener;
 import javax.swing.JPanel;
 
 import martin.viewtool.core.TokenService;
@@ -33,6 +35,17 @@ public class ViewToolApp extends javax.swing.JFrame {
         } else {
             loggedIn = true;
             showPanel(new PanelMain());
+
+            componente2.addCustomEventListener(new CustomEventListener() {
+                @Override
+                public void customEventReceived(CustomEvent evt) {
+                    System.out.print("Evento OK" + evt.getMediaList());
+                }
+            });
+            componente2.setApiUrl("https://dimedianetapi9.azurewebsites.net/");
+            componente2.setToken(tokenService.getToken());
+            componente2.setPollingInterval(5);
+            componente2.setRunning(true);
         }
 
     }
@@ -47,8 +60,8 @@ public class ViewToolApp extends javax.swing.JFrame {
 
     public void showPanel(JPanel panel) {
         this.setContentPane(panel);
-        this.revalidate();   // recalcula el layout
-        this.repaint();      // repinta la ventana
+        this.revalidate();
+        this.repaint();
     }
 
     /**
@@ -63,6 +76,7 @@ public class ViewToolApp extends javax.swing.JFrame {
         dialogAbout = new javax.swing.JDialog();
         TextAreaAbout = new javax.swing.JTextArea();
         jOptionPane1 = new javax.swing.JOptionPane();
+        componente2 = new ComponentePrueba.Componente();
         menuBarMain = new javax.swing.JMenuBar();
         MenuFile = new javax.swing.JMenu();
         MenuItemExit = new javax.swing.JMenuItem();
@@ -110,6 +124,8 @@ public class ViewToolApp extends javax.swing.JFrame {
             }
         });
         getContentPane().setLayout(null);
+        getContentPane().add(componente2);
+        componente2.setBounds(0, 0, 164, 126);
 
         MenuFile.setText("File");
 
@@ -245,11 +261,11 @@ public class ViewToolApp extends javax.swing.JFrame {
     }//GEN-LAST:event_MenuManagementItemActionPerformed
 
     private void MenuLogoutItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuLogoutItemActionPerformed
-      Alerts.info(ViewToolApp.this, "The logout was successfull. You will need to login again the next time.");
-            showPanel(new Login(this));
-            setLoggedIn(false);
-            tokenService.deleteToken();
-         
+        Alerts.info(ViewToolApp.this, "The logout was successfull. You will need to login again the next time.");
+        showPanel(new Login(this));
+        setLoggedIn(false);
+        tokenService.deleteToken();
+
     }//GEN-LAST:event_MenuLogoutItemActionPerformed
 
     private void menuMainActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuMainActionPerformed
@@ -283,6 +299,7 @@ public class ViewToolApp extends javax.swing.JFrame {
     private javax.swing.JMenu MenuManagement;
     private javax.swing.JMenuItem MenuManagementItem;
     private javax.swing.JTextArea TextAreaAbout;
+    private ComponentePrueba.Componente componente2;
     private javax.swing.JDialog dialogAbout;
     private javax.swing.JOptionPane jOptionPane1;
     private javax.swing.JMenuBar menuBarMain;

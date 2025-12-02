@@ -107,6 +107,11 @@ public class Login extends JPanel {
         });
     }
     
+    public String getToken(){
+        return token;
+    }
+    
+    
     
     
 

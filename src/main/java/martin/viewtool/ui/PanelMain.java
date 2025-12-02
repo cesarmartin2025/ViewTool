@@ -4,11 +4,14 @@
  */
 package martin.viewtool.ui;
 
+import ComponentePrueba.CustomEvent;
+import ComponentePrueba.CustomEventListener;
 import java.io.IOException;
 import martin.viewtool.config.PreferencesService;
 import martin.viewtool.core.DownloadController;
 import martin.viewtool.core.MediaFormat;
 import martin.viewtool.core.PlayService;
+import martin.viewtool.core.TokenService;
 import martin.viewtool.core.YtDlpService;
 
 /**
@@ -24,14 +27,20 @@ public class PanelMain extends javax.swing.JPanel {
     
     private final PlayService playService = new PlayService();
     private final PanelPreferences preferences = new PanelPreferences();
+    private final TokenService tokenService = new TokenService();
 
     /**
      * Creates new form PanelMain
      */
     public PanelMain() {
         initComponents();
+       
+        
     }
-
+    
+    
+    
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -52,7 +61,6 @@ public class PanelMain extends javax.swing.JPanel {
         progressBar = new javax.swing.JProgressBar();
         scrollPanelText = new javax.swing.JScrollPane();
         textArea = new javax.swing.JTextArea();
-        componente1 = new ComponentePrueba.Componente();
 
         buttonMP3.setText("MP3");
         buttonMP3.addActionListener(new java.awt.event.ActionListener() {
@@ -102,8 +110,6 @@ public class PanelMain extends javax.swing.JPanel {
         textArea.setRows(5);
         scrollPanelText.setViewportView(textArea);
 
-        componente1.setToken("");
-
         javax.swing.GroupLayout panelMainLayout = new javax.swing.GroupLayout(panelMain);
         panelMain.setLayout(panelMainLayout);
         panelMainLayout.setHorizontalGroup(
@@ -113,9 +119,9 @@ public class PanelMain extends javax.swing.JPanel {
                 .addGroup(panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelMainLayout.createSequentialGroup()
                         .addGroup(panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 660, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(scrollPanelText, javax.swing.GroupLayout.PREFERRED_SIZE, 660, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(127, Short.MAX_VALUE))
+                            .addComponent(scrollPanelText, javax.swing.GroupLayout.PREFERRED_SIZE, 660, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 660, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(182, Short.MAX_VALUE))
                     .addGroup(panelMainLayout.createSequentialGroup()
                         .addGroup(panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(panelMainLayout.createSequentialGroup()
@@ -134,38 +140,34 @@ public class PanelMain extends javax.swing.JPanel {
                                 .addComponent(buttonDownload, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(30, 30, 30)
                                 .addComponent(buttonPlayVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(componente1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         panelMainLayout.setVerticalGroup(
             panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelMainLayout.createSequentialGroup()
+                .addGap(47, 47, 47)
                 .addGroup(panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panelMainLayout.createSequentialGroup()
-                        .addGap(47, 47, 47)
-                        .addGroup(panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(labelUrl, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(textFieldURL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(checkBoxOnlyAudio))
-                        .addGap(12, 12, 12)
-                        .addGroup(panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(buttonMP3)
-                            .addComponent(buttonMP4)
-                            .addComponent(buttonDownload)
-                            .addComponent(buttonPlayVideo)))
-                    .addComponent(componente1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(labelUrl, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(textFieldURL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(checkBoxOnlyAudio))
+                .addGap(12, 12, 12)
+                .addGroup(panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(buttonMP3)
+                    .addComponent(buttonMP4)
+                    .addComponent(buttonDownload)
+                    .addComponent(buttonPlayVideo))
+                .addGap(24, 24, 24)
                 .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(scrollPanelText, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(74, Short.MAX_VALUE))
+                .addContainerGap(68, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 809, Short.MAX_VALUE)
+            .addGap(0, 864, Short.MAX_VALUE)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(panelMain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -270,7 +272,6 @@ public class PanelMain extends javax.swing.JPanel {
     private javax.swing.JRadioButton buttonMP4;
     private javax.swing.JButton buttonPlayVideo;
     private javax.swing.JCheckBox checkBoxOnlyAudio;
-    private ComponentePrueba.Componente componente1;
     private javax.swing.JLabel labelUrl;
     private javax.swing.JPanel panelMain;
     private javax.swing.JProgressBar progressBar;
