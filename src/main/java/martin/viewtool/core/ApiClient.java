@@ -6,7 +6,6 @@ package martin.viewtool.core;
  * @author cesar
  */
 // Created by Github Copilot
-import ComponentePrueba.Usuari;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;

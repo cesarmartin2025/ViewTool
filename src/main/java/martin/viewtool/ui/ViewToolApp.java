@@ -4,8 +4,6 @@
  */
 package martin.viewtool.ui;
 
-import ComponentePrueba.CustomEvent;
-import ComponentePrueba.CustomEventListener;
 import javax.swing.JPanel;
 
 import martin.viewtool.core.TokenService;
@@ -67,7 +65,6 @@ public class ViewToolApp extends javax.swing.JFrame {
         dialogAbout = new javax.swing.JDialog();
         TextAreaAbout = new javax.swing.JTextArea();
         jOptionPane1 = new javax.swing.JOptionPane();
-        componente2 = new ComponentePrueba.Componente();
         menuBarMain = new javax.swing.JMenuBar();
         MenuFile = new javax.swing.JMenu();
         MenuItemExit = new javax.swing.JMenuItem();
@@ -115,8 +112,6 @@ public class ViewToolApp extends javax.swing.JFrame {
             }
         });
         getContentPane().setLayout(null);
-        getContentPane().add(componente2);
-        componente2.setBounds(0, 0, 164, 126);
 
         MenuFile.setText("File");
 
@@ -290,7 +285,6 @@ public class ViewToolApp extends javax.swing.JFrame {
     private javax.swing.JMenu MenuManagement;
     private javax.swing.JMenuItem MenuManagementItem;
     private javax.swing.JTextArea TextAreaAbout;
-    private ComponentePrueba.Componente componente2;
     private javax.swing.JDialog dialogAbout;
     private javax.swing.JOptionPane jOptionPane1;
     private javax.swing.JMenuBar menuBarMain;
