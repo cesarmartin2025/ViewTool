@@ -27,8 +27,6 @@ public class Login extends JPanel {
     private JButton buttonLogin;
     private JLabel labelEmail;
     private JLabel labelPassword;
-    
-    private String baseUrl = "https://dimedianetapi9.azurewebsites.net/";
     private String token;
     private TokenService tokenService = new TokenService();
     private ViewToolApp jframe;
@@ -78,10 +76,6 @@ public class Login extends JPanel {
                 boolean remember = checkBoxRemember.isSelected();
                 
                 Componente componente = jframe.getComponent();
-                componente.setApiUrl(baseUrl);
-
-                
-
                 if (email.isBlank() || password.isBlank()) {
                     Alerts.error(Login.this, "Login Failed. Please, write your email and your password");
                     return;
@@ -100,10 +94,14 @@ public class Login extends JPanel {
                     Alerts.info(Login.this, "Login was successfull.");
                     if (remember && token != null) {
                         tokenService.saveToken(token);
-                        
-
                     }
+                    
+                     jframe.loggedSuccess(token);
                 }
+                
+                
+                
+               
 
             }
         });
@@ -113,8 +111,4 @@ public class Login extends JPanel {
         return token;
     }
     
-    
-    
-    
-
 }

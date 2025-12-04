@@ -4,6 +4,7 @@
  */
 package martin.viewtool.ui;
 
+
 import Componente.CustomEvent;
 import Componente.CustomEventListener;
 import javax.swing.JPanel;
@@ -20,7 +21,10 @@ public class ViewToolApp extends javax.swing.JFrame {
 
     private final TokenService tokenService = new TokenService();
     private String token;
+    private String apiUrl = "https://dimedianetapi9.azurewebsites.net/";
     private boolean loggedIn = false;
+    private boolean listenerAdded = false;
+    
 
     /**
      * Creates new form ViewToolApp
@@ -28,31 +32,47 @@ public class ViewToolApp extends javax.swing.JFrame {
     public ViewToolApp() {
         initComponents();
         token = tokenService.getToken();
+        componente1.setApiUrl(apiUrl);
+        
         if (token == null) {
             Login login = new Login(this);
             showPanel(login);
-
         } else {
-            loggedIn = true;
-            showPanel(new PanelMain());
-            
-            componente1.addCustomEventListener(new CustomEventListener() {
-                @Override
-                public void customEventReceived(CustomEvent evt) {
-                    System.out.print("Evento OK" + evt.getMediaList());
-                }
-            });
-            
-            componente1.setToken(tokenService.getToken());
-            componente1.setPollingInterval(5);
-            componente1.setRunning(true);
-            
+            loggedSuccess(token);
         }
+
+    }
+    
+    public void loggedSuccess(String token) {
+        this.token = token;
+        this.loggedIn = true;
+
+        componente1.setApiUrl(apiUrl);
+        componente1.setToken(token);
+        componente1.setPollingInterval(5);
+        
+        if(!listenerAdded){
+
+        componente1.addCustomEventListener(new CustomEventListener() {
+            @Override
+            public void customEventReceived(CustomEvent evt) {
+                System.out.println("Evento OK" + evt.getMediaList());
+            }
+        });
+        listenerAdded=true;
+        
+        }
+
+        componente1.setRunning(true);
+        showPanel(new PanelMain());
 
     }
     
     public Componente.Componente getComponent(){
         return componente1;
+    }
+    public String getApiUrl(){
+        return apiUrl;
     }
 
     public boolean isLoggedIn() {
@@ -270,6 +290,7 @@ public class ViewToolApp extends javax.swing.JFrame {
         showPanel(new Login(this));
         setLoggedIn(false);
         tokenService.deleteToken();
+        componente1.setRunning(false);
 
     }//GEN-LAST:event_MenuLogoutItemActionPerformed
 
