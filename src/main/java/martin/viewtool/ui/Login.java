@@ -4,16 +4,15 @@
  */
 package martin.viewtool.ui;
 
+import Componente.Componente;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import martin.viewtool.core.ApiClient;
 import martin.viewtool.core.TokenService;
 
 /**
@@ -28,12 +27,12 @@ public class Login extends JPanel {
     private JButton buttonLogin;
     private JLabel labelEmail;
     private JLabel labelPassword;
-
-    private ApiClient apiClient;
+    
     private String baseUrl = "https://dimedianetapi9.azurewebsites.net/";
     private String token;
     private TokenService tokenService = new TokenService();
     private ViewToolApp jframe;
+    
     public Login(ViewToolApp jframe) {
         this.jframe = jframe;
         setLayout(null);
@@ -77,8 +76,11 @@ public class Login extends JPanel {
                 String email = fieldEmail.getText();
                 String password = new String(fieldPassword.getPassword());
                 boolean remember = checkBoxRemember.isSelected();
+                
+                Componente componente = jframe.getComponent();
+                componente.setApiUrl(baseUrl);
 
-                apiClient = new ApiClient(baseUrl);
+                
 
                 if (email.isBlank() || password.isBlank()) {
                     Alerts.error(Login.this, "Login Failed. Please, write your email and your password");
@@ -86,7 +88,7 @@ public class Login extends JPanel {
                 } else {
 
                     try {
-                        token = apiClient.login(email, password);
+                        token = componente.login(email, password);
                     } catch (Exception ex) {
                         Alerts.error(Login.this, "Login failed. Please try again.");
                         return;

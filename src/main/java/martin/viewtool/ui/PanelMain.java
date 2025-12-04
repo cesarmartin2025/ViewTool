@@ -31,18 +31,7 @@ public class PanelMain extends javax.swing.JPanel {
      */
     public PanelMain() {
         initComponents();
-        /*
-        componente1.addCustomEventListener(new CustomEventListener() {
-                @Override
-                public void customEventReceived(CustomEvent evt) {
-                    System.out.print("Evento OK" + evt.getMediaList());
-                }
-            });
-            componente1.setApiUrl("https://dimedianetapi9.azurewebsites.net/");
-            componente1.setToken(tokenService.getToken());
-            componente1.setPollingInterval(5);
-            componente1.setRunning(true);
-       */
+      
         
     }
     

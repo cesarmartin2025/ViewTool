@@ -4,6 +4,8 @@
  */
 package martin.viewtool.ui;
 
+import Componente.CustomEvent;
+import Componente.CustomEventListener;
 import javax.swing.JPanel;
 
 import martin.viewtool.core.TokenService;
@@ -33,10 +35,24 @@ public class ViewToolApp extends javax.swing.JFrame {
         } else {
             loggedIn = true;
             showPanel(new PanelMain());
-
+            
+            componente1.addCustomEventListener(new CustomEventListener() {
+                @Override
+                public void customEventReceived(CustomEvent evt) {
+                    System.out.print("Evento OK" + evt.getMediaList());
+                }
+            });
+            
+            componente1.setToken(tokenService.getToken());
+            componente1.setPollingInterval(5);
+            componente1.setRunning(true);
             
         }
 
+    }
+    
+    public Componente.Componente getComponent(){
+        return componente1;
     }
 
     public boolean isLoggedIn() {
@@ -65,6 +81,7 @@ public class ViewToolApp extends javax.swing.JFrame {
         dialogAbout = new javax.swing.JDialog();
         TextAreaAbout = new javax.swing.JTextArea();
         jOptionPane1 = new javax.swing.JOptionPane();
+        componente1 = new Componente.Componente();
         menuBarMain = new javax.swing.JMenuBar();
         MenuFile = new javax.swing.JMenu();
         MenuItemExit = new javax.swing.JMenuItem();
@@ -112,6 +129,8 @@ public class ViewToolApp extends javax.swing.JFrame {
             }
         });
         getContentPane().setLayout(null);
+        getContentPane().add(componente1);
+        componente1.setBounds(1000, 0, 164, 126);
 
         MenuFile.setText("File");
 
@@ -285,6 +304,7 @@ public class ViewToolApp extends javax.swing.JFrame {
     private javax.swing.JMenu MenuManagement;
     private javax.swing.JMenuItem MenuManagementItem;
     private javax.swing.JTextArea TextAreaAbout;
+    private Componente.Componente componente1;
     private javax.swing.JDialog dialogAbout;
     private javax.swing.JOptionPane jOptionPane1;
     private javax.swing.JMenuBar menuBarMain;
