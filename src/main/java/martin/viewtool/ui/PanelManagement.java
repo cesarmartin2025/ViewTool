@@ -67,6 +67,14 @@ public class PanelManagement extends javax.swing.JPanel {
         textFieldFile = new javax.swing.JTextField();
         labelSearchFile = new javax.swing.JLabel();
         buttonDeleteFile = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        buttonDownloadFile = new javax.swing.JButton();
+        buttonUploadFile = new javax.swing.JButton();
+        buttonOpenFile = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        jLabel3 = new javax.swing.JLabel();
 
         panelManagement.setMaximumSize(new java.awt.Dimension(1920, 1080));
         panelManagement.setMinimumSize(new java.awt.Dimension(800, 600));
@@ -76,7 +84,7 @@ public class PanelManagement extends javax.swing.JPanel {
         jScrollPane1.setViewportView(listFiles);
 
         panelManagement.add(jScrollPane1);
-        jScrollPane1.setBounds(0, 0, 340, 360);
+        jScrollPane1.setBounds(0, 50, 340, 360);
 
         buttonRefreshList.setText("Refresh list");
         buttonRefreshList.addActionListener(new java.awt.event.ActionListener() {
@@ -85,11 +93,11 @@ public class PanelManagement extends javax.swing.JPanel {
             }
         });
         panelManagement.add(buttonRefreshList);
-        buttonRefreshList.setBounds(0, 360, 220, 27);
+        buttonRefreshList.setBounds(0, 410, 220, 27);
 
         comboFilter.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "All", "Videos", "Audios", "Others" }));
         panelManagement.add(comboFilter);
-        comboFilter.setBounds(220, 360, 120, 26);
+        comboFilter.setBounds(220, 410, 120, 26);
 
         tableFiles.setAutoCreateRowSorter(true);
         tableFiles.setModel(new javax.swing.table.DefaultTableModel(
@@ -103,7 +111,7 @@ public class PanelManagement extends javax.swing.JPanel {
         jScrollPane2.setViewportView(tableFiles);
 
         panelManagement.add(jScrollPane2);
-        jScrollPane2.setBounds(390, 0, 730, 400);
+        jScrollPane2.setBounds(400, 50, 850, 400);
 
         buttonRefreshTable.setText("Refresh table");
         buttonRefreshTable.addActionListener(new java.awt.event.ActionListener() {
@@ -112,13 +120,13 @@ public class PanelManagement extends javax.swing.JPanel {
             }
         });
         panelManagement.add(buttonRefreshTable);
-        buttonRefreshTable.setBounds(630, 400, 120, 27);
+        buttonRefreshTable.setBounds(640, 450, 130, 27);
         panelManagement.add(textFieldFile);
-        textFieldFile.setBounds(460, 400, 160, 26);
+        textFieldFile.setBounds(470, 450, 160, 26);
 
         labelSearchFile.setText("Search :");
         panelManagement.add(labelSearchFile);
-        labelSearchFile.setBounds(400, 400, 60, 30);
+        labelSearchFile.setBounds(410, 450, 60, 30);
 
         buttonDeleteFile.setText("Delete File");
         buttonDeleteFile.addActionListener(new java.awt.event.ActionListener() {
@@ -127,21 +135,64 @@ public class PanelManagement extends javax.swing.JPanel {
             }
         });
         panelManagement.add(buttonDeleteFile);
-        buttonDeleteFile.setBounds(989, 400, 130, 27);
+        buttonDeleteFile.setBounds(660, 790, 160, 27);
+
+        jLabel1.setText("Media downloaded by ytb-dlp:");
+        panelManagement.add(jLabel1);
+        jLabel1.setBounds(10, 20, 210, 30);
+
+        jLabel2.setText("DI Media Network :");
+        panelManagement.add(jLabel2);
+        jLabel2.setBounds(410, 20, 220, 30);
+
+        buttonDownloadFile.setText("Download File");
+        buttonDownloadFile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonDownloadFileActionPerformed(evt);
+            }
+        });
+        panelManagement.add(buttonDownloadFile);
+        buttonDownloadFile.setBounds(1110, 450, 140, 27);
+
+        buttonUploadFile.setText("Upload File");
+        panelManagement.add(buttonUploadFile);
+        buttonUploadFile.setBounds(520, 790, 140, 27);
+
+        buttonOpenFile.setText("Open File");
+        panelManagement.add(buttonOpenFile);
+        buttonOpenFile.setBounds(390, 790, 130, 27);
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane3.setViewportView(jTable1);
+
+        panelManagement.add(jScrollPane3);
+        jScrollPane3.setBounds(390, 520, 980, 260);
+
+        jLabel3.setText("Library Local Media: ");
+        panelManagement.add(jLabel3);
+        jLabel3.setBounds(410, 490, 120, 30);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1135, Short.MAX_VALUE)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(panelManagement, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 1135, Short.MAX_VALUE))
+            .addComponent(panelManagement, javax.swing.GroupLayout.DEFAULT_SIZE, 1407, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 550, Short.MAX_VALUE)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(panelManagement, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 550, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(panelManagement, javax.swing.GroupLayout.PREFERRED_SIZE, 847, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -165,6 +216,8 @@ public class PanelManagement extends javax.swing.JPanel {
     private void buttonRefreshTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRefreshTableActionPerformed
         try {
             String search = textFieldFile.getText().trim().toLowerCase();
+            
+            //for networkmedia source: ViewToolNetworkDownload
 
             java.util.List<martin.viewtool.core.MediaItem> files = libraryService.getFiles();
 
@@ -215,14 +268,26 @@ public class PanelManagement extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_buttonDeleteFileActionPerformed
 
+    private void buttonDownloadFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDownloadFileActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_buttonDownloadFileActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton buttonDeleteFile;
+    private javax.swing.JButton buttonDownloadFile;
+    private javax.swing.JButton buttonOpenFile;
     private javax.swing.JButton buttonRefreshList;
     private javax.swing.JButton buttonRefreshTable;
+    private javax.swing.JButton buttonUploadFile;
     private javax.swing.JComboBox<String> comboFilter;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JTable jTable1;
     private javax.swing.JLabel labelSearchFile;
     private javax.swing.JList<String> listFiles;
     private javax.swing.JPanel panelManagement;

@@ -46,8 +46,7 @@ public class ViewToolApp extends javax.swing.JFrame {
     public void loggedSuccess(String token) {
         this.token = token;
         this.loggedIn = true;
-
-        componente1.setApiUrl(apiUrl);
+        
         componente1.setToken(token);
         componente1.setPollingInterval(5);
         
