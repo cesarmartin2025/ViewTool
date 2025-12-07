@@ -15,6 +15,7 @@ import javax.swing.JOptionPane;
 import martin.viewtool.config.PreferencesService;
 import martin.viewtool.core.LibraryService;
 import MediaSyncPolling.Media;
+import java.io.File;
 import martin.viewtool.core.MediaItem;
 import martin.viewtool.core.MediaLibrary;
 import martin.viewtool.core.MediaTableModel;
@@ -25,22 +26,23 @@ import martin.viewtool.core.TokenService;
  * @author cesar
  */
 public class PanelManagement extends javax.swing.JPanel {
+
     private final PreferencesService prefService = new PreferencesService();
-    
+
     private final LibraryService libraryService = new LibraryService(Path.of(prefService.getOutputDir().toString()));
     private ViewToolApp jframe;
     private TokenService tokenService = new TokenService();
     private boolean listenerAdded = false;
-   
+
     /**
      * Creates new form PanelManagement
      */
     public PanelManagement(ViewToolApp jframe) {
-        this.jframe=jframe;
+        this.jframe = jframe;
         initComponents();
-         
+
     }
-    
+
     private void columnPrefs() {
         var columnModel = tableFiles.getColumnModel();
 
@@ -118,7 +120,7 @@ public class PanelManagement extends javax.swing.JPanel {
         jScrollPane2.setViewportView(tableFiles);
 
         panelManagement.add(jScrollPane2);
-        jScrollPane2.setBounds(360, 50, 980, 400);
+        jScrollPane2.setBounds(360, 50, 900, 400);
 
         buttonRefreshTable.setText("Refresh table");
         buttonRefreshTable.addActionListener(new java.awt.event.ActionListener() {
@@ -127,13 +129,13 @@ public class PanelManagement extends javax.swing.JPanel {
             }
         });
         panelManagement.add(buttonRefreshTable);
-        buttonRefreshTable.setBounds(640, 450, 130, 27);
+        buttonRefreshTable.setBounds(360, 450, 110, 27);
         panelManagement.add(textFieldFile);
-        textFieldFile.setBounds(470, 450, 160, 26);
+        textFieldFile.setBounds(970, 20, 150, 26);
 
         labelSearchFile.setText("Search :");
         panelManagement.add(labelSearchFile);
-        labelSearchFile.setBounds(410, 450, 60, 30);
+        labelSearchFile.setBounds(920, 20, 60, 30);
 
         buttonDeleteFile.setText("Delete File");
         buttonDeleteFile.addActionListener(new java.awt.event.ActionListener() {
@@ -142,7 +144,7 @@ public class PanelManagement extends javax.swing.JPanel {
             }
         });
         panelManagement.add(buttonDeleteFile);
-        buttonDeleteFile.setBounds(1040, 450, 160, 27);
+        buttonDeleteFile.setBounds(640, 450, 88, 27);
 
         jLabel1.setText("Media downloaded by ytb-dlp:");
         panelManagement.add(jLabel1);
@@ -159,15 +161,20 @@ public class PanelManagement extends javax.swing.JPanel {
             }
         });
         panelManagement.add(buttonDownloadFile);
-        buttonDownloadFile.setBounds(1200, 450, 140, 27);
+        buttonDownloadFile.setBounds(730, 450, 110, 27);
 
         buttonUploadFile.setText("Upload File");
+        buttonUploadFile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonUploadFileActionPerformed(evt);
+            }
+        });
         panelManagement.add(buttonUploadFile);
-        buttonUploadFile.setBounds(900, 450, 140, 27);
+        buttonUploadFile.setBounds(550, 450, 93, 27);
 
         buttonOpenFile.setText("Open File");
         panelManagement.add(buttonOpenFile);
-        buttonOpenFile.setBounds(770, 450, 130, 27);
+        buttonOpenFile.setBounds(470, 450, 90, 27);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -211,8 +218,6 @@ public class PanelManagement extends javax.swing.JPanel {
             //for networkmedia source: ViewToolNetworkDownload
             mediaSyncPolling.setToken(token);
             mediaSyncPolling.setPollingInterval(5);
-            
-           
 
             if (!listenerAdded) {
 
@@ -223,14 +228,13 @@ public class PanelManagement extends javax.swing.JPanel {
                         martin.viewtool.core.MediaTableModel model = new martin.viewtool.core.MediaTableModel(mediaList);
                         tableFiles.setModel(model);
                         columnPrefs();
-                       
+
                     }
                 });
-                listenerAdded = true;  
+                listenerAdded = true;
             }
 
             mediaSyncPolling.setRunning(true);
-            
 
         } catch (Exception ex) {
             Alerts.error(this, "Error: " + ex.getMessage());
@@ -238,6 +242,7 @@ public class PanelManagement extends javax.swing.JPanel {
     }//GEN-LAST:event_buttonRefreshTableActionPerformed
 
     private void buttonDeleteFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDeleteFileActionPerformed
+        //MODIFICAR CODIGO
         int selectedRow = tableFiles.getSelectedRow();
         if (selectedRow < 0) {
             JOptionPane.showMessageDialog(this, "Please select a file to delete.");
@@ -249,8 +254,8 @@ public class PanelManagement extends javax.swing.JPanel {
         Media file = model.getFile(modelRow);
 
         boolean confirm = Alerts.confirm(this,
-            "Are you sure you want to delete this file?\n" + file.mediaFileName,
-            "Confirm deletion");
+                "Are you sure you want to delete this file?\n" + file.mediaFileName,
+                "Confirm deletion");
 
         if (confirm) {
             try {
@@ -269,8 +274,48 @@ public class PanelManagement extends javax.swing.JPanel {
     }//GEN-LAST:event_buttonDeleteFileActionPerformed
 
     private void buttonDownloadFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDownloadFileActionPerformed
-        // TODO add your handling code here:
+        MediaSyncPolling mediaSyncPolling = jframe.getComponent();
+        String token = tokenService.getToken();
+
+        Path defaultPath = Path.of(System.getProperty("user.home"), "ViewToolNetworkDownload");
+        int selectedRow = tableFiles.getSelectedRow();
+
+        if (selectedRow < 0) {
+            JOptionPane.showMessageDialog(this, "Please select a file to download.");
+            return;
+        }
+        int modelRow = tableFiles.convertRowIndexToModel(selectedRow);
+
+        MediaTableModel model = (martin.viewtool.core.MediaTableModel) tableFiles.getModel();
+        Media file = model.getFile(modelRow);
+        int idMedia = file.id;
+
+        boolean confirm = Alerts.confirm(this,
+                "Are you sure you want to download this file?\n" + file.mediaFileName,
+                "Confirm deletion");
+
+        if (confirm) {
+            Path destPath = defaultPath.resolve(file.mediaFileName);
+            File destFile = destPath.toFile();
+            try {
+                mediaSyncPolling.download(idMedia, destFile, token); // CORREGIR
+                boolean deleted = true;
+
+                if (deleted) {
+                    JOptionPane.showMessageDialog(this, "File downloaded successfully.");
+                } else {
+                    JOptionPane.showMessageDialog(this, "File could not be downloaded.");
+                }
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Error downloading file: " + ex.getMessage());
+            }
+        }
     }//GEN-LAST:event_buttonDownloadFileActionPerformed
+
+    private void buttonUploadFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonUploadFileActionPerformed
+
+
+    }//GEN-LAST:event_buttonUploadFileActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
