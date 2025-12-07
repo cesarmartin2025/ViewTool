@@ -4,9 +4,6 @@
  */
 package martin.viewtool.ui;
 
-
-import MediaSyncPolling.CheckListMediaEvent;
-import MediaSyncPolling.CheckListMediaListener;
 import javax.swing.JPanel;
 
 import martin.viewtool.core.TokenService;
@@ -24,6 +21,8 @@ public class ViewToolApp extends javax.swing.JFrame {
     private String apiUrl = "https://dimedianetapi9.azurewebsites.net/";
     private boolean loggedIn = false;
     
+    PanelManagement panelManagement;
+    
 
     /**
      * Creates new form ViewToolApp
@@ -32,6 +31,8 @@ public class ViewToolApp extends javax.swing.JFrame {
         initComponents();
         token = tokenService.getToken();
         mediaSyncPolling1.setApiUrl(apiUrl);
+        panelManagement = new PanelManagement(this);
+        
         
         if (token == null) {
             Login login = new Login(this);
@@ -257,7 +258,7 @@ public class ViewToolApp extends javax.swing.JFrame {
 
     private void MenuManagementItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuManagementItemActionPerformed
         if (isLoggedIn()) {
-            showPanel(new PanelManagement(this));
+            showPanel(panelManagement);
 
         } else {
             Alerts.error(this, "Please login to continue.");

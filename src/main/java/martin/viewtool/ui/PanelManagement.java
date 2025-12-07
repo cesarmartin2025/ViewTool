@@ -36,19 +36,72 @@ public class PanelManagement extends javax.swing.JPanel {
     private ViewToolApp jframe;
     private TokenService tokenService = new TokenService();
     private NetworkMediaService networkMediaService = new NetworkMediaService();
+    List<Media> listMedia = new ArrayList<>();
+    private final List<Media> networkMediaAll = new ArrayList<>();
+
     private boolean listenerAdded = false;
-    List<Media> mediaListUpdated = new ArrayList<>();
     private String token;
 
-    /**
-     * Creates new form PanelManagement
-     */
     public PanelManagement(ViewToolApp jframe) {
         this.jframe = jframe;
         initComponents();
         token = tokenService.getToken();
 
     }
+
+    private void addNewMediaNetwork(List<Media> newMedia) {
+    for (Media media : newMedia) {
+        if (media == null) {
+            continue;
+        }
+
+        boolean exists = false;
+        for (Media file : networkMediaAll) {
+            if (file != null && file.id == media.id && media.id > 0) {
+                exists = true;
+                break;
+            }
+        }
+
+        if (!exists) {
+            networkMediaAll.add(media);
+        }
+    }
+}
+
+private void rebuildMediaTable() {
+    List<Media> mediaListCombined = new ArrayList<>(networkMediaAll);
+    java.util.Set<String> networkNames = new java.util.HashSet<>();
+    for (Media media : networkMediaAll) {
+        if (media != null && media.mediaFileName != null) {
+            networkNames.add(media.mediaFileName);
+        }
+    }
+    File baseDir = networkMediaService.getDownloadBaseDir().toFile();
+    File[] localFiles = baseDir.listFiles();
+
+    if (localFiles != null) {
+        for (File file : localFiles) {
+            if (file.isFile()) {
+                String name = file.getName();
+
+                if (!networkNames.contains(name)) {
+                    Media media = new Media();
+                    media.id = 0;                
+                    media.mediaFileName = name;
+                    media.userId = -1;
+                    media.downloadedFromUrl = "Unknown";
+                    mediaListCombined.add(media);
+                }
+            }
+        }
+    }
+
+    MediaTableModel model = new MediaTableModel(mediaListCombined);
+    tableFiles.setModel(model);
+    listMedia = new ArrayList<>(mediaListCombined);
+    columnPrefs();
+}
 
     private Media getSelectedMedia(String action) {
         int selectedRow = tableFiles.getSelectedRow();
@@ -72,15 +125,15 @@ public class PanelManagement extends javax.swing.JPanel {
     private void columnPrefs() {
         var columnModel = tableFiles.getColumnModel();
 
-        // Columna 0: Name
-        columnModel.getColumn(0).setPreferredWidth(300);
+        // Columna 0: Location
+        columnModel.getColumn(0).setPreferredWidth(50);
 
-        // Columna 1:User ID
-        columnModel.getColumn(1).setPreferredWidth(12);
+        // Columna 1:Name
+        columnModel.getColumn(1).setPreferredWidth(300);
 
-        // Columna 2: MIME Type
-        columnModel.getColumn(2).setPreferredWidth(40);
-        // Columna 3: Date
+        // Columna 2: User ID
+        columnModel.getColumn(2).setPreferredWidth(10);
+        // Columna 3: URL
         columnModel.getColumn(3).setPreferredWidth(300);
         ;
     }
@@ -119,7 +172,7 @@ public class PanelManagement extends javax.swing.JPanel {
         jScrollPane1.setViewportView(listFiles);
 
         panelManagement.add(jScrollPane1);
-        jScrollPane1.setBounds(0, 50, 340, 360);
+        jScrollPane1.setBounds(0, 50, 210, 360);
 
         buttonRefreshList.setText("Refresh list");
         buttonRefreshList.addActionListener(new java.awt.event.ActionListener() {
@@ -128,11 +181,11 @@ public class PanelManagement extends javax.swing.JPanel {
             }
         });
         panelManagement.add(buttonRefreshList);
-        buttonRefreshList.setBounds(0, 410, 220, 27);
+        buttonRefreshList.setBounds(0, 410, 100, 27);
 
         comboFilter.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "All", "Videos", "Audios", "Others" }));
         panelManagement.add(comboFilter);
-        comboFilter.setBounds(220, 410, 120, 26);
+        comboFilter.setBounds(100, 410, 120, 26);
 
         tableFiles.setAutoCreateRowSorter(true);
         tableFiles.setModel(new javax.swing.table.DefaultTableModel(
@@ -146,7 +199,7 @@ public class PanelManagement extends javax.swing.JPanel {
         jScrollPane2.setViewportView(tableFiles);
 
         panelManagement.add(jScrollPane2);
-        jScrollPane2.setBounds(360, 50, 890, 400);
+        jScrollPane2.setBounds(250, 50, 900, 400);
 
         buttonRefreshTable.setText("Refresh table");
         buttonRefreshTable.addActionListener(new java.awt.event.ActionListener() {
@@ -155,7 +208,13 @@ public class PanelManagement extends javax.swing.JPanel {
             }
         });
         panelManagement.add(buttonRefreshTable);
-        buttonRefreshTable.setBounds(360, 450, 110, 27);
+        buttonRefreshTable.setBounds(250, 450, 110, 27);
+
+        textFieldFile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                textFieldFileActionPerformed(evt);
+            }
+        });
         panelManagement.add(textFieldFile);
         textFieldFile.setBounds(970, 20, 150, 26);
 
@@ -170,7 +229,7 @@ public class PanelManagement extends javax.swing.JPanel {
             }
         });
         panelManagement.add(buttonDeleteFile);
-        buttonDeleteFile.setBounds(660, 450, 88, 27);
+        buttonDeleteFile.setBounds(630, 450, 130, 27);
 
         jLabel1.setText("Media downloaded by ytb-dlp:");
         panelManagement.add(jLabel1);
@@ -187,7 +246,7 @@ public class PanelManagement extends javax.swing.JPanel {
             }
         });
         panelManagement.add(buttonDownloadFile);
-        buttonDownloadFile.setBounds(750, 450, 110, 27);
+        buttonDownloadFile.setBounds(760, 450, 140, 27);
 
         buttonUploadFile.setText("Upload File");
         buttonUploadFile.addActionListener(new java.awt.event.ActionListener() {
@@ -196,7 +255,7 @@ public class PanelManagement extends javax.swing.JPanel {
             }
         });
         panelManagement.add(buttonUploadFile);
-        buttonUploadFile.setBounds(570, 450, 93, 27);
+        buttonUploadFile.setBounds(500, 450, 130, 27);
 
         buttonOpenFile.setText("Open File");
         buttonOpenFile.addActionListener(new java.awt.event.ActionListener() {
@@ -205,7 +264,7 @@ public class PanelManagement extends javax.swing.JPanel {
             }
         });
         panelManagement.add(buttonOpenFile);
-        buttonOpenFile.setBounds(480, 450, 90, 27);
+        buttonOpenFile.setBounds(370, 450, 120, 27);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -241,11 +300,11 @@ public class PanelManagement extends javax.swing.JPanel {
     }//GEN-LAST:event_buttonRefreshListActionPerformed
 
     private void buttonRefreshTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRefreshTableActionPerformed
-
+         rebuildMediaTable();
         try {
 
             MediaSyncPolling mediaSyncPolling = jframe.getComponent();
-            String token = tokenService.getToken();
+            token = tokenService.getToken();
             mediaSyncPolling.setToken(token);
             mediaSyncPolling.setPollingInterval(5);
 
@@ -255,15 +314,16 @@ public class PanelManagement extends javax.swing.JPanel {
                 mediaSyncPolling.addCustomEventListener(new CheckListMediaListener() {
                     @Override
                     public void checkListMediaReceived(CheckListMediaEvent evt) {
-                        System.out.print(evt.getMediaList()); // Control code.
-                        List<Media> mediaList = evt.getMediaList();
+                        System.out.println(evt.getMediaList()); // Control code.
+                        List<Media> newMedia = evt.getMediaList();
 
-                        for (Media file : mediaList) {
-                            mediaListUpdated.add(file);
+                        if (newMedia == null || newMedia.isEmpty()) {
+                            return;
                         }
-                        martin.viewtool.core.MediaTableModel model = new martin.viewtool.core.MediaTableModel(mediaListUpdated);
-                        tableFiles.setModel(model);
-                        columnPrefs();
+
+                        
+                        addNewMediaNetwork(newMedia);
+                        rebuildMediaTable();
 
                     }
                 });
@@ -293,8 +353,7 @@ public class PanelManagement extends javax.swing.JPanel {
         if (confirm) {
             try {
 
-                Files.deleteIfExists(localFile.toPath());
-                boolean deleted = true;
+                boolean deleted = Files.deleteIfExists(localFile.toPath());
 
                 if (deleted) {
                     JOptionPane.showMessageDialog(this, "File deleted successfully.");
@@ -324,13 +383,8 @@ public class PanelManagement extends javax.swing.JPanel {
             File destFile = destPath.toFile();
             try {
                 mediaSyncPolling.download(idMedia, destFile, token); // CORREGIR
-                boolean download = true;
+                JOptionPane.showMessageDialog(this, "File downloaded successfully.");
 
-                if (download) {
-                    JOptionPane.showMessageDialog(this, "File downloaded successfully.");
-                } else {
-                    JOptionPane.showMessageDialog(this, "File could not be downloaded.");
-                }
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Error downloading file: " + ex.getMessage());
             }
@@ -421,6 +475,15 @@ public class PanelManagement extends javax.swing.JPanel {
                     JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_buttonOpenFileActionPerformed
+
+    private void textFieldFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFieldFileActionPerformed
+        String name = textFieldFile.getText();
+        for (Media media : listMedia) {
+            if (media.mediaFileName.contains(name)) {
+
+            }
+        }
+    }//GEN-LAST:event_textFieldFileActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

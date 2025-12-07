@@ -8,14 +8,17 @@ import java.time.Instant;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
 import MediaSyncPolling.Media;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  *
  * @author cesar
  */
 public final class MediaTableModel extends AbstractTableModel {
+    NetworkMediaService networkMediaService = new NetworkMediaService();
     private final List<Media> files;
-    private final String[] columns = {"NAME", "User ID", "MimeType", "URL"};
+    private final String[] columns = {"Location","Name", "User ID", "URL"};
 
     public MediaTableModel(List<Media> files) {
         this.files = files;
@@ -34,8 +37,8 @@ public final class MediaTableModel extends AbstractTableModel {
     public Class<?> getColumnClass(int columnIndex) {
         return switch (columnIndex) {
             case 0 -> String.class;
-            case 1 -> int.class;     
-            case 2 -> String.class;
+            case 1 -> String.class;     
+            case 2 -> int.class;
             case 3 -> String.class;     
             default -> Object.class;
         };
@@ -45,13 +48,28 @@ public final class MediaTableModel extends AbstractTableModel {
     public Object getValueAt(int rowIndex, int columnIndex) {
         Media file = files.get(rowIndex);
         return switch (columnIndex) {
-            case 0 -> file.mediaFileName;
-            case 1 -> file.userId;
-            case 2 -> file.mediaMimeType;
+            case 0 -> resolveLocation(file);
+            case 1 -> file.mediaFileName;
+            case 2 -> file.userId;
             case 3 -> file.downloadedFromUrl;
             default -> "";
         };
     }
+    
+    private String resolveLocation(Media media) {
+     
+     Path localPath = networkMediaService.getDownloadBaseDir().resolve(media.mediaFileName);
+
+    boolean existsLocal = Files.exists(localPath);
+    boolean existsNetwork = (media.id > 0); 
+
+    if (existsLocal && existsNetwork) return "Both";
+    if (existsLocal) return "Local";
+    if (existsNetwork) return "Network";
+    return "None"; 
+}
+    
+    
 
     public Media getFile(int row) {
         return files.get(row); }
