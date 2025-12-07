@@ -16,12 +16,10 @@ import martin.viewtool.config.PreferencesService;
 import martin.viewtool.core.LibraryService;
 import MediaSyncPolling.Media;
 import java.io.File;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import javax.swing.JFileChooser;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import martin.viewtool.core.MediaItem;
-import martin.viewtool.core.MediaLibrary;
 import martin.viewtool.core.MediaTableModel;
 import martin.viewtool.core.TokenService;
 
@@ -269,6 +267,10 @@ public class PanelManagement extends javax.swing.JPanel {
 
         MediaTableModel model = (martin.viewtool.core.MediaTableModel) tableFiles.getModel();
         Media file = model.getFile(modelRow);
+        
+         Path baseDir = Path.of(System.getProperty("user.home"), "ViewToolNetworkDownload");
+        Path localPath = baseDir.resolve(file.mediaFileName);
+        File localFile = localPath.toFile();
 
         boolean confirm = Alerts.confirm(this,
                 "Are you sure you want to delete this file?\n" + file.mediaFileName,
@@ -276,8 +278,9 @@ public class PanelManagement extends javax.swing.JPanel {
 
         if (confirm) {
             try {
-                MediaLibrary library = new martin.viewtool.core.MediaLibrary(); // CORREGIR
-                boolean deleted = false;
+                
+                Files.deleteIfExists(localFile.toPath());
+                boolean deleted = true;
 
                 if (deleted) {
                     JOptionPane.showMessageDialog(this, "File deleted successfully.");
@@ -382,7 +385,42 @@ public class PanelManagement extends javax.swing.JPanel {
     }//GEN-LAST:event_buttonUploadFileActionPerformed
 
     private void buttonOpenFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonOpenFileActionPerformed
-        // TODO add your handling code here:
+
+        int selectedRow = tableFiles.getSelectedRow();
+        if (selectedRow < 0) {
+            JOptionPane.showMessageDialog(this,
+                    "Please select a media item.",
+                    "No selection",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        int modelRow = tableFiles.convertRowIndexToModel(selectedRow);
+        MediaTableModel model = (MediaTableModel) tableFiles.getModel();
+        Media media = model.getFile(modelRow);  // o getMedia(modelRow)
+
+        Path baseDir = Path.of(System.getProperty("user.home"), "ViewToolNetworkDownload");
+        Path localPath = baseDir.resolve(media.mediaFileName);
+        File localFile = localPath.toFile();
+
+        if (!localFile.exists()) {
+            JOptionPane.showMessageDialog(this,
+                    "This media is not downloaded in the local directory.",
+                    "File not found",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+         try {
+        if (!java.awt.Desktop.isDesktopSupported()) {
+            throw new UnsupportedOperationException("Desktop API not supported on this platform.");
+        }
+        java.awt.Desktop.getDesktop().open(localFile);
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(this,
+            "Error opening file: " + ex.getMessage(),
+            "Error",
+            JOptionPane.ERROR_MESSAGE);
+    }
     }//GEN-LAST:event_buttonOpenFileActionPerformed
 
 
