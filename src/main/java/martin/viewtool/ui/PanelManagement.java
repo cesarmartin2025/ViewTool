@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import javax.swing.JFileChooser;
 import martin.viewtool.core.MediaItem;
 import martin.viewtool.core.MediaTableModel;
+import martin.viewtool.core.NetworkMediaService;
 import martin.viewtool.core.TokenService;
 
 /**
@@ -34,6 +35,7 @@ public class PanelManagement extends javax.swing.JPanel {
     private final LibraryService libraryService = new LibraryService(Path.of(prefService.getOutputDir().toString()));
     private ViewToolApp jframe;
     private TokenService tokenService = new TokenService();
+    private NetworkMediaService networkMediaService = new NetworkMediaService();
     private boolean listenerAdded = false;
     List<Media> mediaListUpdated = new ArrayList<>();
     private String token;
@@ -45,6 +47,25 @@ public class PanelManagement extends javax.swing.JPanel {
         this.jframe = jframe;
         initComponents();
         token = tokenService.getToken();
+
+    }
+
+    private Media getSelectedMedia(String action) {
+        int selectedRow = tableFiles.getSelectedRow();
+        if (selectedRow < 0) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Please select a file to " + action + ".",
+                    "No selection",
+                    JOptionPane.WARNING_MESSAGE
+            );
+            return null;
+        }
+        int modelRow = tableFiles.convertRowIndexToModel(selectedRow);
+
+        MediaTableModel model = (martin.viewtool.core.MediaTableModel) tableFiles.getModel();
+        Media file = model.getFile(modelRow);
+        return file;
 
     }
 
@@ -220,7 +241,7 @@ public class PanelManagement extends javax.swing.JPanel {
     }//GEN-LAST:event_buttonRefreshListActionPerformed
 
     private void buttonRefreshTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRefreshTableActionPerformed
-        
+
         try {
 
             MediaSyncPolling mediaSyncPolling = jframe.getComponent();
@@ -258,19 +279,12 @@ public class PanelManagement extends javax.swing.JPanel {
 
     private void buttonDeleteFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDeleteFileActionPerformed
         //MODIFICAR CODIGO
-        int selectedRow = tableFiles.getSelectedRow();
-        if (selectedRow < 0) {
-            JOptionPane.showMessageDialog(this, "Please select a file to delete.");
+        Media file = getSelectedMedia("Delete");
+        if (file == null) {
             return;
         }
-        int modelRow = tableFiles.convertRowIndexToModel(selectedRow);
 
-        MediaTableModel model = (martin.viewtool.core.MediaTableModel) tableFiles.getModel();
-        Media file = model.getFile(modelRow);
-        
-         Path baseDir = Path.of(System.getProperty("user.home"), "ViewToolNetworkDownload");
-        Path localPath = baseDir.resolve(file.mediaFileName);
-        File localFile = localPath.toFile();
+        File localFile = networkMediaService.getLocalFile(file);
 
         boolean confirm = Alerts.confirm(this,
                 "Are you sure you want to delete this file?\n" + file.mediaFileName,
@@ -278,7 +292,7 @@ public class PanelManagement extends javax.swing.JPanel {
 
         if (confirm) {
             try {
-                
+
                 Files.deleteIfExists(localFile.toPath());
                 boolean deleted = true;
 
@@ -295,33 +309,24 @@ public class PanelManagement extends javax.swing.JPanel {
 
     private void buttonDownloadFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDownloadFileActionPerformed
         MediaSyncPolling mediaSyncPolling = jframe.getComponent();
-        
-
-        Path defaultPath = Path.of(System.getProperty("user.home"), "ViewToolNetworkDownload");
-        int selectedRow = tableFiles.getSelectedRow();
-
-        if (selectedRow < 0) {
-            JOptionPane.showMessageDialog(this, "Please select a file to download.");
+        Media file = getSelectedMedia("Download");
+        if (file == null) {
             return;
         }
-        int modelRow = tableFiles.convertRowIndexToModel(selectedRow);
-
-        MediaTableModel model = (martin.viewtool.core.MediaTableModel) tableFiles.getModel();
-        Media file = model.getFile(modelRow);
         int idMedia = file.id;
 
         boolean confirm = Alerts.confirm(this,
                 "Are you sure you want to download this file?\n" + file.mediaFileName,
-                "Confirm deletion");
+                "Confirm download");
 
         if (confirm) {
-            Path destPath = defaultPath.resolve(file.mediaFileName);
+            Path destPath = networkMediaService.getDownloadBaseDir().resolve(file.mediaFileName);
             File destFile = destPath.toFile();
             try {
                 mediaSyncPolling.download(idMedia, destFile, token); // CORREGIR
-                boolean deleted = true;
+                boolean download = true;
 
-                if (deleted) {
+                if (download) {
                     JOptionPane.showMessageDialog(this, "File downloaded successfully.");
                 } else {
                     JOptionPane.showMessageDialog(this, "File could not be downloaded.");
@@ -361,7 +366,6 @@ public class PanelManagement extends javax.swing.JPanel {
                     JOptionPane.QUESTION_MESSAGE
             );
 
-           
             if (youtubeUrl == null) {
                 return;
             }
@@ -375,10 +379,14 @@ public class PanelManagement extends javax.swing.JPanel {
                 return;
             }
             MediaSyncPolling msp = jframe.getComponent();
-            msp.uploadFileMultipart(selectedFile, youtubeUrl, token);
+            try {
+                msp.uploadFileMultipart(selectedFile, youtubeUrl, token);
+            } catch (Exception e) {
+                Alerts.error(this, e.getMessage());
+            }
 
             JOptionPane.showMessageDialog(this,
-                    "File selected:\n" + selectedFile.getAbsolutePath(),
+                    "File uploaded:\n" + selectedFile.getAbsolutePath(),
                     "Information about update", JOptionPane.INFORMATION_MESSAGE);
         }
 
@@ -386,21 +394,12 @@ public class PanelManagement extends javax.swing.JPanel {
 
     private void buttonOpenFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonOpenFileActionPerformed
 
-        int selectedRow = tableFiles.getSelectedRow();
-        if (selectedRow < 0) {
-            JOptionPane.showMessageDialog(this,
-                    "Please select a media item.",
-                    "No selection",
-                    JOptionPane.WARNING_MESSAGE);
+        Media file = getSelectedMedia("Open");
+        if (file == null) {
             return;
         }
-        int modelRow = tableFiles.convertRowIndexToModel(selectedRow);
-        MediaTableModel model = (MediaTableModel) tableFiles.getModel();
-        Media media = model.getFile(modelRow);  // o getMedia(modelRow)
 
-        Path baseDir = Path.of(System.getProperty("user.home"), "ViewToolNetworkDownload");
-        Path localPath = baseDir.resolve(media.mediaFileName);
-        File localFile = localPath.toFile();
+        File localFile = networkMediaService.getLocalFile(file);
 
         if (!localFile.exists()) {
             JOptionPane.showMessageDialog(this,
@@ -409,18 +408,18 @@ public class PanelManagement extends javax.swing.JPanel {
                     JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
-         try {
-        if (!java.awt.Desktop.isDesktopSupported()) {
-            throw new UnsupportedOperationException("Desktop API not supported on this platform.");
+
+        try {
+            if (!java.awt.Desktop.isDesktopSupported()) {
+                throw new UnsupportedOperationException("Desktop API not supported on this platform.");
+            }
+            java.awt.Desktop.getDesktop().open(localFile);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this,
+                    "Error opening file: " + ex.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
-        java.awt.Desktop.getDesktop().open(localFile);
-    } catch (Exception ex) {
-        JOptionPane.showMessageDialog(this,
-            "Error opening file: " + ex.getMessage(),
-            "Error",
-            JOptionPane.ERROR_MESSAGE);
-    }
     }//GEN-LAST:event_buttonOpenFileActionPerformed
 
 
