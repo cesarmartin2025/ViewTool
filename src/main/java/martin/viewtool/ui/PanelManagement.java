@@ -4,6 +4,9 @@
  */
 package martin.viewtool.ui;
 
+import MediaSyncPolling.CheckListMediaEvent;
+import MediaSyncPolling.CheckListMediaListener;
+import MediaSyncPolling.MediaSyncPolling;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
@@ -11,9 +14,11 @@ import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import martin.viewtool.config.PreferencesService;
 import martin.viewtool.core.LibraryService;
+import MediaSyncPolling.Media;
 import martin.viewtool.core.MediaItem;
 import martin.viewtool.core.MediaLibrary;
 import martin.viewtool.core.MediaTableModel;
+import martin.viewtool.core.TokenService;
 
 /**
  *
@@ -23,12 +28,17 @@ public class PanelManagement extends javax.swing.JPanel {
     private final PreferencesService prefService = new PreferencesService();
     
     private final LibraryService libraryService = new LibraryService(Path.of(prefService.getOutputDir().toString()));
+    private ViewToolApp jframe;
+    private TokenService tokenService = new TokenService();
+    private boolean listenerAdded = false;
    
     /**
      * Creates new form PanelManagement
      */
-    public PanelManagement() {
+    public PanelManagement(ViewToolApp jframe) {
+        this.jframe=jframe;
         initComponents();
+         
     }
     
     private void columnPrefs() {
@@ -37,13 +47,13 @@ public class PanelManagement extends javax.swing.JPanel {
         // Columna 0: Name
         columnModel.getColumn(0).setPreferredWidth(300);
 
-        // Columna 1: Size (MB)
-        columnModel.getColumn(1).setPreferredWidth(20);
+        // Columna 1:User ID
+        columnModel.getColumn(1).setPreferredWidth(12);
 
         // Columna 2: MIME Type
-        columnModel.getColumn(2).setPreferredWidth(20);
+        columnModel.getColumn(2).setPreferredWidth(40);
         // Columna 3: Date
-        columnModel.getColumn(3).setPreferredWidth(80);
+        columnModel.getColumn(3).setPreferredWidth(300);
         ;
     }
 
@@ -72,9 +82,6 @@ public class PanelManagement extends javax.swing.JPanel {
         buttonDownloadFile = new javax.swing.JButton();
         buttonUploadFile = new javax.swing.JButton();
         buttonOpenFile = new javax.swing.JButton();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        jLabel3 = new javax.swing.JLabel();
 
         panelManagement.setMaximumSize(new java.awt.Dimension(1920, 1080));
         panelManagement.setMinimumSize(new java.awt.Dimension(800, 600));
@@ -111,7 +118,7 @@ public class PanelManagement extends javax.swing.JPanel {
         jScrollPane2.setViewportView(tableFiles);
 
         panelManagement.add(jScrollPane2);
-        jScrollPane2.setBounds(400, 50, 850, 400);
+        jScrollPane2.setBounds(360, 50, 980, 400);
 
         buttonRefreshTable.setText("Refresh table");
         buttonRefreshTable.addActionListener(new java.awt.event.ActionListener() {
@@ -135,15 +142,15 @@ public class PanelManagement extends javax.swing.JPanel {
             }
         });
         panelManagement.add(buttonDeleteFile);
-        buttonDeleteFile.setBounds(660, 790, 160, 27);
+        buttonDeleteFile.setBounds(1040, 450, 160, 27);
 
         jLabel1.setText("Media downloaded by ytb-dlp:");
         panelManagement.add(jLabel1);
         jLabel1.setBounds(10, 20, 210, 30);
 
-        jLabel2.setText("DI Media Network :");
+        jLabel2.setText("DI Media Network Library :");
         panelManagement.add(jLabel2);
-        jLabel2.setBounds(410, 20, 220, 30);
+        jLabel2.setBounds(410, 20, 170, 30);
 
         buttonDownloadFile.setText("Download File");
         buttonDownloadFile.addActionListener(new java.awt.event.ActionListener() {
@@ -152,45 +159,27 @@ public class PanelManagement extends javax.swing.JPanel {
             }
         });
         panelManagement.add(buttonDownloadFile);
-        buttonDownloadFile.setBounds(1110, 450, 140, 27);
+        buttonDownloadFile.setBounds(1200, 450, 140, 27);
 
         buttonUploadFile.setText("Upload File");
         panelManagement.add(buttonUploadFile);
-        buttonUploadFile.setBounds(520, 790, 140, 27);
+        buttonUploadFile.setBounds(900, 450, 140, 27);
 
         buttonOpenFile.setText("Open File");
         panelManagement.add(buttonOpenFile);
-        buttonOpenFile.setBounds(390, 790, 130, 27);
-
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        jScrollPane3.setViewportView(jTable1);
-
-        panelManagement.add(jScrollPane3);
-        jScrollPane3.setBounds(390, 520, 980, 260);
-
-        jLabel3.setText("Library Local Media: ");
-        panelManagement.add(jLabel3);
-        jLabel3.setBounds(410, 490, 120, 30);
+        buttonOpenFile.setBounds(770, 450, 130, 27);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panelManagement, javax.swing.GroupLayout.DEFAULT_SIZE, 1407, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(panelManagement, javax.swing.GroupLayout.PREFERRED_SIZE, 1560, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addComponent(panelManagement, javax.swing.GroupLayout.PREFERRED_SIZE, 847, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
@@ -215,22 +204,33 @@ public class PanelManagement extends javax.swing.JPanel {
 
     private void buttonRefreshTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRefreshTableActionPerformed
         try {
-            String search = textFieldFile.getText().trim().toLowerCase();
-            
+
+            MediaSyncPolling mediaSyncPolling = jframe.getComponent();
+            String token = tokenService.getToken();
+
             //for networkmedia source: ViewToolNetworkDownload
+            mediaSyncPolling.setToken(token);
+            mediaSyncPolling.setPollingInterval(5);
+            
+           
 
-            java.util.List<martin.viewtool.core.MediaItem> files = libraryService.getFiles();
+            if (!listenerAdded) {
 
-            if (!search.isEmpty()) {
-                files = files.stream()
-                .filter(file -> file.getName().toLowerCase().contains(search))
-                .toList();
+                mediaSyncPolling.addCustomEventListener(new CheckListMediaListener() {
+                    @Override
+                    public void checkListMediaReceived(CheckListMediaEvent evt) {
+                        List<Media> mediaList = evt.getMediaList();
+                        martin.viewtool.core.MediaTableModel model = new martin.viewtool.core.MediaTableModel(mediaList);
+                        tableFiles.setModel(model);
+                        columnPrefs();
+                       
+                    }
+                });
+                listenerAdded = true;  
             }
 
-            martin.viewtool.core.MediaTableModel model = new martin.viewtool.core.MediaTableModel(files);
-            tableFiles.setModel(model);
-
-            columnPrefs();
+            mediaSyncPolling.setRunning(true);
+            
 
         } catch (Exception ex) {
             Alerts.error(this, "Error: " + ex.getMessage());
@@ -246,16 +246,16 @@ public class PanelManagement extends javax.swing.JPanel {
         int modelRow = tableFiles.convertRowIndexToModel(selectedRow);
 
         MediaTableModel model = (martin.viewtool.core.MediaTableModel) tableFiles.getModel();
-        MediaItem file = model.getFile(modelRow);
+        Media file = model.getFile(modelRow);
 
         boolean confirm = Alerts.confirm(this,
-            "Are you sure you want to delete this file?\n" + file.getName(),
+            "Are you sure you want to delete this file?\n" + file.mediaFileName,
             "Confirm deletion");
 
         if (confirm) {
             try {
-                MediaLibrary library = new martin.viewtool.core.MediaLibrary();
-                boolean deleted = library.delete(file);
+                MediaLibrary library = new martin.viewtool.core.MediaLibrary(); // CORREGIR
+                boolean deleted = false;
 
                 if (deleted) {
                     JOptionPane.showMessageDialog(this, "File deleted successfully.");
@@ -283,11 +283,8 @@ public class PanelManagement extends javax.swing.JPanel {
     private javax.swing.JComboBox<String> comboFilter;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTable jTable1;
     private javax.swing.JLabel labelSearchFile;
     private javax.swing.JList<String> listFiles;
     private javax.swing.JPanel panelManagement;

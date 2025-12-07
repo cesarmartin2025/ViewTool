@@ -180,10 +180,10 @@
     <Property name="useNullLayout" type="boolean" value="true"/>
   </Layout>
   <SubComponents>
-    <Component class="Componente.Componente" name="componente1">
+    <Component class="MediaSyncPolling.MediaSyncPolling" name="mediaSyncPolling1">
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-          <AbsoluteConstraints x="1000" y="0" width="-1" height="-1"/>
+          <AbsoluteConstraints x="830" y="100" width="-1" height="-1"/>
         </Constraint>
       </Constraints>
     </Component>

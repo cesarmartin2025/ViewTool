@@ -7,16 +7,17 @@ package martin.viewtool.core;
 import java.time.Instant;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
+import MediaSyncPolling.Media;
 
 /**
  *
  * @author cesar
  */
 public final class MediaTableModel extends AbstractTableModel {
-    private final List<MediaItem> files;
-    private final String[] columns = {"Name", "Size (MB)", "Type", "Date"};
+    private final List<Media> files;
+    private final String[] columns = {"NAME", "User ID", "MimeType", "URL"};
 
-    public MediaTableModel(List<MediaItem> files) {
+    public MediaTableModel(List<Media> files) {
         this.files = files;
     }
 
@@ -33,28 +34,25 @@ public final class MediaTableModel extends AbstractTableModel {
     public Class<?> getColumnClass(int columnIndex) {
         return switch (columnIndex) {
             case 0 -> String.class;
-            case 1 -> Double.class;     
+            case 1 -> int.class;     
             case 2 -> String.class;
-            case 3 -> Instant.class;     
+            case 3 -> String.class;     
             default -> Object.class;
         };
     }
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        MediaItem file = files.get(rowIndex);
+        Media file = files.get(rowIndex);
         return switch (columnIndex) {
-            case 0 -> file.getName();
-            case 1 -> file.getSizeBytes() / (1024.0 * 1024.0);
-            case 2 -> file.getMimeType();
-            case 3 -> java.time.format.DateTimeFormatter
-             .ofPattern("dd/MM/yyyy HH:mm")
-             .withZone(java.time.ZoneId.systemDefault())
-             .format(file.getDate());
+            case 0 -> file.mediaFileName;
+            case 1 -> file.userId;
+            case 2 -> file.mediaMimeType;
+            case 3 -> file.downloadedFromUrl;
             default -> "";
         };
     }
 
-    public MediaItem getFile(int row) {
+    public Media getFile(int row) {
         return files.get(row); }
 }

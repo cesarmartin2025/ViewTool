@@ -25,9 +25,9 @@
             <version>3.0.0</version>
         </dependency>
         <dependency>
-            <groupId>unknown.binary</groupId>
-            <artifactId>Componente-1.0-SNAPSHOT</artifactId>
-            <version>SNAPSHOT</version>
+            <groupId>martin</groupId>
+            <artifactId>Componente</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>

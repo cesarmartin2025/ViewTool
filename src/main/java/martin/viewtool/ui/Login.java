@@ -4,7 +4,7 @@
  */
 package martin.viewtool.ui;
 
-import Componente.Componente;
+import MediaSyncPolling.MediaSyncPolling;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
@@ -75,14 +75,14 @@ public class Login extends JPanel {
                 String password = new String(fieldPassword.getPassword());
                 boolean remember = checkBoxRemember.isSelected();
                 
-                Componente componente = jframe.getComponent();
+                MediaSyncPolling mediaSyncPolling = jframe.getComponent();
                 if (email.isBlank() || password.isBlank()) {
                     Alerts.error(Login.this, "Login Failed. Please, write your email and your password");
                     return;
                 } else {
 
                     try {
-                        token = componente.login(email, password);
+                        token = mediaSyncPolling.login(email, password);
                     } catch (Exception ex) {
                         Alerts.error(Login.this, "Login failed. Please try again.");
                         return;

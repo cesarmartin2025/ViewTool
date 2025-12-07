@@ -5,8 +5,8 @@
 package martin.viewtool.ui;
 
 
-import Componente.CustomEvent;
-import Componente.CustomEventListener;
+import MediaSyncPolling.CheckListMediaEvent;
+import MediaSyncPolling.CheckListMediaListener;
 import javax.swing.JPanel;
 
 import martin.viewtool.core.TokenService;
@@ -23,7 +23,6 @@ public class ViewToolApp extends javax.swing.JFrame {
     private String token;
     private String apiUrl = "https://dimedianetapi9.azurewebsites.net/";
     private boolean loggedIn = false;
-    private boolean listenerAdded = false;
     
 
     /**
@@ -32,7 +31,7 @@ public class ViewToolApp extends javax.swing.JFrame {
     public ViewToolApp() {
         initComponents();
         token = tokenService.getToken();
-        componente1.setApiUrl(apiUrl);
+        mediaSyncPolling1.setApiUrl(apiUrl);
         
         if (token == null) {
             Login login = new Login(this);
@@ -46,29 +45,12 @@ public class ViewToolApp extends javax.swing.JFrame {
     public void loggedSuccess(String token) {
         this.token = token;
         this.loggedIn = true;
-        
-        componente1.setToken(token);
-        componente1.setPollingInterval(5);
-        
-        if(!listenerAdded){
-
-        componente1.addCustomEventListener(new CustomEventListener() {
-            @Override
-            public void customEventReceived(CustomEvent evt) {
-                System.out.println("Evento OK" + evt.getMediaList());
-            }
-        });
-        listenerAdded=true;
-        
-        }
-
-        componente1.setRunning(true);
         showPanel(new PanelMain());
 
     }
     
-    public Componente.Componente getComponent(){
-        return componente1;
+    public MediaSyncPolling.MediaSyncPolling getComponent(){
+        return mediaSyncPolling1;
     }
     public String getApiUrl(){
         return apiUrl;
@@ -100,7 +82,7 @@ public class ViewToolApp extends javax.swing.JFrame {
         dialogAbout = new javax.swing.JDialog();
         TextAreaAbout = new javax.swing.JTextArea();
         jOptionPane1 = new javax.swing.JOptionPane();
-        componente1 = new Componente.Componente();
+        mediaSyncPolling1 = new MediaSyncPolling.MediaSyncPolling();
         menuBarMain = new javax.swing.JMenuBar();
         MenuFile = new javax.swing.JMenu();
         MenuItemExit = new javax.swing.JMenuItem();
@@ -148,8 +130,8 @@ public class ViewToolApp extends javax.swing.JFrame {
             }
         });
         getContentPane().setLayout(null);
-        getContentPane().add(componente1);
-        componente1.setBounds(1000, 0, 164, 126);
+        getContentPane().add(mediaSyncPolling1);
+        mediaSyncPolling1.setBounds(830, 100, 164, 126);
 
         MenuFile.setText("File");
 
@@ -275,7 +257,7 @@ public class ViewToolApp extends javax.swing.JFrame {
 
     private void MenuManagementItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuManagementItemActionPerformed
         if (isLoggedIn()) {
-            showPanel(new PanelManagement());
+            showPanel(new PanelManagement(this));
 
         } else {
             Alerts.error(this, "Please login to continue.");
@@ -289,7 +271,7 @@ public class ViewToolApp extends javax.swing.JFrame {
         showPanel(new Login(this));
         setLoggedIn(false);
         tokenService.deleteToken();
-        componente1.setRunning(false);
+        mediaSyncPolling1.setRunning(false);
 
     }//GEN-LAST:event_MenuLogoutItemActionPerformed
 
@@ -324,9 +306,9 @@ public class ViewToolApp extends javax.swing.JFrame {
     private javax.swing.JMenu MenuManagement;
     private javax.swing.JMenuItem MenuManagementItem;
     private javax.swing.JTextArea TextAreaAbout;
-    private Componente.Componente componente1;
     private javax.swing.JDialog dialogAbout;
     private javax.swing.JOptionPane jOptionPane1;
+    private MediaSyncPolling.MediaSyncPolling mediaSyncPolling1;
     private javax.swing.JMenuBar menuBarMain;
     private javax.swing.JMenu menuMain;
     // End of variables declaration//GEN-END:variables
