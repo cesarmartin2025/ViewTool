@@ -16,6 +16,10 @@ import martin.viewtool.config.PreferencesService;
 import martin.viewtool.core.LibraryService;
 import MediaSyncPolling.Media;
 import java.io.File;
+import java.util.ArrayList;
+import javax.swing.JFileChooser;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import martin.viewtool.core.MediaItem;
 import martin.viewtool.core.MediaLibrary;
 import martin.viewtool.core.MediaTableModel;
@@ -33,6 +37,8 @@ public class PanelManagement extends javax.swing.JPanel {
     private ViewToolApp jframe;
     private TokenService tokenService = new TokenService();
     private boolean listenerAdded = false;
+    List<Media> mediaListUpdated = new ArrayList<>();
+    private String token;
 
     /**
      * Creates new form PanelManagement
@@ -40,6 +46,7 @@ public class PanelManagement extends javax.swing.JPanel {
     public PanelManagement(ViewToolApp jframe) {
         this.jframe = jframe;
         initComponents();
+        token = tokenService.getToken();
 
     }
 
@@ -120,7 +127,7 @@ public class PanelManagement extends javax.swing.JPanel {
         jScrollPane2.setViewportView(tableFiles);
 
         panelManagement.add(jScrollPane2);
-        jScrollPane2.setBounds(360, 50, 900, 400);
+        jScrollPane2.setBounds(360, 50, 890, 400);
 
         buttonRefreshTable.setText("Refresh table");
         buttonRefreshTable.addActionListener(new java.awt.event.ActionListener() {
@@ -144,7 +151,7 @@ public class PanelManagement extends javax.swing.JPanel {
             }
         });
         panelManagement.add(buttonDeleteFile);
-        buttonDeleteFile.setBounds(640, 450, 88, 27);
+        buttonDeleteFile.setBounds(660, 450, 88, 27);
 
         jLabel1.setText("Media downloaded by ytb-dlp:");
         panelManagement.add(jLabel1);
@@ -161,7 +168,7 @@ public class PanelManagement extends javax.swing.JPanel {
             }
         });
         panelManagement.add(buttonDownloadFile);
-        buttonDownloadFile.setBounds(730, 450, 110, 27);
+        buttonDownloadFile.setBounds(750, 450, 110, 27);
 
         buttonUploadFile.setText("Upload File");
         buttonUploadFile.addActionListener(new java.awt.event.ActionListener() {
@@ -170,19 +177,24 @@ public class PanelManagement extends javax.swing.JPanel {
             }
         });
         panelManagement.add(buttonUploadFile);
-        buttonUploadFile.setBounds(550, 450, 93, 27);
+        buttonUploadFile.setBounds(570, 450, 93, 27);
 
         buttonOpenFile.setText("Open File");
+        buttonOpenFile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonOpenFileActionPerformed(evt);
+            }
+        });
         panelManagement.add(buttonOpenFile);
-        buttonOpenFile.setBounds(470, 450, 90, 27);
+        buttonOpenFile.setBounds(480, 450, 90, 27);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(panelManagement, javax.swing.GroupLayout.PREFERRED_SIZE, 1560, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addComponent(panelManagement, javax.swing.GroupLayout.PREFERRED_SIZE, 1263, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 297, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -210,22 +222,27 @@ public class PanelManagement extends javax.swing.JPanel {
     }//GEN-LAST:event_buttonRefreshListActionPerformed
 
     private void buttonRefreshTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRefreshTableActionPerformed
+        
         try {
 
             MediaSyncPolling mediaSyncPolling = jframe.getComponent();
             String token = tokenService.getToken();
-
-            //for networkmedia source: ViewToolNetworkDownload
             mediaSyncPolling.setToken(token);
             mediaSyncPolling.setPollingInterval(5);
 
             if (!listenerAdded) {
+                Alerts.info(this, "The table is being iniciated...");
 
                 mediaSyncPolling.addCustomEventListener(new CheckListMediaListener() {
                     @Override
                     public void checkListMediaReceived(CheckListMediaEvent evt) {
+                        System.out.print(evt.getMediaList()); // Control code.
                         List<Media> mediaList = evt.getMediaList();
-                        martin.viewtool.core.MediaTableModel model = new martin.viewtool.core.MediaTableModel(mediaList);
+
+                        for (Media file : mediaList) {
+                            mediaListUpdated.add(file);
+                        }
+                        martin.viewtool.core.MediaTableModel model = new martin.viewtool.core.MediaTableModel(mediaListUpdated);
                         tableFiles.setModel(model);
                         columnPrefs();
 
@@ -275,7 +292,7 @@ public class PanelManagement extends javax.swing.JPanel {
 
     private void buttonDownloadFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDownloadFileActionPerformed
         MediaSyncPolling mediaSyncPolling = jframe.getComponent();
-        String token = tokenService.getToken();
+        
 
         Path defaultPath = Path.of(System.getProperty("user.home"), "ViewToolNetworkDownload");
         int selectedRow = tableFiles.getSelectedRow();
@@ -313,9 +330,60 @@ public class PanelManagement extends javax.swing.JPanel {
     }//GEN-LAST:event_buttonDownloadFileActionPerformed
 
     private void buttonUploadFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonUploadFileActionPerformed
+        JFileChooser jFileChooserUpload = new JFileChooser();
+        int result = jFileChooserUpload.showOpenDialog(this);
+        if (result == javax.swing.JFileChooser.APPROVE_OPTION) {
+            File selectedFile = jFileChooserUpload.getSelectedFile();
+            if (selectedFile.isDirectory()) {
+                JOptionPane.showMessageDialog(this,
+                        "Please select a file, not a directory.",
+                        "Invalid selection",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
+            String name = selectedFile.getName().toLowerCase();
+            if (!name.endsWith(".mp3") && !name.endsWith(".mp4") && !name.endsWith(".m4a")) {
+                JOptionPane.showMessageDialog(this,
+                        "Only MP3, MP4 or M4A files are allowed.",
+                        "Invalid file type",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            String youtubeUrl = JOptionPane.showInputDialog(
+                    this,
+                    "Enter the YouTube URL for this media:",
+                    "YouTube URL",
+                    JOptionPane.QUESTION_MESSAGE
+            );
+
+           
+            if (youtubeUrl == null) {
+                return;
+            }
+
+            youtubeUrl = youtubeUrl.trim();
+            if (youtubeUrl.isEmpty()) {
+                JOptionPane.showMessageDialog(this,
+                        "URL cannot be empty.",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            MediaSyncPolling msp = jframe.getComponent();
+            msp.uploadFileMultipart(selectedFile, youtubeUrl, token);
+
+            JOptionPane.showMessageDialog(this,
+                    "File selected:\n" + selectedFile.getAbsolutePath(),
+                    "Information about update", JOptionPane.INFORMATION_MESSAGE);
+        }
 
     }//GEN-LAST:event_buttonUploadFileActionPerformed
+
+    private void buttonOpenFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonOpenFileActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_buttonOpenFileActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
