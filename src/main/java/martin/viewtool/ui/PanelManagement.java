@@ -49,59 +49,82 @@ public class PanelManagement extends javax.swing.JPanel {
 
     }
 
-    private void addNewMediaNetwork(List<Media> newMedia) {
-    for (Media media : newMedia) {
-        if (media == null) {
-            continue;
-        }
+    private List<Media> filterMedia(String textField) {
+        List<Media> mediaResult = new ArrayList<>();
 
-        boolean exists = false;
-        for (Media file : networkMediaAll) {
-            if (file != null && file.id == media.id && media.id > 0) {
-                exists = true;
-                break;
-            }
-        }
-
-        if (!exists) {
-            networkMediaAll.add(media);
-        }
-    }
-}
-
-private void rebuildMediaTable() {
-    List<Media> mediaListCombined = new ArrayList<>(networkMediaAll);
-    java.util.Set<String> networkNames = new java.util.HashSet<>();
-    for (Media media : networkMediaAll) {
-        if (media != null && media.mediaFileName != null) {
-            networkNames.add(media.mediaFileName);
-        }
-    }
-    File baseDir = networkMediaService.getDownloadBaseDir().toFile();
-    File[] localFiles = baseDir.listFiles();
-
-    if (localFiles != null) {
-        for (File file : localFiles) {
-            if (file.isFile()) {
-                String name = file.getName();
-
-                if (!networkNames.contains(name)) {
-                    Media media = new Media();
-                    media.id = 0;                
-                    media.mediaFileName = name;
-                    media.userId = -1;
-                    media.downloadedFromUrl = "Unknown";
-                    mediaListCombined.add(media);
+        for (Media media : listMedia) {
+            if (media != null && media.mediaFileName != null) {
+                if (media.mediaFileName.toLowerCase().contains(textField.toLowerCase())) {
+                    mediaResult.add(media);
                 }
             }
         }
+        return mediaResult;
+    }
+    
+    private void showMediaFiltered(String textField){
+        if (textField != null) {
+            List<Media> filteredMedia = filterMedia(textField);
+            MediaTableModel model = new MediaTableModel(filteredMedia);
+            tableFiles.setModel(model);
+            columnPrefs();
+
+        }
     }
 
-    MediaTableModel model = new MediaTableModel(mediaListCombined);
-    tableFiles.setModel(model);
-    listMedia = new ArrayList<>(mediaListCombined);
-    columnPrefs();
-}
+    private void addNewMediaNetwork(List<Media> newMedia) {
+        for (Media media : newMedia) {
+            if (media == null) {
+                continue;
+            }
+
+            boolean exists = false;
+            for (Media file : networkMediaAll) {
+                if (file != null && file.id == media.id && media.id > 0) {
+                    exists = true;
+                    break;
+                }
+            }
+
+            if (!exists) {
+                networkMediaAll.add(media);
+            }
+        }
+    }
+
+    private void rebuildMediaTable() {
+        List<Media> mediaListCombined = new ArrayList<>(networkMediaAll);
+        java.util.Set<String> networkNames = new java.util.HashSet<>();
+        for (Media media : networkMediaAll) {
+            if (media != null && media.mediaFileName != null) {
+                networkNames.add(media.mediaFileName);
+            }
+        }
+        File baseDir = networkMediaService.getDownloadBaseDir().toFile();
+        File[] localFiles = baseDir.listFiles();
+
+        if (localFiles != null) {
+            for (File file : localFiles) {
+                if (file.isFile()) {
+                    String name = file.getName();
+
+                    if (!networkNames.contains(name)) {
+                        Media media = new Media();
+                        media.id = 0;
+                        media.mediaFileName = name;
+                        media.userId = -1;
+                        media.downloadedFromUrl = "Unknown";
+                        mediaListCombined.add(media);
+                    }
+                }
+            }
+        }
+
+        MediaTableModel model = new MediaTableModel(mediaListCombined);
+        tableFiles.setModel(model);
+        listMedia = new ArrayList<>(mediaListCombined);
+        columnPrefs();
+    }
 
     private Media getSelectedMedia(String action) {
         int selectedRow = tableFiles.getSelectedRow();
@@ -163,6 +186,7 @@ private void rebuildMediaTable() {
         buttonDownloadFile = new javax.swing.JButton();
         buttonUploadFile = new javax.swing.JButton();
         buttonOpenFile = new javax.swing.JButton();
+        buttonSearch = new javax.swing.JButton();
 
         panelManagement.setMaximumSize(new java.awt.Dimension(1920, 1080));
         panelManagement.setMinimumSize(new java.awt.Dimension(800, 600));
@@ -172,7 +196,7 @@ private void rebuildMediaTable() {
         jScrollPane1.setViewportView(listFiles);
 
         panelManagement.add(jScrollPane1);
-        jScrollPane1.setBounds(0, 50, 210, 360);
+        jScrollPane1.setBounds(0, 50, 210, 400);
 
         buttonRefreshList.setText("Refresh list");
         buttonRefreshList.addActionListener(new java.awt.event.ActionListener() {
@@ -181,11 +205,11 @@ private void rebuildMediaTable() {
             }
         });
         panelManagement.add(buttonRefreshList);
-        buttonRefreshList.setBounds(0, 410, 100, 27);
+        buttonRefreshList.setBounds(0, 450, 100, 27);
 
         comboFilter.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "All", "Videos", "Audios", "Others" }));
         panelManagement.add(comboFilter);
-        comboFilter.setBounds(100, 410, 120, 26);
+        comboFilter.setBounds(100, 450, 120, 26);
 
         tableFiles.setAutoCreateRowSorter(true);
         tableFiles.setModel(new javax.swing.table.DefaultTableModel(
@@ -216,11 +240,11 @@ private void rebuildMediaTable() {
             }
         });
         panelManagement.add(textFieldFile);
-        textFieldFile.setBounds(970, 20, 150, 26);
+        textFieldFile.setBounds(820, 20, 150, 26);
 
         labelSearchFile.setText("Search :");
         panelManagement.add(labelSearchFile);
-        labelSearchFile.setBounds(920, 20, 60, 30);
+        labelSearchFile.setBounds(770, 20, 60, 30);
 
         buttonDeleteFile.setText("Delete File");
         buttonDeleteFile.addActionListener(new java.awt.event.ActionListener() {
@@ -266,6 +290,15 @@ private void rebuildMediaTable() {
         panelManagement.add(buttonOpenFile);
         buttonOpenFile.setBounds(370, 450, 120, 27);
 
+        buttonSearch.setText("Search");
+        buttonSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonSearchActionPerformed(evt);
+            }
+        });
+        panelManagement.add(buttonSearch);
+        buttonSearch.setBounds(970, 20, 76, 27);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -300,7 +333,9 @@ private void rebuildMediaTable() {
     }//GEN-LAST:event_buttonRefreshListActionPerformed
 
     private void buttonRefreshTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRefreshTableActionPerformed
-         rebuildMediaTable();
+
+                 rebuildMediaTable();
+            
         try {
 
             MediaSyncPolling mediaSyncPolling = jframe.getComponent();
@@ -321,7 +356,6 @@ private void rebuildMediaTable() {
                             return;
                         }
 
-                        
                         addNewMediaNetwork(newMedia);
                         rebuildMediaTable();
 
@@ -477,13 +511,15 @@ private void rebuildMediaTable() {
     }//GEN-LAST:event_buttonOpenFileActionPerformed
 
     private void textFieldFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFieldFileActionPerformed
-        String name = textFieldFile.getText();
-        for (Media media : listMedia) {
-            if (media.mediaFileName.contains(name)) {
-
-            }
-        }
+        String textField = textFieldFile.getText();
+        showMediaFiltered(textField);
+      
     }//GEN-LAST:event_textFieldFileActionPerformed
+
+    private void buttonSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSearchActionPerformed
+        String textField = textFieldFile.getText();
+        showMediaFiltered(textField);
+    }//GEN-LAST:event_buttonSearchActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -492,6 +528,7 @@ private void rebuildMediaTable() {
     private javax.swing.JButton buttonOpenFile;
     private javax.swing.JButton buttonRefreshList;
     private javax.swing.JButton buttonRefreshTable;
+    private javax.swing.JButton buttonSearch;
     private javax.swing.JButton buttonUploadFile;
     private javax.swing.JComboBox<String> comboFilter;
     private javax.swing.JLabel jLabel1;
