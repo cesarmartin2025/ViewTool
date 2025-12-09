@@ -17,13 +17,13 @@ import java.util.Set;
  * @author cesar
  */
 public class MediaService {
-    private  List<Media> networkMediaAll = new ArrayList<>();
+
+    private List<Media> networkMediaAll = new ArrayList<>();
 
     public MediaService() {
     }
-    
-   
-    public List<Media> getNetworkMediaAll(){
+
+    public List<Media> getNetworkMediaAll() {
         return new ArrayList<>(networkMediaAll);
     }
 
@@ -78,9 +78,9 @@ public class MediaService {
             for (File file : localFiles) {
                 if (file.isFile()) {
                     String name = file.getName();
-                    
+
                     // This condition check if 
-                    if (!networkNames.contains(name)) { 
+                    if (!networkNames.contains(name)) {
                         Media media = new Media();
                         media.id = 0;
                         media.mediaFileName = name;
@@ -93,10 +93,10 @@ public class MediaService {
         }
         return mediaListCombined;
     }
-    
-    public List<Media> filterMedia(String textField,List<Media> listMedia) {
+
+    public List<Media> filterMedia(String textField, List<Media> listMedia) {
         List<Media> mediaResult = new ArrayList<>();
-        
+
         String textLowerCase = textField.toLowerCase();
 
         for (Media media : listMedia) {

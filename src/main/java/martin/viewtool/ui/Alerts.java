@@ -12,7 +12,9 @@ import javax.swing.*;
 import java.awt.*;
 
 public final class Alerts {
-    private Alerts() {}
+
+    private Alerts() {
+    }
 
     public static void info(Component parent, String msg) {
         JOptionPane.showMessageDialog(parent, msg, "Information",
@@ -34,7 +36,6 @@ public final class Alerts {
                 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION;
     }
 
-    
     public static void showException(Component parent, Throwable ex) {
         String msg = ex.getMessage() != null ? ex.getMessage() : ex.getClass().getSimpleName();
         error(parent, msg);

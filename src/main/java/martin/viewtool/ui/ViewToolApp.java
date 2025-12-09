@@ -20,9 +20,8 @@ public class ViewToolApp extends javax.swing.JFrame {
     private String token;
     private String apiUrl = "https://dimedianetapi9.azurewebsites.net/";
     private boolean loggedIn = false;
-    
+
     PanelManagement panelManagement;
-    
 
     /**
      * Creates new form ViewToolApp
@@ -32,8 +31,7 @@ public class ViewToolApp extends javax.swing.JFrame {
         token = tokenService.getToken();
         mediaSyncPolling1.setApiUrl(apiUrl);
         panelManagement = new PanelManagement(this);
-        
-        
+
         if (token == null) {
             Login login = new Login(this);
             showPanel(login);
@@ -42,18 +40,19 @@ public class ViewToolApp extends javax.swing.JFrame {
         }
 
     }
-    
+
     public void loggedSuccess(String token) {
         this.token = token;
         this.loggedIn = true;
         showPanel(new PanelMain());
 
     }
-    
-    public MediaSyncPolling.MediaSyncPolling getComponent(){
+
+    public MediaSyncPolling.MediaSyncPolling getComponent() {
         return mediaSyncPolling1;
     }
-    public String getApiUrl(){
+
+    public String getApiUrl() {
         return apiUrl;
     }
 

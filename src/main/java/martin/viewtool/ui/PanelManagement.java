@@ -46,11 +46,12 @@ public class PanelManagement extends javax.swing.JPanel {
         initComponents();
         token = tokenService.getToken();
 
-    }     
-    private void showMediaFiltered(String textField){
+    }
+
+    private void showMediaFiltered(String textField) {
         if (textField != null) {
-            List<Media> filteredMedia = mediaService.filterMedia(textField,listMedia);
-            MediaTableModel model = new MediaTableModel(filteredMedia,mediaService);
+            List<Media> filteredMedia = mediaService.filterMedia(textField, listMedia);
+            MediaTableModel model = new MediaTableModel(filteredMedia, mediaService);
             tableFiles.setModel(model);
             columnPrefs();
 
@@ -59,7 +60,7 @@ public class PanelManagement extends javax.swing.JPanel {
 
     private void rebuildMediaTable() {
         List<Media> mediaListCombined = mediaService.createMediaListCombined();
-        MediaTableModel model = new MediaTableModel(mediaListCombined,mediaService);
+        MediaTableModel model = new MediaTableModel(mediaListCombined, mediaService);
         tableFiles.setModel(model);
         listMedia = new ArrayList<>(mediaListCombined);
         columnPrefs();
@@ -68,11 +69,9 @@ public class PanelManagement extends javax.swing.JPanel {
     private Media getSelectedMedia(String action) {
         int selectedRow = tableFiles.getSelectedRow();
         if (selectedRow < 0) {
-            JOptionPane.showMessageDialog(
+            Alerts.error(
                     this,
-                    "Please select a file to " + action + ".",
-                    "No selection",
-                    JOptionPane.WARNING_MESSAGE
+                    "Please select a file to " + action + "."
             );
             return null;
         }
@@ -267,14 +266,14 @@ public class PanelManagement extends javax.swing.JPanel {
             listFiles.setModel(model);
 
         } catch (IOException ex) {
-            JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage());
+            Alerts.error(this, "Error: " + ex.getMessage());
         }
     }//GEN-LAST:event_buttonRefreshListActionPerformed
 
     private void buttonRefreshTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRefreshTableActionPerformed
 
-                 rebuildMediaTable();
-            
+        rebuildMediaTable();
+
         try {
 
             MediaSyncPolling mediaSyncPolling = jframe.getComponent();
@@ -288,7 +287,7 @@ public class PanelManagement extends javax.swing.JPanel {
                 mediaSyncPolling.addCustomEventListener(new CheckListMediaListener() {
                     @Override
                     public void checkListMediaReceived(CheckListMediaEvent evt) {
-                        
+
                         List<Media> newMedia = evt.getMediaList();
 
                         if (newMedia == null || newMedia.isEmpty()) {
@@ -329,9 +328,9 @@ public class PanelManagement extends javax.swing.JPanel {
                 boolean deleted = Files.deleteIfExists(localFile.toPath());
 
                 if (deleted) {
-                    JOptionPane.showMessageDialog(this, "File deleted successfully.");
+                    Alerts.info(this, "File deleted successfully.");
                 } else {
-                    JOptionPane.showMessageDialog(this, "File is on network, could not be deleted.");
+                    Alerts.error(this, "File is on network, could not be deleted.");
                 }
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Error deleting file: " + ex.getMessage());
@@ -355,11 +354,11 @@ public class PanelManagement extends javax.swing.JPanel {
             Path destPath = mediaService.getDownloadBaseDir().resolve(file.mediaFileName);
             File destFile = destPath.toFile();
             try {
-                mediaSyncPolling.download(idMedia, destFile, token); 
-                JOptionPane.showMessageDialog(this, "File downloaded successfully.");
+                mediaSyncPolling.download(idMedia, destFile, token);
+                Alerts.info(this, "File downloaded successfully.");
 
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Error downloading file: " + ex.getMessage());
+                Alerts.error(this, "Error downloading file: " + ex.getMessage());
             }
         }
     }//GEN-LAST:event_buttonDownloadFileActionPerformed
@@ -370,19 +369,15 @@ public class PanelManagement extends javax.swing.JPanel {
         if (result == javax.swing.JFileChooser.APPROVE_OPTION) {
             File selectedFile = jFileChooserUpload.getSelectedFile();
             if (selectedFile.isDirectory()) {
-                JOptionPane.showMessageDialog(this,
-                        "Please select a file, not a directory.",
-                        "Invalid selection",
-                        JOptionPane.ERROR_MESSAGE);
+                Alerts.error(this,
+                        "Please select a file, not a directory.");
                 return;
             }
 
             String name = selectedFile.getName().toLowerCase();
             if (!name.endsWith(".mp3") && !name.endsWith(".mp4") && !name.endsWith(".m4a")) {
-                JOptionPane.showMessageDialog(this,
-                        "Only MP3, MP4 or M4A files are allowed.",
-                        "Invalid file type",
-                        JOptionPane.ERROR_MESSAGE);
+                Alerts.error(this,
+                        "Only MP3, MP4 or M4A files are allowed.");
                 return;
             }
 
@@ -399,10 +394,8 @@ public class PanelManagement extends javax.swing.JPanel {
 
             youtubeUrl = youtubeUrl.trim();
             if (youtubeUrl.isEmpty()) {
-                JOptionPane.showMessageDialog(this,
-                        "URL cannot be empty.",
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE);
+                Alerts.error(this,
+                        "URL cannot be empty.");
                 return;
             }
             MediaSyncPolling msp = jframe.getComponent();
@@ -412,9 +405,8 @@ public class PanelManagement extends javax.swing.JPanel {
                 Alerts.error(this, e.getMessage());
             }
 
-            JOptionPane.showMessageDialog(this,
-                    "File uploaded:\n" + selectedFile.getAbsolutePath(),
-                    "Information about update", JOptionPane.INFORMATION_MESSAGE);
+            Alerts.info(this,
+                    "File uploaded:\n" + selectedFile.getAbsolutePath());
         }
 
     }//GEN-LAST:event_buttonUploadFileActionPerformed
@@ -429,10 +421,8 @@ public class PanelManagement extends javax.swing.JPanel {
         File localFile = mediaService.getLocalFile(file);
 
         if (!localFile.exists()) {
-            JOptionPane.showMessageDialog(this,
-                    "This media is not downloaded in the local directory.",
-                    "File not found",
-                    JOptionPane.ERROR_MESSAGE);
+            Alerts.error(this,
+                    "This media is not downloaded in the local directory.");
             return;
         }
 
@@ -442,17 +432,15 @@ public class PanelManagement extends javax.swing.JPanel {
             }
             java.awt.Desktop.getDesktop().open(localFile);
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this,
-                    "Error opening file: " + ex.getMessage(),
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE);
+            Alerts.error(this,
+                    "Error opening file: " + ex.getMessage());
         }
     }//GEN-LAST:event_buttonOpenFileActionPerformed
 
     private void textFieldFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFieldFileActionPerformed
         String textField = textFieldFile.getText();
         showMediaFiltered(textField);
-      
+
     }//GEN-LAST:event_textFieldFileActionPerformed
 
     private void buttonSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSearchActionPerformed
