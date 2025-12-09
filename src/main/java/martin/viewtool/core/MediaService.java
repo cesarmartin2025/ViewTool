@@ -16,10 +16,10 @@ import java.util.Set;
  *
  * @author cesar
  */
-public class NetworkMediaService {
+public class MediaService {
     private  List<Media> networkMediaAll = new ArrayList<>();
 
-    public NetworkMediaService() {
+    public MediaService() {
     }
     
    
@@ -92,6 +92,21 @@ public class NetworkMediaService {
             }
         }
         return mediaListCombined;
+    }
+    
+    public List<Media> filterMedia(String textField,List<Media> listMedia) {
+        List<Media> mediaResult = new ArrayList<>();
+        
+        String textLowerCase = textField.toLowerCase();
+
+        for (Media media : listMedia) {
+            if (media != null && media.mediaFileName != null) {
+                if (media.mediaFileName.toLowerCase().contains(textLowerCase)) {
+                    mediaResult.add(media);
+                }
+            }
+        }
+        return mediaResult;
     }
 
 }

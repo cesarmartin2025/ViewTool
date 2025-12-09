@@ -19,10 +19,9 @@ import java.io.File;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import javax.swing.JFileChooser;
-import martin.viewtool.core.MediaFilterService;
 import martin.viewtool.core.MediaItem;
 import martin.viewtool.core.MediaTableModel;
-import martin.viewtool.core.NetworkMediaService;
+import martin.viewtool.core.MediaService;
 import martin.viewtool.core.TokenService;
 
 /**
@@ -35,9 +34,8 @@ public class PanelManagement extends javax.swing.JPanel {
 
     private final LibraryService libraryService = new LibraryService(Path.of(prefService.getOutputDir().toString()));
     private ViewToolApp jframe;
-    private TokenService tokenService = new TokenService();
-    private NetworkMediaService networkMediaService = new NetworkMediaService();
-    private MediaFilterService mediaFilterService = new MediaFilterService();
+    private final TokenService tokenService = new TokenService();
+    private final MediaService mediaService = new MediaService();
     private List<Media> listMedia = new ArrayList<>();
 
     private boolean listenerAdded = false;
@@ -51,8 +49,8 @@ public class PanelManagement extends javax.swing.JPanel {
     }     
     private void showMediaFiltered(String textField){
         if (textField != null) {
-            List<Media> filteredMedia = mediaFilterService.filterMedia(textField,listMedia);
-            MediaTableModel model = new MediaTableModel(filteredMedia,networkMediaService);
+            List<Media> filteredMedia = mediaService.filterMedia(textField,listMedia);
+            MediaTableModel model = new MediaTableModel(filteredMedia,mediaService);
             tableFiles.setModel(model);
             columnPrefs();
 
@@ -60,8 +58,8 @@ public class PanelManagement extends javax.swing.JPanel {
     }
 
     private void rebuildMediaTable() {
-        List<Media> mediaListCombined = networkMediaService.createMediaListCombined();
-        MediaTableModel model = new MediaTableModel(mediaListCombined,networkMediaService);
+        List<Media> mediaListCombined = mediaService.createMediaListCombined();
+        MediaTableModel model = new MediaTableModel(mediaListCombined,mediaService);
         tableFiles.setModel(model);
         listMedia = new ArrayList<>(mediaListCombined);
         columnPrefs();
@@ -285,7 +283,7 @@ public class PanelManagement extends javax.swing.JPanel {
             mediaSyncPolling.setPollingInterval(5);
 
             if (!listenerAdded) {
-                Alerts.info(this, "The table is being iniciated...");
+                Alerts.info(this, "Initializing network media list…");
 
                 mediaSyncPolling.addCustomEventListener(new CheckListMediaListener() {
                     @Override
@@ -297,7 +295,7 @@ public class PanelManagement extends javax.swing.JPanel {
                             return;
                         }
 
-                        networkMediaService.addNewMediaNetwork(newMedia);
+                        mediaService.addNewMediaNetwork(newMedia);
                         rebuildMediaTable();
 
                     }
@@ -319,7 +317,7 @@ public class PanelManagement extends javax.swing.JPanel {
             return;
         }
 
-        File localFile = networkMediaService.getLocalFile(file);
+        File localFile = mediaService.getLocalFile(file);
 
         boolean confirm = Alerts.confirm(this,
                 "Are you sure you want to delete this file?\n" + file.mediaFileName,
@@ -354,10 +352,10 @@ public class PanelManagement extends javax.swing.JPanel {
                 "Confirm download");
 
         if (confirm) {
-            Path destPath = networkMediaService.getDownloadBaseDir().resolve(file.mediaFileName);
+            Path destPath = mediaService.getDownloadBaseDir().resolve(file.mediaFileName);
             File destFile = destPath.toFile();
             try {
-                mediaSyncPolling.download(idMedia, destFile, token); // CORREGIR
+                mediaSyncPolling.download(idMedia, destFile, token); 
                 JOptionPane.showMessageDialog(this, "File downloaded successfully.");
 
             } catch (Exception ex) {
@@ -428,7 +426,7 @@ public class PanelManagement extends javax.swing.JPanel {
             return;
         }
 
-        File localFile = networkMediaService.getLocalFile(file);
+        File localFile = mediaService.getLocalFile(file);
 
         if (!localFile.exists()) {
             JOptionPane.showMessageDialog(this,

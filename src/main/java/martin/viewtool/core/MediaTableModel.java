@@ -15,15 +15,15 @@ import java.nio.file.Path;
  * @author cesar
  */
 public final class MediaTableModel extends AbstractTableModel {
-    private final NetworkMediaService networkMediaService;
+    private final MediaService mediaService;
     private final List<Media> files;
     private final String[] columns = {"Location","Name", "User ID", "URL"};
     private final Path downloadPath;
 
-    public MediaTableModel(List<Media> files,NetworkMediaService networkMediaService) {
+    public MediaTableModel(List<Media> files,MediaService mediaService) {
         this.files = files;
-        this.networkMediaService=networkMediaService;
-        this.downloadPath = networkMediaService.getDownloadBaseDir();
+        this.mediaService=mediaService;
+        this.downloadPath = mediaService.getDownloadBaseDir();
     }
 
     @Override public int getRowCount() { 
