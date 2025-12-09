@@ -14,7 +14,7 @@ Con la nueva actualización (Tarea DI01_2), la aplicación incorpora un gestor d
 
 ---
 
-## ⚙️ Características principales
+## ⚙️ Características principales 
 
 - **Ventana principal** → Muestra las funciones principales del programa:
     - Descargar vídeo de youtube mediante URL.
@@ -35,7 +35,16 @@ Con la nueva actualización (Tarea DI01_2), la aplicación incorpora un gestor d
     - Ver los archivos en una lista.
     - Filtrar archivos por tipo de archivo(video,audio,other).
     - Buscar archivos concretos por su nombre en una tabla.
-    - Borrar archivos seleccionándolos en la tabla. 
+    - Borrar archivos seleccionándolos en la tabla.
+     -**Integración con la DI Media Network (Actualización 09/12/2025)**
+
+    La aplicación incorpora ahora un sistema que intengra la DI Media Network , permitiendo sincronizar, visualizar, descargar y subir archivos multimedia desde la red directamente en la aplicación.
+**Funciones añadidas en el panel Management**:
+-Inicio de sesión y autenticación mediante el componente Media Network.
+-Sincronización y actualización automática de la biblioteca en red mediante eventos personalizados.
+-Funciones de descarga y subida de archivos a la red desde la aplicacion.
+-Funciones de borrado y apertura de archivos locales.
+-Unificación de archivos locales y de la Network en una tabla de archivos multimedia.
 ---
 
 ## 🧩 Estructura del proyecto
@@ -71,6 +80,15 @@ ViewTool/
 | La eliminación de archivos no mostraba confirmación |Se utilizó la clase Alerts antes de ejecutar MediaLibrary.delete(). |
 | Las fechas se mostraban con formato poco legible (Instant) | Se creó un DateTimeFormatter para mostrar un formato legible para las fechas. |
 | Al cambiar el modelo de la JTable desde el Designer se perdían configuraciones |	creamos un modelo de Tabla usando la extension AbstractTableModel y un método de ajustes de columnas antes de inicializar la tabla.
+| La aplicación no integraba archivos locales con los de la Network |	Se implementó un sistema de fusión de listas  unificando datos locales y remotos.
+| La tabla no mostraba correctamente si un archivo estaba en local, en la Network o en ambas | Se añadió una columna calculada que determina el estado comprobando existencia en disco y valor del media.id.
+| Los archivos locales movidos manualmente no se detectaban al iniciar la aplicación| Se añadió un escaneo automático del directorio para modificar la lista local.
+|La tabla perdía datos al sincronizar con el componente| Se implementó un método que añade solo las novedades detectadas por los eventos del componente.
+|Limitar los archivos que se pueden subir al servidor para que solo fuesen .mp3, .mp4 o .m4a| Se implementó un filtro de extensiones mediante name.endswith().
+|El usuario debía escribir la URL del vídeo después de elegir el archivo que quería subir| Se creó un cuadro de entrada para que el usuario pudiese introducir la URL del vídeo.
+
+
+
 
 ---
 
@@ -93,6 +111,14 @@ o desde el IDE.
 
 ---
 
+## 09/12/2025 – Actualización MediaSyncPolling
+
+- Se añadió la sincronización de DI Media Network.
+- Se añadió una tabla de medios unificada (local y de red).
+- Se añadieron funciones de descarga y carga mediante el componente MediaSyncPolling.
+- Se agregó la función de eliminación y apertura para medios locales.
+- Se agregó la actualización automática de la tabla de medios mediante eventos personalizados.
+ ---  
 ## 🧾 Licencia y créditos
 
 Proyecto educativo desarrollado por **César Martín Pérez** para el módulo **Desarrollo de Interfaces(DAM)**.  
@@ -189,6 +215,16 @@ java -cp dist/ViewTool.jar martin.viewtool.ui.ViewToolApp
 ```
 
 ---
+
+## 2025-12-09 – MediaSyncPolling update
+
+-Added support for DI Media Network synchronization.
+-Added unified media table (local + network).
+-Added download/upload functions using the MediaSyncPolling component.
+-Added delete function for local medias.
+-Added “open local file” action.
+-Added automatic refresh of media table via custom events.
+
 
 ## License
 
