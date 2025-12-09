@@ -14,14 +14,17 @@ import MediaSyncPolling.Media;
  */
 public class MediaFilterService {
     
+    
     public MediaFilterService(){}
     
-    public List<MediaSyncPolling.Media> filterMedia(String textField,List<Media> listMedia) {
+    public List<Media> filterMedia(String textField,List<Media> listMedia) {
         List<Media> mediaResult = new ArrayList<>();
+        
+        String textLowerCase = textField.toLowerCase();
 
-        for (MediaSyncPolling.Media media : listMedia) {
+        for (Media media : listMedia) {
             if (media != null && media.mediaFileName != null) {
-                if (media.mediaFileName.toLowerCase().contains(textField.toLowerCase())) {
+                if (media.mediaFileName.toLowerCase().contains(textLowerCase)) {
                     mediaResult.add(media);
                 }
             }

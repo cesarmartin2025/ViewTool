@@ -38,8 +38,7 @@ public class PanelManagement extends javax.swing.JPanel {
     private TokenService tokenService = new TokenService();
     private NetworkMediaService networkMediaService = new NetworkMediaService();
     private MediaFilterService mediaFilterService = new MediaFilterService();
-    List<Media> listMedia = new ArrayList<>();
-    private final List<Media> networkMediaAll = new ArrayList<>();
+    private List<Media> listMedia = new ArrayList<>();
 
     private boolean listenerAdded = false;
     private String token;
@@ -53,7 +52,7 @@ public class PanelManagement extends javax.swing.JPanel {
     private void showMediaFiltered(String textField){
         if (textField != null) {
             List<Media> filteredMedia = mediaFilterService.filterMedia(textField,listMedia);
-            MediaTableModel model = new MediaTableModel(filteredMedia);
+            MediaTableModel model = new MediaTableModel(filteredMedia,networkMediaService);
             tableFiles.setModel(model);
             columnPrefs();
 
@@ -61,8 +60,8 @@ public class PanelManagement extends javax.swing.JPanel {
     }
 
     private void rebuildMediaTable() {
-        List<Media> mediaListCombined = networkMediaService.createMediaListCombined(networkMediaAll);
-        MediaTableModel model = new MediaTableModel(mediaListCombined);
+        List<Media> mediaListCombined = networkMediaService.createMediaListCombined();
+        MediaTableModel model = new MediaTableModel(mediaListCombined,networkMediaService);
         tableFiles.setModel(model);
         listMedia = new ArrayList<>(mediaListCombined);
         columnPrefs();
@@ -291,14 +290,14 @@ public class PanelManagement extends javax.swing.JPanel {
                 mediaSyncPolling.addCustomEventListener(new CheckListMediaListener() {
                     @Override
                     public void checkListMediaReceived(CheckListMediaEvent evt) {
-                        System.out.println(evt.getMediaList()); // Control code.
+                        
                         List<Media> newMedia = evt.getMediaList();
 
                         if (newMedia == null || newMedia.isEmpty()) {
                             return;
                         }
 
-                        networkMediaService.addNewMediaNetwork(newMedia,networkMediaAll);
+                        networkMediaService.addNewMediaNetwork(newMedia);
                         rebuildMediaTable();
 
                     }
@@ -334,7 +333,7 @@ public class PanelManagement extends javax.swing.JPanel {
                 if (deleted) {
                     JOptionPane.showMessageDialog(this, "File deleted successfully.");
                 } else {
-                    JOptionPane.showMessageDialog(this, "File could not be deleted.");
+                    JOptionPane.showMessageDialog(this, "File is on network, could not be deleted.");
                 }
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Error deleting file: " + ex.getMessage());

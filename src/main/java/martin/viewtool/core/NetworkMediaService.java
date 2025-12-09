@@ -17,8 +17,14 @@ import java.util.Set;
  * @author cesar
  */
 public class NetworkMediaService {
+    private  List<Media> networkMediaAll = new ArrayList<>();
 
     public NetworkMediaService() {
+    }
+    
+   
+    public List<Media> getNetworkMediaAll(){
+        return new ArrayList<>(networkMediaAll);
     }
 
     public Path getDownloadBaseDir() {
@@ -37,7 +43,7 @@ public class NetworkMediaService {
         return localPath.toFile();
     }
 
-    public void addNewMediaNetwork(List<Media> newMedia, List<Media> networkMediaAll) {
+    public void addNewMediaNetwork(List<Media> newMedia) {
         for (Media media : newMedia) {
             if (media == null) {
                 continue;
@@ -57,7 +63,7 @@ public class NetworkMediaService {
         }
     }
 
-    public List<Media> createMediaListCombined(List<Media> networkMediaAll) {
+    public List<Media> createMediaListCombined() {
         List<Media> mediaListCombined = new ArrayList<>(networkMediaAll);
         Set<String> networkNames = new HashSet<>();
         for (Media media : networkMediaAll) {
