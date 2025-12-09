@@ -19,6 +19,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import javax.swing.JFileChooser;
+import martin.viewtool.core.MediaFilterService;
 import martin.viewtool.core.MediaItem;
 import martin.viewtool.core.MediaTableModel;
 import martin.viewtool.core.NetworkMediaService;
@@ -36,6 +37,7 @@ public class PanelManagement extends javax.swing.JPanel {
     private ViewToolApp jframe;
     private TokenService tokenService = new TokenService();
     private NetworkMediaService networkMediaService = new NetworkMediaService();
+    private MediaFilterService mediaFilterService = new MediaFilterService();
     List<Media> listMedia = new ArrayList<>();
     private final List<Media> networkMediaAll = new ArrayList<>();
 
@@ -47,24 +49,10 @@ public class PanelManagement extends javax.swing.JPanel {
         initComponents();
         token = tokenService.getToken();
 
-    }
-
-    private List<Media> filterMedia(String textField) {
-        List<Media> mediaResult = new ArrayList<>();
-
-        for (Media media : listMedia) {
-            if (media != null && media.mediaFileName != null) {
-                if (media.mediaFileName.toLowerCase().contains(textField.toLowerCase())) {
-                    mediaResult.add(media);
-                }
-            }
-        }
-        return mediaResult;
-    }
-    
+    }     
     private void showMediaFiltered(String textField){
         if (textField != null) {
-            List<Media> filteredMedia = filterMedia(textField);
+            List<Media> filteredMedia = mediaFilterService.filterMedia(textField,listMedia);
             MediaTableModel model = new MediaTableModel(filteredMedia);
             tableFiles.setModel(model);
             columnPrefs();
@@ -72,54 +60,8 @@ public class PanelManagement extends javax.swing.JPanel {
         }
     }
 
-    private void addNewMediaNetwork(List<Media> newMedia) {
-        for (Media media : newMedia) {
-            if (media == null) {
-                continue;
-            }
-
-            boolean exists = false;
-            for (Media file : networkMediaAll) {
-                if (file != null && file.id == media.id && media.id > 0) {
-                    exists = true;
-                    break;
-                }
-            }
-
-            if (!exists) {
-                networkMediaAll.add(media);
-            }
-        }
-    }
-
     private void rebuildMediaTable() {
-        List<Media> mediaListCombined = new ArrayList<>(networkMediaAll);
-        java.util.Set<String> networkNames = new java.util.HashSet<>();
-        for (Media media : networkMediaAll) {
-            if (media != null && media.mediaFileName != null) {
-                networkNames.add(media.mediaFileName);
-            }
-        }
-        File baseDir = networkMediaService.getDownloadBaseDir().toFile();
-        File[] localFiles = baseDir.listFiles();
-
-        if (localFiles != null) {
-            for (File file : localFiles) {
-                if (file.isFile()) {
-                    String name = file.getName();
-
-                    if (!networkNames.contains(name)) {
-                        Media media = new Media();
-                        media.id = 0;
-                        media.mediaFileName = name;
-                        media.userId = -1;
-                        media.downloadedFromUrl = "Unknown";
-                        mediaListCombined.add(media);
-                    }
-                }
-            }
-        }
-
+        List<Media> mediaListCombined = networkMediaService.createMediaListCombined(networkMediaAll);
         MediaTableModel model = new MediaTableModel(mediaListCombined);
         tableFiles.setModel(model);
         listMedia = new ArrayList<>(mediaListCombined);
@@ -356,7 +298,7 @@ public class PanelManagement extends javax.swing.JPanel {
                             return;
                         }
 
-                        addNewMediaNetwork(newMedia);
+                        networkMediaService.addNewMediaNetwork(newMedia,networkMediaAll);
                         rebuildMediaTable();
 
                     }
@@ -372,7 +314,7 @@ public class PanelManagement extends javax.swing.JPanel {
     }//GEN-LAST:event_buttonRefreshTableActionPerformed
 
     private void buttonDeleteFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDeleteFileActionPerformed
-        //MODIFICAR CODIGO
+
         Media file = getSelectedMedia("Delete");
         if (file == null) {
             return;
