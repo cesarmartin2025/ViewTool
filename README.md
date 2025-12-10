@@ -10,7 +10,7 @@
 
 **ViewTool** es una aplicación de escritorio desarrollada en **Java Swing** que permite **descargar y gestionar contenidos multimedia** desde Internet utilizando la herramienta de línea de comandos **yt-dlp**.
 
-Con la nueva actualización (Tarea DI01_2), la aplicación incorpora un gestor de biblioteca multimedia, que permite visualizar, filtrar, buscar y eliminar archivos descargados desde la propia aplicación.
+Con la nueva actualización (Tarea DI01_3), la aplicación incorpora un gestor de biblioteca multimedia, que permite visualizar, filtrar, buscar y eliminar archivos descargados desde la propia aplicación.
 
 ---
 
@@ -39,12 +39,14 @@ Con la nueva actualización (Tarea DI01_2), la aplicación incorpora un gestor d
      -**Integración con la DI Media Network (Actualización 09/12/2025)**
 
     La aplicación incorpora ahora un sistema que intengra la DI Media Network , permitiendo sincronizar, visualizar, descargar y subir archivos multimedia desde la red directamente en la aplicación.
+
 **Funciones añadidas en el panel Management**:
--Inicio de sesión y autenticación mediante el componente Media Network.
--Sincronización y actualización automática de la biblioteca en red mediante eventos personalizados.
--Funciones de descarga y subida de archivos a la red desde la aplicacion.
--Funciones de borrado y apertura de archivos locales.
--Unificación de archivos locales y de la Network en una tabla de archivos multimedia.
+
+    - Inicio de sesión y autenticación mediante el componente Media Network.
+    - Sincronización y actualización automática de la biblioteca en red mediante eventos personalizados.
+    - Funciones de descarga y subida de archivos a la red desde la aplicacion.
+    - Funciones de borrado y apertura de archivos locales.
+    - Unificación de archivos locales y de la Network en una tabla de archivos multimedia.
 ---
 
 ## 🧩 Estructura del proyecto
