@@ -36,6 +36,7 @@ Con la nueva actualización (Tarea DI01_3), la aplicación incorpora un gestor d
     - Filtrar archivos por tipo de archivo(video,audio,other).
     - Buscar archivos concretos por su nombre en una tabla.
     - Borrar archivos seleccionándolos en la tabla.
+      
      -**Integración con la DI Media Network (Actualización 09/12/2025)**
 
     La aplicación incorpora ahora un sistema que intengra la DI Media Network , permitiendo sincronizar, visualizar, descargar y subir archivos multimedia desde la red directamente en la aplicación.
@@ -158,7 +159,23 @@ The latest update (Assignment DI01_2) introduces a Media Library Manager, enabli
     - View files in a list.
     - Filter files by file type (video, audio, other).
     - Search for specific files by name in a table.
-    - Delete files by selecting them in the table.  
+    - Delete files by selecting them in the table.
+   
+    - **Integration with the DI Media Network (Updated 09/12/2025)**
+
+The application now includes a system that integrates with the DI Media Network, allowing you to synchronize, view, download, and upload media files from the network directly within the application.
+
+**Added features in the Management panel:**
+
+- Login and authentication via the Media Network component.
+
+- Automatic synchronization and updating of the network library via custom events.
+
+- Download and upload functions to the network from within the application.
+
+- Local file deletion and opening functions.
+
+- Unification of local and network files into a single media file table.
 ---
 
 ## 🧩 Project Structure
@@ -185,15 +202,22 @@ ViewTool/
 
 ## Known issues and solutions
 
-| Issue | Solution |
-|--------|-----------|
-| Log didn’t update in real-time | Added 'ProgressBar' for to show the download progress |
-| `.m3u` file not created | Implemented `--print-to-file` with output path. |
-| Play button didn’t find files | Filtered valid media extensions. |
-| Files weren't updating when changing filters | A method was created using a button to update lists and tables. |
-| File deletion didn't display a confirmation | The Alerts class was used before running MediaLibrary.delete(). |
-| Dates were displayed in an unreadable format (Instant) | A DateTimeFormatter was created to display a readable format for dates. |
-| Changing the JTable model from the Designer caused settings to be lost | We created a Table model using the AbstractTableModel extension and a column setting method before initializing the table. |
+| Problem | Applied Solution |
+|---------|------------------|
+| The log was not updating in real time during the download | A progress bar was added to display real-time output to the user. |
+| The `.m3u` file was not being created correctly with `yt-dlp` | The `--print-to-file` parameter was integrated with the `.m3u` file path. |
+| The “Play last video” button could not find files in some paths | A filter for `.mp4`, `.mp3`, and `.m4a` extensions was added. |
+| Files were not refreshing when changing the filter | A method was created using a button to refresh lists and tables. |
+| File deletion did not show a confirmation dialog | The Alerts class was used before executing `MediaLibrary.delete()`. |
+| Dates were displayed in a barely readable format (Instant) | A `DateTimeFormatter` was created to display human-readable dates. |
+| Changing the JTable model from the Designer caused configuration loss | A custom TableModel using `AbstractTableModel` was created, along with a method for column adjustments before initializing the table. |
+| The application did not integrate local files with those from the Network | A list-merging system was implemented to unify local and remote data. |
+| The table did not correctly show whether a file was local, on the Network, or in both | A calculated column was added, determining the state by checking disk existence and `media.id`. |
+| Local files moved manually were not detected when starting the application | An automatic directory scan was added to update the local file list. |
+| The table lost data when synchronizing with the component | A method was implemented to add only newly detected items from the component events. |
+| Limit uploads to only `.mp3`, `.mp4`, or `.m4a` files | An extension filter was implemented using `name.endswith()`. |
+| The user had to type the video URL after choosing the file to upload | An input dialog was added so the user could enter the video URL. |
+
 ---
 
 ## Technical requirements
