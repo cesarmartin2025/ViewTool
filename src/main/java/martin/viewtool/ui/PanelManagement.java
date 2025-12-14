@@ -279,7 +279,6 @@ public class PanelManagement extends javax.swing.JPanel {
 
             MediaSyncPolling mediaSyncPolling = jframe.getComponent();
             token = tokenService.getToken();
-            System.out.print("TOKEN PANEL MANAGEMENT: "+token);
             mediaSyncPolling.setToken(token);
             mediaSyncPolling.setPollingInterval(5);
 
