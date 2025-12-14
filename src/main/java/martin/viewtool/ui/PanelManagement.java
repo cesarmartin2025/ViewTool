@@ -274,16 +274,12 @@ public class PanelManagement extends javax.swing.JPanel {
     private void buttonRefreshTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRefreshTableActionPerformed
 
         rebuildMediaTable();
-        if (tokenService.getToken() != null) {
-            token = tokenService.getToken();
-        } else {
-            token = tokenService.getTemporalToken();
-
-        }
 
         try {
 
             MediaSyncPolling mediaSyncPolling = jframe.getComponent();
+            token = tokenService.getToken();
+            System.out.print("TOKEN PANEL MANAGEMENT: "+token);
             mediaSyncPolling.setToken(token);
             mediaSyncPolling.setPollingInterval(5);
 

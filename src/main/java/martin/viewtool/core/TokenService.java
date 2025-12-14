@@ -61,6 +61,9 @@ public class TokenService {
     }
 
     public String getToken() {
+        if(token!=null){
+            return token;
+        }
         if (Files.exists(TOKEN_PATH)) {
             try {
                 token = Files.readString(TOKEN_PATH).trim();
@@ -71,11 +74,6 @@ public class TokenService {
         } else {
             return null;
         }
-    }
-    
-    public String getTemporalToken(){
-        return token;
-        
     }
     
     public void setToken(String token){
