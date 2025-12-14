@@ -24,7 +24,6 @@ public class PanelMain extends javax.swing.JPanel {
     
     private final PlayService playService = new PlayService();
     private final PanelPreferences preferences = new PanelPreferences();
-    private final TokenService tokenService = new TokenService();
 
     /**
      * Creates new form PanelMain

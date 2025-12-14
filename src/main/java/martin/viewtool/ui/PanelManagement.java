@@ -34,7 +34,7 @@ public class PanelManagement extends javax.swing.JPanel {
 
     private final LibraryService libraryService = new LibraryService(Path.of(prefService.getOutputDir().toString()));
     private ViewToolApp jframe;
-    private final TokenService tokenService = new TokenService();
+    private final TokenService tokenService;
     private final MediaService mediaService = new MediaService();
     private List<Media> listMedia = new ArrayList<>();
 
@@ -43,6 +43,7 @@ public class PanelManagement extends javax.swing.JPanel {
 
     public PanelManagement(ViewToolApp jframe) {
         this.jframe = jframe;
+        this.tokenService = jframe.getTokenService();
         initComponents();
         token = tokenService.getToken();
 
@@ -273,11 +274,16 @@ public class PanelManagement extends javax.swing.JPanel {
     private void buttonRefreshTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRefreshTableActionPerformed
 
         rebuildMediaTable();
+        if (tokenService.getToken() != null) {
+            token = tokenService.getToken();
+        } else {
+            token = tokenService.getTemporalToken();
+
+        }
 
         try {
 
             MediaSyncPolling mediaSyncPolling = jframe.getComponent();
-            token = tokenService.getToken();
             mediaSyncPolling.setToken(token);
             mediaSyncPolling.setPollingInterval(5);
 

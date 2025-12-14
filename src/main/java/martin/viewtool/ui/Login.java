@@ -28,11 +28,12 @@ public class Login extends JPanel {
     private JLabel labelEmail;
     private JLabel labelPassword;
     private String token;
-    private TokenService tokenService = new TokenService();
+    private TokenService tokenService;
     private ViewToolApp jframe;
     
     public Login(ViewToolApp jframe) {
         this.jframe = jframe;
+        this.tokenService = jframe.getTokenService();
         setLayout(null);
         setName("Login");
 
@@ -88,12 +89,14 @@ public class Login extends JPanel {
                         return;
                     }
                     if (token != null) {
+                       tokenService.setToken(token);
                        jframe.showPanel(new PanelMain());
                        jframe.setLoggedIn(true);
                     }
                     Alerts.info(Login.this, "Login was successfull.");
                     if (remember && token != null) {
                         tokenService.saveToken(token);
+                       
                     }
                     
                      jframe.loggedSuccess(token);
@@ -107,8 +110,5 @@ public class Login extends JPanel {
         });
     }
     
-    public String getToken(){
-        return token;
-    }
     
 }

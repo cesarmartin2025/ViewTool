@@ -72,6 +72,15 @@ public class TokenService {
             return null;
         }
     }
+    
+    public String getTemporalToken(){
+        return token;
+        
+    }
+    
+    public void setToken(String token){
+        this.token=token;
+    }
 }
     
   

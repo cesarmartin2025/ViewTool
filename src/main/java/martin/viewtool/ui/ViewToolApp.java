@@ -18,7 +18,7 @@ public class ViewToolApp extends javax.swing.JFrame {
 
     private final TokenService tokenService = new TokenService();
     private String token;
-    private String apiUrl = "https://dimedianetapi9.azurewebsites.net/";
+    private String apiUrl = "https://difreenet9.azurewebsites.net";
     private boolean loggedIn = false;
 
     PanelManagement panelManagement;
@@ -50,6 +50,10 @@ public class ViewToolApp extends javax.swing.JFrame {
 
     public MediaSyncPolling.MediaSyncPolling getComponent() {
         return mediaSyncPolling1;
+    }
+    
+    public TokenService getTokenService() {
+        return tokenService;
     }
 
     public String getApiUrl() {
