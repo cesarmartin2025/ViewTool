@@ -18,7 +18,7 @@ public class ViewToolApp extends javax.swing.JFrame {
 
     private final TokenService tokenService = new TokenService();
     private String token;
-    private String apiUrl = "https://difreenet9.azurewebsites.net";
+    private String apiUrl = "https://dimedianetapi9.azurewebsites.net/";
     private boolean loggedIn = false;
 
     PanelManagement panelManagement;
@@ -135,7 +135,7 @@ public class ViewToolApp extends javax.swing.JFrame {
         });
         getContentPane().setLayout(null);
         getContentPane().add(mediaSyncPolling1);
-        mediaSyncPolling1.setBounds(830, 100, 164, 126);
+        mediaSyncPolling1.setBounds(860, 20, 164, 126);
 
         MenuFile.setText("File");
 
