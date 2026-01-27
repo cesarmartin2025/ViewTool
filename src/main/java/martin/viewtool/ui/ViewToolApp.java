@@ -4,7 +4,9 @@
  */
 package martin.viewtool.ui;
 
+import java.awt.BorderLayout;
 import javax.swing.JPanel;
+import javax.swing.JSplitPane;
 
 import martin.viewtool.core.TokenService;
 
@@ -22,6 +24,8 @@ public class ViewToolApp extends javax.swing.JFrame {
     private boolean loggedIn = false;
 
     PanelManagement panelManagement;
+    PanelMain panelMain;
+    
 
     /**
      * Creates new form ViewToolApp
@@ -31,6 +35,7 @@ public class ViewToolApp extends javax.swing.JFrame {
         token = tokenService.getToken();
         mediaSyncPolling1.setApiUrl(apiUrl);
         panelManagement = new PanelManagement(this);
+        panelMain = new PanelMain();
 
         if (token == null) {
             Login login = new Login(this);
@@ -44,7 +49,7 @@ public class ViewToolApp extends javax.swing.JFrame {
     public void loggedSuccess(String token) {
         this.token = token;
         this.loggedIn = true;
-        showPanel(new PanelMain());
+       showMainAndManagement(panelMain,panelManagement);
 
     }
 
@@ -73,6 +78,20 @@ public class ViewToolApp extends javax.swing.JFrame {
         this.revalidate();
         this.repaint();
     }
+    
+    public void showSplitPanel(JSplitPane split){
+        this.setContentPane(split);
+        this.revalidate();
+        this.repaint();
+    }
+    
+    public void showMainAndManagement(JPanel top, JPanel bottom) {
+    JSplitPane split = new JSplitPane(JSplitPane.VERTICAL_SPLIT, top, bottom);
+    split.setResizeWeight(0.25);     // 25% arriba, 75% abajo (ajusta)
+    split.setOneTouchExpandable(true);
+    split.setDividerLocation(200);   // altura inicial aproximada
+    showSplitPanel(split);
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -286,7 +305,7 @@ public class ViewToolApp extends javax.swing.JFrame {
 
     private void MenuItemMainActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuItemMainActionPerformed
         if (isLoggedIn()) {
-            showPanel(new PanelMain());
+             showMainAndManagement(panelMain,panelManagement);
 
         } else {
             Alerts.error(this, "Please login to continue.");

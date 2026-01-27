@@ -4,11 +4,12 @@
  */
 package martin.viewtool.ui;
 import java.io.IOException;
+import java.nio.file.Path;
 import martin.viewtool.config.PreferencesService;
 import martin.viewtool.core.DownloadController;
+import martin.viewtool.core.LibraryService;
 import martin.viewtool.core.MediaFormat;
 import martin.viewtool.core.PlayService;
-import martin.viewtool.core.TokenService;
 import martin.viewtool.core.YtDlpService;
 
 /**
@@ -24,6 +25,8 @@ public class PanelMain extends javax.swing.JPanel {
     
     private final PlayService playService = new PlayService();
     private final PanelPreferences preferences = new PanelPreferences();
+    
+    private final LibraryService libraryService = new LibraryService(Path.of(prefService.getOutputDir().toString()));
 
     /**
      * Creates new form PanelMain
@@ -66,8 +69,6 @@ public class PanelMain extends javax.swing.JPanel {
         buttonDownload = new javax.swing.JButton();
         buttonPlayVideo = new javax.swing.JButton();
         progressBar = new javax.swing.JProgressBar();
-        scrollPanelText = new javax.swing.JScrollPane();
-        textArea = new javax.swing.JTextArea();
 
         buttonMP3.setText("MP3");
         buttonMP3.addActionListener(new java.awt.event.ActionListener() {
@@ -112,11 +113,6 @@ public class PanelMain extends javax.swing.JPanel {
         progressBar.setName("Progress"); // NOI18N
         progressBar.setStringPainted(true);
 
-        textArea.setEditable(false);
-        textArea.setColumns(20);
-        textArea.setRows(5);
-        scrollPanelText.setViewportView(textArea);
-
         javax.swing.GroupLayout panelMainLayout = new javax.swing.GroupLayout(panelMain);
         panelMain.setLayout(panelMainLayout);
         panelMainLayout.setHorizontalGroup(
@@ -125,10 +121,8 @@ public class PanelMain extends javax.swing.JPanel {
                 .addGap(22, 22, 22)
                 .addGroup(panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelMainLayout.createSequentialGroup()
-                        .addGroup(panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(scrollPanelText, javax.swing.GroupLayout.PREFERRED_SIZE, 660, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 660, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(182, Short.MAX_VALUE))
+                        .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 660, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(panelMainLayout.createSequentialGroup()
                         .addGroup(panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(panelMainLayout.createSequentialGroup()
@@ -147,7 +141,7 @@ public class PanelMain extends javax.swing.JPanel {
                                 .addComponent(buttonDownload, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(30, 30, 30)
                                 .addComponent(buttonPlayVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                        .addGap(0, 832, Short.MAX_VALUE))))
         );
         panelMainLayout.setVerticalGroup(
             panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -165,26 +159,20 @@ public class PanelMain extends javax.swing.JPanel {
                     .addComponent(buttonPlayVideo))
                 .addGap(24, 24, 24)
                 .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(scrollPanelText, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(68, Short.MAX_VALUE))
+                .addContainerGap(1055, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 864, Short.MAX_VALUE)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(panelMain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(panelMain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 600, Short.MAX_VALUE)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addComponent(panelMain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addContainerGap()))
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(panelMain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -203,7 +191,6 @@ public class PanelMain extends javax.swing.JPanel {
     private void buttonDownloadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDownloadActionPerformed
 
         buttonDownload.setEnabled(false);
-        textArea.setText("");
         progressBar.setValue(0);
 
         new javax.swing.SwingWorker<Integer, Integer>() {
@@ -248,7 +235,6 @@ public class PanelMain extends javax.swing.JPanel {
             @Override
             protected void done() {
                 buttonDownload.setEnabled(true);
-                textArea.append(log.toString());
                 try {
                     int exit = get();
                     if (exit == 0) {
@@ -282,8 +268,6 @@ public class PanelMain extends javax.swing.JPanel {
     private javax.swing.JLabel labelUrl;
     private javax.swing.JPanel panelMain;
     private javax.swing.JProgressBar progressBar;
-    private javax.swing.JScrollPane scrollPanelText;
-    private javax.swing.JTextArea textArea;
     private javax.swing.JTextField textFieldURL;
     // End of variables declaration//GEN-END:variables
 }

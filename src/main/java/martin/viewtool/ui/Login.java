@@ -93,7 +93,7 @@ public class Login extends JPanel {
                        jframe.showPanel(new PanelMain());
                        jframe.setLoggedIn(true);
                     }
-                    Alerts.info(Login.this, "Login was successfull.");
+                    
                     if (remember && token != null) {
                         tokenService.saveToken(token);
                        
