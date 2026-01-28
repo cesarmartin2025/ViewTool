@@ -69,7 +69,7 @@ public class ViewToolApp extends javax.swing.JFrame {
     root.add(dinamicPanel, BorderLayout.CENTER);
 
     setContentPane(root);
-}
+    }
 
 
     public void loggedSuccess(String token) {
@@ -107,19 +107,14 @@ public class ViewToolApp extends javax.swing.JFrame {
         panelButtonMain.setVisible(true);
     }
     
-    public void showSplitPanel(JSplitPane split){
-        dinamicPanel.removeAll();
-        dinamicPanel.add(split, BorderLayout.CENTER);
-        dinamicPanel.revalidate();
-        dinamicPanel.repaint();
-    }
-    
     public void showMainAndManagement(JPanel top, JPanel bottom) {
-    JSplitPane split = new JSplitPane(JSplitPane.VERTICAL_SPLIT, top, bottom);
+    JPanel combined = new JPanel(new BorderLayout());
+    top.setPreferredSize(new java.awt.Dimension(0, 167));
+    combined.add(top, BorderLayout.NORTH);
+    combined.add(bottom, BorderLayout.CENTER);
+    showPanel(combined);
     panelButtonMain.setVisible(false);
-    split.setOneTouchExpandable(true);
-    split.setDividerLocation(200);   
-    showSplitPanel(split);
+    
 }
 
     /**
