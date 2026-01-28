@@ -15,6 +15,7 @@ import javax.swing.JOptionPane;
 import martin.viewtool.config.PreferencesService;
 import martin.viewtool.core.LibraryService;
 import MediaSyncPolling.Media;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -46,9 +47,110 @@ public class PanelManagement extends javax.swing.JPanel {
         this.tokenService = jframe.getTokenService();
         initComponents();
         token = tokenService.getToken();
-
+        
+        comboFilterListener();
+  
     }
+    
+    public final void comboFilterListener(){
+        comboFilter.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                refreshLocalList();
+            }
+        });
+        
+    }
+    
+    // Inicia la carga de archivos cuando el panel se muestra por pantalla.
+   
+    @Override
+    public void addNotify() {
+        super.addNotify();
+        
+        // carga automática de JList y JTable
+        initialLoad();   
+        startPolling();  
+    }
+    
+    //Uso un Timer con valor 0 para que cargue los datos una vez se pinte el panel.
+    
+    private void initialLoad() {
 
+        javax.swing.Timer timer = new javax.swing.Timer(0, new ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                refreshLocalList();
+                rebuildMediaTable();
+            }
+        });
+        timer.setRepeats(false);
+        timer.start();
+    }
+    
+    // Actualiza la lista local segun el item que ha elegido el usuario
+    
+    private void refreshLocalList() {
+        try {
+            String selected = (String) comboFilter.getSelectedItem();
+            List<MediaItem> files = libraryService.getFilteredFiles(selected);
+
+            DefaultListModel<String> model = new DefaultListModel<String>();
+            for (MediaItem file : files) {
+                model.addElement(file.getName());
+            }
+            listFiles.setModel(model);
+
+        } catch (IOException ex) {
+            Alerts.error(this, "Error: " + ex.getMessage());
+        }
+    }
+    
+    //Activa el Componente MediaSyncPolling para ver si hay archivos. Si los hay, llama a otro metodo para redibujar la tabla y añadir esos archivos.
+    
+    private void startPolling() {
+        try {
+            MediaSyncPolling mediaSyncPolling = jframe.getComponent();
+            token = tokenService.getToken();
+            mediaSyncPolling.setToken(token);
+            mediaSyncPolling.setPollingInterval(5);
+
+            if (!listenerAdded) {
+                mediaSyncPolling.addCustomEventListener(new CheckListMediaListener() {
+                    @Override
+                    public void checkListMediaReceived(CheckListMediaEvent evt) {
+                        List<Media> newMedias = evt.getMediaList();
+                        if (newMedias == null || newMedias.isEmpty()) {
+                            return;
+                        }
+                        applyNetworkUpdateTable(newMedias);
+                    }
+                });
+                listenerAdded = true;
+            }
+
+            mediaSyncPolling.setRunning(true);
+
+        } catch (Exception ex) {
+            Alerts.error(this, "Error: " + ex.getMessage());
+        }
+    }
+    
+    //Añade los archivos a la Tabla mediante el metodo 'addNewMediaNetwork' y redibuja la tabla.
+    //Lo hace mediante un Timer para que no colapse la aplicacion y espere a que todos los eventos en cola hayan finalizado para inciar el metodo.
+    
+    private void applyNetworkUpdateTable(final List<Media> newMedia) {
+        javax.swing.Timer timer = new javax.swing.Timer(0, new ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                mediaService.addNewMediaNetwork(newMedia);
+                rebuildMediaTable();
+            }
+        });
+        timer.setRepeats(false);
+        timer.start();
+    }
+    
     private void showMediaFiltered(String textField) {
         if (textField != null) {
             List<Media> filteredMedia = mediaService.filterMedia(textField, listMedia);
@@ -135,7 +237,7 @@ public class PanelManagement extends javax.swing.JPanel {
         jScrollPane1.setViewportView(listFiles);
 
         panelManagement.add(jScrollPane1);
-        jScrollPane1.setBounds(0, 50, 210, 400);
+        jScrollPane1.setBounds(0, 50, 410, 400);
 
         buttonRefreshList.setText("Refresh list");
         buttonRefreshList.addActionListener(new java.awt.event.ActionListener() {
@@ -144,11 +246,11 @@ public class PanelManagement extends javax.swing.JPanel {
             }
         });
         panelManagement.add(buttonRefreshList);
-        buttonRefreshList.setBounds(0, 450, 100, 27);
+        buttonRefreshList.setBounds(0, 450, 100, 23);
 
         comboFilter.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "All", "Videos", "Audios", "Others" }));
         panelManagement.add(comboFilter);
-        comboFilter.setBounds(100, 450, 120, 26);
+        comboFilter.setBounds(330, 450, 80, 22);
 
         tableFiles.setAutoCreateRowSorter(true);
         tableFiles.setModel(new javax.swing.table.DefaultTableModel(
@@ -162,7 +264,7 @@ public class PanelManagement extends javax.swing.JPanel {
         jScrollPane2.setViewportView(tableFiles);
 
         panelManagement.add(jScrollPane2);
-        jScrollPane2.setBounds(250, 50, 900, 400);
+        jScrollPane2.setBounds(430, 50, 920, 400);
 
         buttonRefreshTable.setText("Refresh table");
         buttonRefreshTable.addActionListener(new java.awt.event.ActionListener() {
@@ -171,7 +273,7 @@ public class PanelManagement extends javax.swing.JPanel {
             }
         });
         panelManagement.add(buttonRefreshTable);
-        buttonRefreshTable.setBounds(250, 450, 110, 27);
+        buttonRefreshTable.setBounds(430, 450, 110, 23);
 
         textFieldFile.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -179,7 +281,7 @@ public class PanelManagement extends javax.swing.JPanel {
             }
         });
         panelManagement.add(textFieldFile);
-        textFieldFile.setBounds(820, 20, 150, 26);
+        textFieldFile.setBounds(820, 20, 150, 20);
 
         labelSearchFile.setText("Search :");
         panelManagement.add(labelSearchFile);
@@ -192,7 +294,7 @@ public class PanelManagement extends javax.swing.JPanel {
             }
         });
         panelManagement.add(buttonDeleteFile);
-        buttonDeleteFile.setBounds(630, 450, 130, 27);
+        buttonDeleteFile.setBounds(790, 450, 130, 23);
 
         jLabel1.setText("Media downloaded by ytb-dlp:");
         panelManagement.add(jLabel1);
@@ -209,7 +311,7 @@ public class PanelManagement extends javax.swing.JPanel {
             }
         });
         panelManagement.add(buttonDownloadFile);
-        buttonDownloadFile.setBounds(760, 450, 140, 27);
+        buttonDownloadFile.setBounds(920, 450, 140, 23);
 
         buttonUploadFile.setText("Upload File");
         buttonUploadFile.addActionListener(new java.awt.event.ActionListener() {
@@ -218,7 +320,7 @@ public class PanelManagement extends javax.swing.JPanel {
             }
         });
         panelManagement.add(buttonUploadFile);
-        buttonUploadFile.setBounds(500, 450, 130, 27);
+        buttonUploadFile.setBounds(660, 450, 130, 23);
 
         buttonOpenFile.setText("Open File");
         buttonOpenFile.addActionListener(new java.awt.event.ActionListener() {
@@ -227,7 +329,7 @@ public class PanelManagement extends javax.swing.JPanel {
             }
         });
         panelManagement.add(buttonOpenFile);
-        buttonOpenFile.setBounds(370, 450, 120, 27);
+        buttonOpenFile.setBounds(540, 450, 120, 23);
 
         buttonSearch.setText("Search");
         buttonSearch.addActionListener(new java.awt.event.ActionListener() {
@@ -236,15 +338,16 @@ public class PanelManagement extends javax.swing.JPanel {
             }
         });
         panelManagement.add(buttonSearch);
-        buttonSearch.setBounds(970, 20, 76, 27);
+        buttonSearch.setBounds(970, 20, 110, 20);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(panelManagement, javax.swing.GroupLayout.PREFERRED_SIZE, 1263, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 297, Short.MAX_VALUE))
+                .addGap(30, 30, 30)
+                .addComponent(panelManagement, javax.swing.GroupLayout.PREFERRED_SIZE, 1357, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(173, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -272,42 +375,8 @@ public class PanelManagement extends javax.swing.JPanel {
     }//GEN-LAST:event_buttonRefreshListActionPerformed
 
     private void buttonRefreshTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRefreshTableActionPerformed
-
         rebuildMediaTable();
-
-        try {
-
-            MediaSyncPolling mediaSyncPolling = jframe.getComponent();
-            token = tokenService.getToken();
-            mediaSyncPolling.setToken(token);
-            mediaSyncPolling.setPollingInterval(5);
-
-            if (!listenerAdded) {
-                Alerts.info(this, "Initializing network media list…");
-
-                mediaSyncPolling.addCustomEventListener(new CheckListMediaListener() {
-                    @Override
-                    public void checkListMediaReceived(CheckListMediaEvent evt) {
-
-                        List<Media> newMedia = evt.getMediaList();
-
-                        if (newMedia == null || newMedia.isEmpty()) {
-                            return;
-                        }
-
-                        mediaService.addNewMediaNetwork(newMedia);
-                        rebuildMediaTable();
-
-                    }
-                });
-                listenerAdded = true;
-            }
-
-            mediaSyncPolling.setRunning(true);
-
-        } catch (Exception ex) {
-            Alerts.error(this, "Error: " + ex.getMessage());
-        }
+        startPolling();
     }//GEN-LAST:event_buttonRefreshTableActionPerformed
 
     private void buttonDeleteFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDeleteFileActionPerformed

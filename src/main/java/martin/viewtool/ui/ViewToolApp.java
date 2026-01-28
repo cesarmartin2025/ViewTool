@@ -109,7 +109,7 @@ public class ViewToolApp extends javax.swing.JFrame {
         if(autoSize){
             pack();
         } else{
-            setSize(1200,800);
+            setSize(1600, 800);
         }
         panelButtonMain.setVisible(true);
     }
