@@ -24,6 +24,11 @@ import martin.viewtool.core.MediaItem;
 import martin.viewtool.core.MediaTableModel;
 import martin.viewtool.core.MediaService;
 import martin.viewtool.core.TokenService;
+import javax.swing.RowFilter;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.table.TableRowSorter;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -43,6 +48,9 @@ public class PanelManagement extends javax.swing.JPanel {
     private boolean listenerAdded = false;
     private String token;
 
+    private TableRowSorter<MediaTableModel> tableSorter;
+    private boolean searchLiveInstalled = false;
+
     public PanelManagement(ViewToolApp jframe) {
         this.jframe = jframe;
         this.tokenService = jframe.getTokenService();
@@ -50,7 +58,55 @@ public class PanelManagement extends javax.swing.JPanel {
         token = tokenService.getToken();
 
         comboFilterListener();
+        LiveSearchOnTable();
 
+    }
+    
+    //Metodo para hacer busqueda en la tabla en tiempo real tecla por tecla mediante el DocumentListener. Al detectar un cambio, llama al metodo que filtra los resultados.
+    
+
+    private void LiveSearchOnTable() {
+        if (searchLiveInstalled) {
+            return;
+        }
+
+        textFieldFile.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                applyTableFilter();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                applyTableFilter();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                applyTableFilter();
+            }
+        });
+
+        searchLiveInstalled = true;
+    }
+    
+    // Metodo que usa la TableRowSorter en el modelo de la tabla para filtrar el texto que hay en el TextField.
+
+    private void applyTableFilter() {
+        if (tableSorter == null) {
+            return;
+        }
+
+        String text = textFieldFile.getText();
+
+        if (text == null || text.isBlank()) {
+            tableSorter.setRowFilter(null);
+            return;
+        }
+        
+        tableSorter.setRowFilter(
+                RowFilter.regexFilter("(?i)" + Pattern.quote(text))
+        );
     }
 
     public final void comboFilterListener() {
@@ -159,12 +215,19 @@ public class PanelManagement extends javax.swing.JPanel {
 
     private void rebuildMediaTable() {
         List<Media> mediaListCombined = mediaService.createMediaListCombined();
-        MediaTableModel model = new MediaTableModel(mediaListCombined, mediaService);
-        tableFiles.setModel(model);
+
+        tableModel = new MediaTableModel(mediaListCombined, mediaService);
+        tableFiles.setModel(tableModel);
+
+        // IMPORTANT: el sorter debe trabajar con tu MediaTableModel
+        tableSorter = new TableRowSorter<>(tableModel);
+        tableFiles.setRowSorter(tableSorter);
+
         listMedia = new ArrayList<>(mediaListCombined);
+
         columnPrefs();
+        applyTableFilter();
     }
-    
 
     private Media getSelectedMedia(String action) {
         int selectedRow = tableFiles.getSelectedRow();
@@ -222,7 +285,6 @@ public class PanelManagement extends javax.swing.JPanel {
         buttonDownloadFile = new javax.swing.JButton();
         buttonUploadFile = new javax.swing.JButton();
         buttonOpenFile = new javax.swing.JButton();
-        buttonSearch = new javax.swing.JButton();
 
         panelManagement.setMaximumSize(new java.awt.Dimension(1920, 1080));
         panelManagement.setMinimumSize(new java.awt.Dimension(800, 600));
@@ -280,12 +342,17 @@ public class PanelManagement extends javax.swing.JPanel {
                 textFieldFileActionPerformed(evt);
             }
         });
+        textFieldFile.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                textFieldFileKeyPressed(evt);
+            }
+        });
         panelManagement.add(textFieldFile);
-        textFieldFile.setBounds(820, 20, 150, 20);
+        textFieldFile.setBounds(1150, 20, 200, 22);
 
         labelSearchFile.setText("Search :");
         panelManagement.add(labelSearchFile);
-        labelSearchFile.setBounds(770, 20, 60, 30);
+        labelSearchFile.setBounds(1100, 10, 50, 40);
 
         buttonDeleteFile.setText("Delete File");
         buttonDeleteFile.addActionListener(new java.awt.event.ActionListener() {
@@ -302,7 +369,7 @@ public class PanelManagement extends javax.swing.JPanel {
 
         jLabel2.setText("DI Media Network Library :");
         panelManagement.add(jLabel2);
-        jLabel2.setBounds(410, 20, 170, 30);
+        jLabel2.setBounds(430, 20, 170, 30);
 
         buttonDownloadFile.setText("Download File");
         buttonDownloadFile.addActionListener(new java.awt.event.ActionListener() {
@@ -330,15 +397,6 @@ public class PanelManagement extends javax.swing.JPanel {
         });
         panelManagement.add(buttonOpenFile);
         buttonOpenFile.setBounds(540, 450, 120, 23);
-
-        buttonSearch.setText("Search");
-        buttonSearch.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonSearchActionPerformed(evt);
-            }
-        });
-        panelManagement.add(buttonSearch);
-        buttonSearch.setBounds(970, 20, 110, 20);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -388,16 +446,16 @@ public class PanelManagement extends javax.swing.JPanel {
 
         File localFile = mediaService.getLocalFile(file);
 
-            try {
-              boolean deleted = Files.deleteIfExists(localFile.toPath());
-              
-                if (!deleted) {
-                   Alerts.error(this, "File is on network, could not be deleted.");
-                }
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Error deleting file: " + ex.getMessage());
+        try {
+            boolean deleted = Files.deleteIfExists(localFile.toPath());
+
+            if (!deleted) {
+                Alerts.error(this, "File is on network, could not be deleted.");
             }
-        
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error deleting file: " + ex.getMessage());
+        }
+
     }//GEN-LAST:event_buttonDeleteFileActionPerformed
 
     private void buttonDownloadFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDownloadFileActionPerformed
@@ -408,13 +466,13 @@ public class PanelManagement extends javax.swing.JPanel {
         }
         int idMedia = file.id;
 
-            Path destPath = mediaService.getDownloadBaseDir().resolve(file.mediaFileName);
-            File destFile = destPath.toFile();
-            try {
-                mediaSyncPolling.download(idMedia, destFile, token);
-            } catch (Exception ex) {
-                Alerts.error(this, "Error downloading file: " + ex.getMessage());
-            } 
+        Path destPath = mediaService.getDownloadBaseDir().resolve(file.mediaFileName);
+        File destFile = destPath.toFile();
+        try {
+            mediaSyncPolling.download(idMedia, destFile, token);
+        } catch (Exception ex) {
+            Alerts.error(this, "Error downloading file: " + ex.getMessage());
+        }
     }//GEN-LAST:event_buttonDownloadFileActionPerformed
 
     private void buttonUploadFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonUploadFileActionPerformed
@@ -492,19 +550,17 @@ public class PanelManagement extends javax.swing.JPanel {
     }//GEN-LAST:event_buttonOpenFileActionPerformed
 
     private void textFieldFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFieldFileActionPerformed
-        String textField = textFieldFile.getText();
-        showMediaFiltered(textField);
+        applyTableFilter();
 
     }//GEN-LAST:event_textFieldFileActionPerformed
-
-    private void buttonSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSearchActionPerformed
-        String textField = textFieldFile.getText();
-        showMediaFiltered(textField);
-    }//GEN-LAST:event_buttonSearchActionPerformed
 
     private void comboFilterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboFilterActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_comboFilterActionPerformed
+
+    private void textFieldFileKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textFieldFileKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_textFieldFileKeyPressed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -513,7 +569,6 @@ public class PanelManagement extends javax.swing.JPanel {
     private javax.swing.JButton buttonOpenFile;
     private javax.swing.JButton buttonRefreshList;
     private javax.swing.JButton buttonRefreshTable;
-    private javax.swing.JButton buttonSearch;
     private javax.swing.JButton buttonUploadFile;
     private javax.swing.JComboBox<String> comboFilter;
     private javax.swing.JLabel jLabel1;
