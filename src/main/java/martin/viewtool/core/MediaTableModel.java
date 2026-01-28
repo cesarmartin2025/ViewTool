@@ -18,7 +18,7 @@ public final class MediaTableModel extends AbstractTableModel {
 
     private final MediaService mediaService;
     private final List<Media> files;
-    private final String[] columns = {"Location", "Name", "User ID", "URL"};
+    private final String[] columns = {"Location", "Name", "URL"};
     private final Path downloadPath;
 
     public MediaTableModel(List<Media> files, MediaService mediaService) {
@@ -50,8 +50,6 @@ public final class MediaTableModel extends AbstractTableModel {
             case 1 ->
                 String.class;
             case 2 ->
-                int.class;
-            case 3 ->
                 String.class;
             default ->
                 Object.class;
@@ -67,8 +65,6 @@ public final class MediaTableModel extends AbstractTableModel {
             case 1 ->
                 file.mediaFileName;
             case 2 ->
-                file.userId;
-            case 3 ->
                 file.downloadedFromUrl;
             default ->
                 "";

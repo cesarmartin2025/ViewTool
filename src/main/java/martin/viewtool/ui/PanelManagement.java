@@ -38,6 +38,7 @@ public class PanelManagement extends javax.swing.JPanel {
     private final TokenService tokenService;
     private final MediaService mediaService = new MediaService();
     private List<Media> listMedia = new ArrayList<>();
+    private MediaTableModel tableModel;
 
     private boolean listenerAdded = false;
     private String token;
@@ -47,34 +48,32 @@ public class PanelManagement extends javax.swing.JPanel {
         this.tokenService = jframe.getTokenService();
         initComponents();
         token = tokenService.getToken();
-        
+
         comboFilterListener();
-  
+
     }
-    
-    public final void comboFilterListener(){
+
+    public final void comboFilterListener() {
         comboFilter.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent e) {
                 refreshLocalList();
             }
         });
-        
+
     }
-    
+
     // Inicia la carga de archivos cuando el panel se muestra por pantalla.
-   
     @Override
     public void addNotify() {
         super.addNotify();
-        
+
         // carga automática de JList y JTable
-        initialLoad();   
-        startPolling();  
+        initialLoad();
+        startPolling();
     }
-    
+
     //Uso un Timer con valor 0 para que cargue los datos una vez se pinte el panel.
-    
     private void initialLoad() {
 
         javax.swing.Timer timer = new javax.swing.Timer(0, new ActionListener() {
@@ -87,9 +86,8 @@ public class PanelManagement extends javax.swing.JPanel {
         timer.setRepeats(false);
         timer.start();
     }
-    
+
     // Actualiza la lista local segun el item que ha elegido el usuario
-    
     private void refreshLocalList() {
         try {
             String selected = (String) comboFilter.getSelectedItem();
@@ -105,9 +103,8 @@ public class PanelManagement extends javax.swing.JPanel {
             Alerts.error(this, "Error: " + ex.getMessage());
         }
     }
-    
+
     //Activa el Componente MediaSyncPolling para ver si hay archivos. Si los hay, llama a otro metodo para redibujar la tabla y añadir esos archivos.
-    
     private void startPolling() {
         try {
             MediaSyncPolling mediaSyncPolling = jframe.getComponent();
@@ -135,10 +132,9 @@ public class PanelManagement extends javax.swing.JPanel {
             Alerts.error(this, "Error: " + ex.getMessage());
         }
     }
-    
+
     //Añade los archivos a la Tabla mediante el metodo 'addNewMediaNetwork' y redibuja la tabla.
     //Lo hace mediante un Timer para que no colapse la aplicacion y espere a que todos los eventos en cola hayan finalizado para inciar el metodo.
-    
     private void applyNetworkUpdateTable(final List<Media> newMedia) {
         javax.swing.Timer timer = new javax.swing.Timer(0, new ActionListener() {
             @Override
@@ -150,7 +146,7 @@ public class PanelManagement extends javax.swing.JPanel {
         timer.setRepeats(false);
         timer.start();
     }
-    
+
     private void showMediaFiltered(String textField) {
         if (textField != null) {
             List<Media> filteredMedia = mediaService.filterMedia(textField, listMedia);
@@ -168,6 +164,7 @@ public class PanelManagement extends javax.swing.JPanel {
         listMedia = new ArrayList<>(mediaListCombined);
         columnPrefs();
     }
+    
 
     private Media getSelectedMedia(String action) {
         int selectedRow = tableFiles.getSelectedRow();
@@ -195,10 +192,8 @@ public class PanelManagement extends javax.swing.JPanel {
         // Columna 1:Name
         columnModel.getColumn(1).setPreferredWidth(300);
 
-        // Columna 2: User ID
-        columnModel.getColumn(2).setPreferredWidth(10);
-        // Columna 3: URL
-        columnModel.getColumn(3).setPreferredWidth(300);
+        // Columna 2: URL
+        columnModel.getColumn(2).setPreferredWidth(300);
         ;
     }
 
@@ -393,24 +388,16 @@ public class PanelManagement extends javax.swing.JPanel {
 
         File localFile = mediaService.getLocalFile(file);
 
-        boolean confirm = Alerts.confirm(this,
-                "Are you sure you want to delete this file?\n" + file.mediaFileName,
-                "Confirm deletion");
-
-        if (confirm) {
             try {
-
-                boolean deleted = Files.deleteIfExists(localFile.toPath());
-
-                if (deleted) {
-                    Alerts.info(this, "File deleted successfully.");
-                } else {
-                    Alerts.error(this, "File is on network, could not be deleted.");
+              boolean deleted = Files.deleteIfExists(localFile.toPath());
+              
+                if (!deleted) {
+                   Alerts.error(this, "File is on network, could not be deleted.");
                 }
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Error deleting file: " + ex.getMessage());
             }
-        }
+        
     }//GEN-LAST:event_buttonDeleteFileActionPerformed
 
     private void buttonDownloadFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDownloadFileActionPerformed
@@ -421,21 +408,13 @@ public class PanelManagement extends javax.swing.JPanel {
         }
         int idMedia = file.id;
 
-        boolean confirm = Alerts.confirm(this,
-                "Are you sure you want to download this file?\n" + file.mediaFileName,
-                "Confirm download");
-
-        if (confirm) {
             Path destPath = mediaService.getDownloadBaseDir().resolve(file.mediaFileName);
             File destFile = destPath.toFile();
             try {
                 mediaSyncPolling.download(idMedia, destFile, token);
-                Alerts.info(this, "File downloaded successfully.");
-
             } catch (Exception ex) {
                 Alerts.error(this, "Error downloading file: " + ex.getMessage());
-            }
-        }
+            } 
     }//GEN-LAST:event_buttonDownloadFileActionPerformed
 
     private void buttonUploadFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonUploadFileActionPerformed
