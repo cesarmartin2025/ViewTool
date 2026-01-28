@@ -203,15 +203,6 @@ public class PanelManagement extends javax.swing.JPanel {
         timer.start();
     }
 
-    private void showMediaFiltered(String textField) {
-        if (textField != null) {
-            List<Media> filteredMedia = mediaService.filterMedia(textField, listMedia);
-            MediaTableModel model = new MediaTableModel(filteredMedia, mediaService);
-            tableFiles.setModel(model);
-            columnPrefs();
-
-        }
-    }
 
     private void rebuildMediaTable() {
         List<Media> mediaListCombined = mediaService.createMediaListCombined();
@@ -219,7 +210,6 @@ public class PanelManagement extends javax.swing.JPanel {
         tableModel = new MediaTableModel(mediaListCombined, mediaService);
         tableFiles.setModel(tableModel);
 
-        // IMPORTANT: el sorter debe trabajar con tu MediaTableModel
         tableSorter = new TableRowSorter<>(tableModel);
         tableFiles.setRowSorter(tableSorter);
 
@@ -449,9 +439,12 @@ public class PanelManagement extends javax.swing.JPanel {
         try {
             boolean deleted = Files.deleteIfExists(localFile.toPath());
 
-            if (!deleted) {
-                Alerts.error(this, "File is on network, could not be deleted.");
-            }
+            if (deleted) {
+                    Alerts.info(this, "File deleted successfully.");
+                } else {
+                    Alerts.error(this, "File is on network, could not be deleted.");
+                }
+           
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Error deleting file: " + ex.getMessage());
         }
@@ -461,15 +454,21 @@ public class PanelManagement extends javax.swing.JPanel {
     private void buttonDownloadFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDownloadFileActionPerformed
         MediaSyncPolling mediaSyncPolling = jframe.getComponent();
         Media file = getSelectedMedia("Download");
+        
         if (file == null) {
             return;
         }
         int idMedia = file.id;
 
         Path destPath = mediaService.getDownloadBaseDir().resolve(file.mediaFileName);
+        if(Files.exists(destPath)){
+            Alerts.error(this, "This file is already downloaded.");
+            return;
+        } 
         File destFile = destPath.toFile();
         try {
             mediaSyncPolling.download(idMedia, destFile, token);
+            Alerts.info(this, "File successfully downloaded to "+prefService.getOutputDir().toString());
         } catch (Exception ex) {
             Alerts.error(this, "Error downloading file: " + ex.getMessage());
         }
