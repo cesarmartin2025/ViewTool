@@ -28,7 +28,7 @@ public class MediaService {
     }
 
     public Path getDownloadBaseDir() {
-        Path downloadedPath = Path.of(System.getProperty("user.home"), "ViewToolNetworkDownload");
+        Path downloadedPath = Path.of(System.getProperty("user.home"), "ViewToolDownloads");
         File pathToFile = downloadedPath.toFile();
         if (!pathToFile.exists()) {
             pathToFile.mkdirs();

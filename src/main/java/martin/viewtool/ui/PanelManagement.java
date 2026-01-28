@@ -248,7 +248,12 @@ public class PanelManagement extends javax.swing.JPanel {
         panelManagement.add(buttonRefreshList);
         buttonRefreshList.setBounds(0, 450, 100, 23);
 
-        comboFilter.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "All", "Videos", "Audios", "Others" }));
+        comboFilter.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "All", "Videos", "Audios" }));
+        comboFilter.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comboFilterActionPerformed(evt);
+            }
+        });
         panelManagement.add(comboFilter);
         comboFilter.setBounds(330, 450, 80, 22);
 
@@ -517,6 +522,10 @@ public class PanelManagement extends javax.swing.JPanel {
         String textField = textFieldFile.getText();
         showMediaFiltered(textField);
     }//GEN-LAST:event_buttonSearchActionPerformed
+
+    private void comboFilterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboFilterActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_comboFilterActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

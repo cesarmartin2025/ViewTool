@@ -33,9 +33,9 @@ public final class LibraryService {
 
         return allItems.stream()
                 .filter(item -> switch (filter) {
+                     case "All" -> item.getMimeType().startsWith("video/") || item.getMimeType().startsWith("audio/");
                     case "Videos" -> item.getMimeType().startsWith("video/");
                     case "Audios" -> item.getMimeType().startsWith("audio/");
-                    case "Others" -> !item.getMimeType().startsWith("video/") && !item.getMimeType().startsWith("audio/");
                     default -> true;
                 })
                 .collect(Collectors.toList());
