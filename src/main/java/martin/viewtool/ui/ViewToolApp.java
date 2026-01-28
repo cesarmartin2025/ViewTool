@@ -5,6 +5,7 @@
 package martin.viewtool.ui;
 
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 
@@ -26,12 +27,19 @@ public class ViewToolApp extends javax.swing.JFrame {
     PanelManagement panelManagement;
     PanelMain panelMain;
     
+    private JPanel root;
+    private JPanel panelButtonMain;
+    private JPanel dinamicPanel;
+
+    
 
     /**
      * Creates new form ViewToolApp
      */
     public ViewToolApp() {
         initComponents();
+        buildLayout();
+        
         token = tokenService.getToken();
         mediaSyncPolling1.setApiUrl(apiUrl);
         panelManagement = new PanelManagement(this);
@@ -45,6 +53,24 @@ public class ViewToolApp extends javax.swing.JFrame {
         }
 
     }
+    
+    private void buildLayout() {
+
+    root = new JPanel(new BorderLayout());
+
+    //Panel del Boton fijo para volver a Main
+    panelButtonMain = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+    panelButtonMain.add(buttonMain);
+
+   
+    dinamicPanel = new JPanel(new BorderLayout());
+
+    root.add(panelButtonMain, BorderLayout.NORTH);
+    root.add(dinamicPanel, BorderLayout.CENTER);
+
+    setContentPane(root);
+}
+
 
     public void loggedSuccess(String token) {
         this.token = token;
@@ -74,22 +100,25 @@ public class ViewToolApp extends javax.swing.JFrame {
     }
 
     public void showPanel(JPanel panel) {
-        this.setContentPane(panel);
-        this.revalidate();
-        this.repaint();
+        dinamicPanel.removeAll();
+        dinamicPanel.add(panel, BorderLayout.CENTER);
+        dinamicPanel.revalidate();
+        dinamicPanel.repaint();
+        panelButtonMain.setVisible(true);
     }
     
     public void showSplitPanel(JSplitPane split){
-        this.setContentPane(split);
-        this.revalidate();
-        this.repaint();
+        dinamicPanel.removeAll();
+        dinamicPanel.add(split, BorderLayout.CENTER);
+        dinamicPanel.revalidate();
+        dinamicPanel.repaint();
     }
     
     public void showMainAndManagement(JPanel top, JPanel bottom) {
     JSplitPane split = new JSplitPane(JSplitPane.VERTICAL_SPLIT, top, bottom);
-    split.setResizeWeight(0.25);     // 25% arriba, 75% abajo (ajusta)
+    panelButtonMain.setVisible(false);
     split.setOneTouchExpandable(true);
-    split.setDividerLocation(200);   // altura inicial aproximada
+    split.setDividerLocation(200);   
     showSplitPanel(split);
 }
 
@@ -106,19 +135,16 @@ public class ViewToolApp extends javax.swing.JFrame {
         TextAreaAbout = new javax.swing.JTextArea();
         jOptionPane1 = new javax.swing.JOptionPane();
         mediaSyncPolling1 = new MediaSyncPolling.MediaSyncPolling();
+        buttonMain = new javax.swing.JButton();
         menuBarMain = new javax.swing.JMenuBar();
         MenuFile = new javax.swing.JMenu();
+        MenuItemMain = new javax.swing.JMenuItem();
+        MenuLogoutItem = new javax.swing.JMenuItem();
         MenuItemExit = new javax.swing.JMenuItem();
         MenuEdit = new javax.swing.JMenu();
         MenuItemPreferences = new javax.swing.JMenuItem();
         MenuHelp = new javax.swing.JMenu();
         MenuItemAbout = new javax.swing.JMenuItem();
-        MenuManagement = new javax.swing.JMenu();
-        MenuManagementItem = new javax.swing.JMenuItem();
-        MenuLogout = new javax.swing.JMenu();
-        MenuLogoutItem = new javax.swing.JMenuItem();
-        menuMain = new javax.swing.JMenu();
-        MenuItemMain = new javax.swing.JMenuItem();
 
         dialogAbout.setTitle("About");
         dialogAbout.setModal(true);
@@ -154,9 +180,34 @@ public class ViewToolApp extends javax.swing.JFrame {
         });
         getContentPane().setLayout(null);
         getContentPane().add(mediaSyncPolling1);
-        mediaSyncPolling1.setBounds(860, 20, 164, 126);
+        mediaSyncPolling1.setBounds(1000, 490, 164, 126);
+
+        buttonMain.setText("Main");
+        buttonMain.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonMainActionPerformed(evt);
+            }
+        });
+        getContentPane().add(buttonMain);
+        buttonMain.setBounds(1065, 0, 100, 40);
 
         MenuFile.setText("File");
+
+        MenuItemMain.setText("Main");
+        MenuItemMain.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MenuItemMainActionPerformed(evt);
+            }
+        });
+        MenuFile.add(MenuItemMain);
+
+        MenuLogoutItem.setText("Logout");
+        MenuLogoutItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MenuLogoutItemActionPerformed(evt);
+            }
+        });
+        MenuFile.add(MenuLogoutItem);
 
         MenuItemExit.setText("Exit");
         MenuItemExit.addActionListener(new java.awt.event.ActionListener() {
@@ -197,52 +248,6 @@ public class ViewToolApp extends javax.swing.JFrame {
 
         menuBarMain.add(MenuHelp);
 
-        MenuManagement.setText("Media Management");
-        MenuManagement.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                MenuManagementActionPerformed(evt);
-            }
-        });
-
-        MenuManagementItem.setText("Open management window");
-        MenuManagementItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                MenuManagementItemActionPerformed(evt);
-            }
-        });
-        MenuManagement.add(MenuManagementItem);
-
-        menuBarMain.add(MenuManagement);
-
-        MenuLogout.setText("Logout");
-
-        MenuLogoutItem.setText("Logout");
-        MenuLogoutItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                MenuLogoutItemActionPerformed(evt);
-            }
-        });
-        MenuLogout.add(MenuLogoutItem);
-
-        menuBarMain.add(MenuLogout);
-
-        menuMain.setText("Main");
-        menuMain.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuMainActionPerformed(evt);
-            }
-        });
-
-        MenuItemMain.setText("Back to Main");
-        MenuItemMain.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                MenuItemMainActionPerformed(evt);
-            }
-        });
-        menuMain.add(MenuItemMain);
-
-        menuBarMain.add(menuMain);
-
         setJMenuBar(menuBarMain);
 
         setBounds(0, 0, 1180, 749);
@@ -274,21 +279,6 @@ public class ViewToolApp extends javax.swing.JFrame {
 
     }//GEN-LAST:event_MenuItemPreferencesActionPerformed
 
-    private void MenuManagementActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuManagementActionPerformed
-
-    }//GEN-LAST:event_MenuManagementActionPerformed
-
-    private void MenuManagementItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuManagementItemActionPerformed
-        if (isLoggedIn()) {
-            showPanel(panelManagement);
-
-        } else {
-            Alerts.error(this, "Please login to continue.");
-        }
-
-
-    }//GEN-LAST:event_MenuManagementItemActionPerformed
-
     private void MenuLogoutItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuLogoutItemActionPerformed
         Alerts.info(ViewToolApp.this, "The logout was successfull. You will need to login again the next time.");
         showPanel(new Login(this));
@@ -298,11 +288,6 @@ public class ViewToolApp extends javax.swing.JFrame {
 
     }//GEN-LAST:event_MenuLogoutItemActionPerformed
 
-    private void menuMainActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuMainActionPerformed
-
-        // TODO add your handling code here:
-    }//GEN-LAST:event_menuMainActionPerformed
-
     private void MenuItemMainActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuItemMainActionPerformed
         if (isLoggedIn()) {
              showMainAndManagement(panelMain,panelManagement);
@@ -311,6 +296,15 @@ public class ViewToolApp extends javax.swing.JFrame {
             Alerts.error(this, "Please login to continue.");
         }        // TODO add your handling code here:
     }//GEN-LAST:event_MenuItemMainActionPerformed
+
+    private void buttonMainActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonMainActionPerformed
+       if (isLoggedIn()) {
+             showMainAndManagement(panelMain,panelManagement);
+
+        } else {
+            Alerts.error(this, "Please login to continue.");
+        } 
+    }//GEN-LAST:event_buttonMainActionPerformed
 
     /**
      * @param args the command line arguments
@@ -324,15 +318,12 @@ public class ViewToolApp extends javax.swing.JFrame {
     private javax.swing.JMenuItem MenuItemExit;
     private javax.swing.JMenuItem MenuItemMain;
     private javax.swing.JMenuItem MenuItemPreferences;
-    private javax.swing.JMenu MenuLogout;
     private javax.swing.JMenuItem MenuLogoutItem;
-    private javax.swing.JMenu MenuManagement;
-    private javax.swing.JMenuItem MenuManagementItem;
     private javax.swing.JTextArea TextAreaAbout;
+    private javax.swing.JButton buttonMain;
     private javax.swing.JDialog dialogAbout;
     private javax.swing.JOptionPane jOptionPane1;
     private MediaSyncPolling.MediaSyncPolling mediaSyncPolling1;
     private javax.swing.JMenuBar menuBarMain;
-    private javax.swing.JMenu menuMain;
     // End of variables declaration//GEN-END:variables
 }
