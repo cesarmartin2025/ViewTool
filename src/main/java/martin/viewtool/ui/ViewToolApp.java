@@ -47,7 +47,9 @@ public class ViewToolApp extends javax.swing.JFrame {
 
         if (token == null) {
             Login login = new Login(this);
-            showPanel(login);
+            showPanel(login,true);
+            panelButtonMain.setVisible(false);
+            
         } else {
             loggedSuccess(token);
         }
@@ -62,7 +64,7 @@ public class ViewToolApp extends javax.swing.JFrame {
     panelButtonMain = new JPanel(new FlowLayout(FlowLayout.RIGHT));
     panelButtonMain.add(buttonMain);
 
-   
+   //Panel dinamico que muestra los paneles de la app
     dinamicPanel = new JPanel(new BorderLayout());
 
     root.add(panelButtonMain, BorderLayout.NORTH);
@@ -99,11 +101,16 @@ public class ViewToolApp extends javax.swing.JFrame {
         this.loggedIn = loggedIn;
     }
 
-    public void showPanel(JPanel panel) {
+    public void showPanel(JPanel panel,boolean autoSize) {
         dinamicPanel.removeAll();
         dinamicPanel.add(panel, BorderLayout.CENTER);
         dinamicPanel.revalidate();
         dinamicPanel.repaint();
+        if(autoSize){
+            pack();
+        } else{
+            setSize(1200,800);
+        }
         panelButtonMain.setVisible(true);
     }
     
@@ -112,7 +119,7 @@ public class ViewToolApp extends javax.swing.JFrame {
     top.setPreferredSize(new java.awt.Dimension(0, 167));
     combined.add(top, BorderLayout.NORTH);
     combined.add(bottom, BorderLayout.CENTER);
-    showPanel(combined);
+    showPanel(combined,false);
     panelButtonMain.setVisible(false);
     
 }
@@ -266,7 +273,7 @@ public class ViewToolApp extends javax.swing.JFrame {
 
     private void MenuItemPreferencesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuItemPreferencesActionPerformed
         if (isLoggedIn()) {
-            showPanel(new PanelPreferences());
+            showPanel(new PanelPreferences(),false);
         } else {
             Alerts.error(this, "Please login to continue.");
         }
@@ -275,12 +282,11 @@ public class ViewToolApp extends javax.swing.JFrame {
     }//GEN-LAST:event_MenuItemPreferencesActionPerformed
 
     private void MenuLogoutItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuLogoutItemActionPerformed
-        Alerts.info(ViewToolApp.this, "The logout was successfull. You will need to login again the next time.");
-        showPanel(new Login(this));
+        showPanel(new Login(this),true);
         setLoggedIn(false);
         tokenService.deleteToken();
         mediaSyncPolling1.setRunning(false);
-
+        panelButtonMain.setVisible(false);
     }//GEN-LAST:event_MenuLogoutItemActionPerformed
 
     private void MenuItemMainActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuItemMainActionPerformed

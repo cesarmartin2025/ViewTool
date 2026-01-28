@@ -38,7 +38,7 @@ public class Login extends JPanel {
         setName("Login");
 
         buttonLogin = new JButton();
-        buttonLogin.setBounds(100, 150, 100, 30);
+        buttonLogin.setBounds(100, 170, 100, 30);
         buttonLogin.setText("Login");
 
         labelEmail = new JLabel();
@@ -56,7 +56,7 @@ public class Login extends JPanel {
         fieldPassword.setBounds(100, 100, 300, 30);
 
         checkBoxRemember = new JCheckBox();
-        checkBoxRemember.setBounds(400, 90, 150, 50);
+        checkBoxRemember.setBounds(100, 140, 150, 13);
         checkBoxRemember.setText("Remember me");
 
         add(buttonLogin);
@@ -65,6 +65,9 @@ public class Login extends JPanel {
         add(labelPassword);
         add(fieldPassword);
         add(checkBoxRemember);
+        
+        setPreferredSize(new java.awt.Dimension(500, 260));
+
 
         buttonLogin.addActionListener(new ActionListener() {
 
@@ -90,7 +93,7 @@ public class Login extends JPanel {
                     }
                     if (token != null) {
                        tokenService.setToken(token);
-                       jframe.showPanel(new PanelMain());
+                       
                        jframe.setLoggedIn(true);
                     }
                     
