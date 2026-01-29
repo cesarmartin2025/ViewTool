@@ -15,7 +15,15 @@ import javax.swing.JOptionPane;
 import martin.viewtool.config.PreferencesService;
 import martin.viewtool.core.LibraryService;
 import MediaSyncPolling.Media;
+import java.awt.Cursor;
+import java.awt.Window;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.io.File;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -29,6 +37,10 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.TableRowSorter;
 import java.util.regex.Pattern;
+import javax.swing.JPanel;
+import javax.swing.JRootPane;
+import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 
 /**
  *
@@ -49,24 +61,181 @@ public class PanelManagement extends javax.swing.JPanel {
     private String token;
 
     private TableRowSorter<MediaTableModel> tableSorter;
-    private boolean searchLiveInstalled = false;
+    private boolean isLiveSearchActive = false;
+
+    private JPanel loadingPanel;
+    
+    // Uso algunos boolean tipo volatile para que todos procesos puedan ver si cambia la variable en el instante.
+    
+    private volatile boolean isLoadingOverlayVisible = false;
+    private volatile boolean localReady = false;
+    private volatile boolean networkReady = false;
+    private volatile boolean initialLoadInProgress = false;
+    private boolean hasBeenInitialized = false;
+
+    private SwingWorker<List<Media>, Void> rebuildWorker;
 
     public PanelManagement(ViewToolApp jframe) {
         this.jframe = jframe;
         this.tokenService = jframe.getTokenService();
         initComponents();
+        initLoadingPanel();
         token = tokenService.getToken();
 
         comboFilterListener();
         LiveSearchOnTable();
 
     }
-    
-    //Metodo para hacer busqueda en la tabla en tiempo real tecla por tecla mediante el DocumentListener. Al detectar un cambio, llama al metodo que filtra los resultados.
-    
 
+    // Crea un panel opaco que muestra el cursor de 'cargando' en el raton
+    private void initLoadingPanel() {
+        loadingPanel = new JPanel();
+        loadingPanel.setOpaque(false);
+        loadingPanel.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        loadingPanel.setFocusable(true);
+        loadingPanel.setEnabled(true);
+
+        //Escucha y consume los eventos del raton para que no se propague a otros componentes
+        MouseAdapter blocker = new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                e.consume();
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                e.consume();
+            }
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                e.consume();
+            }
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                e.consume();
+            }
+
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                e.consume();
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                e.consume();
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                e.consume();
+            }
+        };
+
+        loadingPanel.addMouseListener(blocker);
+        loadingPanel.addMouseMotionListener(blocker);
+
+        // Bloquea el scroll del raton
+        loadingPanel.addMouseWheelListener(new MouseWheelListener() {
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent e) {
+                e.consume();
+            }
+        });
+        
+        //Bloquea el teclado para que no interactue con la app
+
+        loadingPanel.addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                e.consume();
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                e.consume();
+            }
+
+            @Override
+            public void keyTyped(KeyEvent e) {
+                e.consume();
+            }
+        });
+    }
+    
+    // Metodo que bloquea la pantalla del usuario mostrando el loadingPanel creado anteriormente.
+    
+    private void freezeUI() {
+        if (isLoadingOverlayVisible) {
+            return;
+        }
+        isLoadingOverlayVisible = true;
+
+        Runnable showLoadingPanel = new Runnable() {
+            @Override
+            public void run() {
+                JRootPane rootPane = SwingUtilities.getRootPane(PanelManagement.this);
+
+                if (rootPane != null) {
+                    rootPane.setGlassPane(loadingPanel);
+                    loadingPanel.setVisible(true);
+                    loadingPanel.requestFocusInWindow();
+                }
+                
+                // Refuerza que aparezca la rueda de 'cargando' por si el raton no esta exactamente sobre el glassPane
+
+                Window window = SwingUtilities.getWindowAncestor(PanelManagement.this);
+                if (window != null) {
+                    window.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                }
+            }
+        };
+        
+         //Uso el invokeLater para que el runnable 'showLoadingPanel' que se ejecute en el hilo EDT.
+
+        SwingUtilities.invokeLater(showLoadingPanel);
+    }
+    
+    //Metodo que desbloquea la pantalla y le quita la visibilidad al loadingPanel.
+
+    private void unfreezeUI() {
+        isLoadingOverlayVisible = false;
+
+        Runnable showMainPanel = new Runnable() {
+            @Override
+            public void run() {
+                Window window = javax.swing.SwingUtilities.getWindowAncestor(PanelManagement.this);
+                if (window != null) {
+                    window.setCursor(Cursor.getDefaultCursor());
+                }
+                if (loadingPanel != null) {
+                    loadingPanel.setVisible(false);
+                }
+            }
+
+        };
+        
+         //Uso el invokeLater para que el runnable 'showMainPanel' que se ejecute en el hilo EDT.
+        
+        SwingUtilities.invokeLater(showMainPanel);
+    }
+    
+    //Metodo para comprobar que tanto los datos locales como los que provienen de la red estan cargados para descongelar la pantalla.
+    
+        private void checkSynchronization() {
+        if (!initialLoadInProgress) {
+            return;
+        }
+        if (localReady && networkReady) {
+            initialLoadInProgress = false;
+            unfreezeUI();
+        }
+    }
+
+    //Metodo para hacer busqueda en la tabla en tiempo real tecla por tecla mediante el DocumentListener. Al detectar un cambio, llama al metodo que filtra los resultados.
     private void LiveSearchOnTable() {
-        if (searchLiveInstalled) {
+        if (isLiveSearchActive) {
             return;
         }
 
@@ -87,11 +256,10 @@ public class PanelManagement extends javax.swing.JPanel {
             }
         });
 
-        searchLiveInstalled = true;
+        isLiveSearchActive = true;
     }
-    
-    // Metodo que usa la TableRowSorter en el modelo de la tabla para filtrar el texto que hay en el TextField.
 
+    // Metodo que usa la TableRowSorter en el modelo de la tabla para filtrar el texto que hay en el TextField.
     private void applyTableFilter() {
         if (tableSorter == null) {
             return;
@@ -103,7 +271,7 @@ public class PanelManagement extends javax.swing.JPanel {
             tableSorter.setRowFilter(null);
             return;
         }
-        
+
         tableSorter.setRowFilter(
                 RowFilter.regexFilter("(?i)" + Pattern.quote(text))
         );
@@ -125,8 +293,13 @@ public class PanelManagement extends javax.swing.JPanel {
         super.addNotify();
 
         // carga automática de JList y JTable
-        initialLoad();
-        startPolling();
+        if (!hasBeenInitialized) {
+            hasBeenInitialized = true;
+            initialLoad();
+        } else {
+            unfreezeUI();
+        }
+
     }
 
     //Uso un Timer con valor 0 para que cargue los datos una vez se pinte el panel.
@@ -135,8 +308,14 @@ public class PanelManagement extends javax.swing.JPanel {
         javax.swing.Timer timer = new javax.swing.Timer(0, new ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent e) {
+                initialLoadInProgress = true;
+                localReady = false;
+                networkReady = false;
+
+                freezeUI();
                 refreshLocalList();
-                rebuildMediaTable();
+                refreshTableData(true);
+                startPolling();
             }
         });
         timer.setRepeats(false);
@@ -172,11 +351,20 @@ public class PanelManagement extends javax.swing.JPanel {
                 mediaSyncPolling.addCustomEventListener(new CheckListMediaListener() {
                     @Override
                     public void checkListMediaReceived(CheckListMediaEvent evt) {
+
                         List<Media> newMedias = evt.getMediaList();
-                        if (newMedias == null || newMedias.isEmpty()) {
-                            return;
+
+                        if (initialLoadInProgress && !networkReady) {
+                            networkReady = true;
                         }
-                        applyNetworkUpdateTable(newMedias);
+                        
+                        if (newMedias != null && !newMedias.isEmpty()) {
+                            applyNetworkUpdateTable(newMedias);
+                        } 
+                                               
+                        if (initialLoadInProgress) {
+                            checkSynchronization();
+                        }
                     }
                 });
                 listenerAdded = true;
@@ -194,19 +382,61 @@ public class PanelManagement extends javax.swing.JPanel {
     private void applyNetworkUpdateTable(final List<Media> newMedia) {
         javax.swing.Timer timer = new javax.swing.Timer(0, new ActionListener() {
             @Override
-            public void actionPerformed(java.awt.event.ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 mediaService.addNewMediaNetwork(newMedia);
-                rebuildMediaTable();
+                refreshTableData(false);
             }
         });
         timer.setRepeats(false);
         timer.start();
     }
 
+    private void refreshTableData(boolean isInitialLoad) {
+        if (rebuildWorker != null && !rebuildWorker.isDone()) {
+            rebuildWorker.cancel(true);
+        }
+        if (isInitialLoad) {
+            freezeUI();
+        }
 
-    private void rebuildMediaTable() {
-        List<Media> mediaListCombined = mediaService.createMediaListCombined();
+        rebuildWorker = new SwingWorker<>() {
 
+            @Override
+            protected List<Media> doInBackground() {
+                return mediaService.createMediaListCombined();
+            }
+
+            @Override
+            protected void done() {
+                try {
+                    if (isCancelled()) {
+                        return;
+                    }
+
+                    List<Media> mediaListCombined = get();
+                    applyMediaTableModel(mediaListCombined);
+
+                    if (isInitialLoad) {
+                        localReady = true;
+                        checkSynchronization();
+                    }
+
+                } catch (Exception ex) {
+                    Alerts.error(PanelManagement.this, "Error rebuilding table: " + ex.getMessage());
+                    if (isInitialLoad) {
+                        localReady = true;
+                        checkSynchronization();
+                    }
+                }
+
+            }
+
+        };
+
+        rebuildWorker.execute();
+    }
+
+    private void applyMediaTableModel(List<Media> mediaListCombined) {
         tableModel = new MediaTableModel(mediaListCombined, mediaService);
         tableFiles.setModel(tableModel);
 
@@ -284,7 +514,7 @@ public class PanelManagement extends javax.swing.JPanel {
         jScrollPane1.setViewportView(listFiles);
 
         panelManagement.add(jScrollPane1);
-        jScrollPane1.setBounds(0, 50, 410, 400);
+        jScrollPane1.setBounds(10, 50, 550, 400);
 
         buttonRefreshList.setText("Refresh list");
         buttonRefreshList.addActionListener(new java.awt.event.ActionListener() {
@@ -293,7 +523,7 @@ public class PanelManagement extends javax.swing.JPanel {
             }
         });
         panelManagement.add(buttonRefreshList);
-        buttonRefreshList.setBounds(0, 450, 100, 23);
+        buttonRefreshList.setBounds(10, 450, 100, 23);
 
         comboFilter.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "All", "Videos", "Audios" }));
         comboFilter.addActionListener(new java.awt.event.ActionListener() {
@@ -302,7 +532,7 @@ public class PanelManagement extends javax.swing.JPanel {
             }
         });
         panelManagement.add(comboFilter);
-        comboFilter.setBounds(330, 450, 80, 22);
+        comboFilter.setBounds(480, 450, 80, 22);
 
         tableFiles.setAutoCreateRowSorter(true);
         tableFiles.setModel(new javax.swing.table.DefaultTableModel(
@@ -316,7 +546,7 @@ public class PanelManagement extends javax.swing.JPanel {
         jScrollPane2.setViewportView(tableFiles);
 
         panelManagement.add(jScrollPane2);
-        jScrollPane2.setBounds(430, 50, 920, 400);
+        jScrollPane2.setBounds(580, 50, 950, 420);
 
         buttonRefreshTable.setText("Refresh table");
         buttonRefreshTable.addActionListener(new java.awt.event.ActionListener() {
@@ -325,7 +555,7 @@ public class PanelManagement extends javax.swing.JPanel {
             }
         });
         panelManagement.add(buttonRefreshTable);
-        buttonRefreshTable.setBounds(430, 450, 110, 23);
+        buttonRefreshTable.setBounds(580, 470, 110, 23);
 
         textFieldFile.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -338,7 +568,7 @@ public class PanelManagement extends javax.swing.JPanel {
             }
         });
         panelManagement.add(textFieldFile);
-        textFieldFile.setBounds(1150, 20, 200, 22);
+        textFieldFile.setBounds(1150, 20, 380, 22);
 
         labelSearchFile.setText("Search :");
         panelManagement.add(labelSearchFile);
@@ -351,7 +581,7 @@ public class PanelManagement extends javax.swing.JPanel {
             }
         });
         panelManagement.add(buttonDeleteFile);
-        buttonDeleteFile.setBounds(790, 450, 130, 23);
+        buttonDeleteFile.setBounds(940, 470, 130, 23);
 
         jLabel1.setText("Media downloaded by ytb-dlp:");
         panelManagement.add(jLabel1);
@@ -359,7 +589,7 @@ public class PanelManagement extends javax.swing.JPanel {
 
         jLabel2.setText("DI Media Network Library :");
         panelManagement.add(jLabel2);
-        jLabel2.setBounds(430, 20, 170, 30);
+        jLabel2.setBounds(580, 20, 170, 30);
 
         buttonDownloadFile.setText("Download File");
         buttonDownloadFile.addActionListener(new java.awt.event.ActionListener() {
@@ -368,7 +598,7 @@ public class PanelManagement extends javax.swing.JPanel {
             }
         });
         panelManagement.add(buttonDownloadFile);
-        buttonDownloadFile.setBounds(920, 450, 140, 23);
+        buttonDownloadFile.setBounds(1070, 470, 140, 23);
 
         buttonUploadFile.setText("Upload File");
         buttonUploadFile.addActionListener(new java.awt.event.ActionListener() {
@@ -377,7 +607,7 @@ public class PanelManagement extends javax.swing.JPanel {
             }
         });
         panelManagement.add(buttonUploadFile);
-        buttonUploadFile.setBounds(660, 450, 130, 23);
+        buttonUploadFile.setBounds(810, 470, 130, 23);
 
         buttonOpenFile.setText("Open File");
         buttonOpenFile.addActionListener(new java.awt.event.ActionListener() {
@@ -386,22 +616,19 @@ public class PanelManagement extends javax.swing.JPanel {
             }
         });
         panelManagement.add(buttonOpenFile);
-        buttonOpenFile.setBounds(540, 450, 120, 23);
+        buttonOpenFile.setBounds(690, 470, 120, 23);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(30, 30, 30)
-                .addComponent(panelManagement, javax.swing.GroupLayout.PREFERRED_SIZE, 1357, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(173, Short.MAX_VALUE))
+            .addComponent(panelManagement, javax.swing.GroupLayout.DEFAULT_SIZE, 1560, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(panelManagement, javax.swing.GroupLayout.PREFERRED_SIZE, 847, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(panelManagement, javax.swing.GroupLayout.PREFERRED_SIZE, 841, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 12, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -423,8 +650,7 @@ public class PanelManagement extends javax.swing.JPanel {
     }//GEN-LAST:event_buttonRefreshListActionPerformed
 
     private void buttonRefreshTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRefreshTableActionPerformed
-        rebuildMediaTable();
-        startPolling();
+        refreshTableData(false);
     }//GEN-LAST:event_buttonRefreshTableActionPerformed
 
     private void buttonDeleteFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDeleteFileActionPerformed
@@ -440,11 +666,11 @@ public class PanelManagement extends javax.swing.JPanel {
             boolean deleted = Files.deleteIfExists(localFile.toPath());
 
             if (deleted) {
-                    Alerts.info(this, "File deleted successfully.");
-                } else {
-                    Alerts.error(this, "File is on network, could not be deleted.");
-                }
-           
+                Alerts.info(this, "File deleted successfully.");
+            } else {
+                Alerts.error(this, "File is on network, could not be deleted.");
+            }
+
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Error deleting file: " + ex.getMessage());
         }
@@ -454,21 +680,21 @@ public class PanelManagement extends javax.swing.JPanel {
     private void buttonDownloadFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDownloadFileActionPerformed
         MediaSyncPolling mediaSyncPolling = jframe.getComponent();
         Media file = getSelectedMedia("Download");
-        
+
         if (file == null) {
             return;
         }
         int idMedia = file.id;
 
         Path destPath = mediaService.getDownloadBaseDir().resolve(file.mediaFileName);
-        if(Files.exists(destPath)){
+        if (Files.exists(destPath)) {
             Alerts.error(this, "This file is already downloaded.");
             return;
-        } 
+        }
         File destFile = destPath.toFile();
         try {
             mediaSyncPolling.download(idMedia, destFile, token);
-            Alerts.info(this, "File successfully downloaded to "+prefService.getOutputDir().toString());
+            Alerts.info(this, "File successfully downloaded to " + prefService.getOutputDir().toString());
         } catch (Exception ex) {
             Alerts.error(this, "Error downloading file: " + ex.getMessage());
         }
