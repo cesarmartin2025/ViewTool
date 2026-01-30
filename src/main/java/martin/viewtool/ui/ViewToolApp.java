@@ -5,9 +5,12 @@
 package martin.viewtool.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.FlowLayout;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
-import javax.swing.JSplitPane;
 
 import martin.viewtool.core.TokenService;
 
@@ -39,7 +42,7 @@ public class ViewToolApp extends javax.swing.JFrame {
     public ViewToolApp() {
         initComponents();
         buildLayout();
-        
+        unifyBackground(getContentPane(),Color.white);
         token = tokenService.getToken();
         mediaSyncPolling1.setApiUrl(apiUrl);
         panelManagement = new PanelManagement(this);
@@ -56,6 +59,23 @@ public class ViewToolApp extends javax.swing.JFrame {
 
     }
     
+    public static void unifyBackground(Container container, Color bg) {
+        container.setBackground(bg);
+
+        for (Component c : container.getComponents()) {
+            if (c instanceof JComponent jc) {
+                jc.setBackground(bg);
+                jc.setOpaque(true);
+            }
+            if (c instanceof Container child) {
+                unifyBackground(child, bg);
+            }
+        }
+    }
+    
+    
+
+            
     private void buildLayout() {
 
     root = new JPanel(new BorderLayout());
@@ -106,11 +126,10 @@ public class ViewToolApp extends javax.swing.JFrame {
         dinamicPanel.add(panel, BorderLayout.CENTER);
         dinamicPanel.revalidate();
         dinamicPanel.repaint();
-        if(autoSize){
-            pack();
-        } else{
-            setSize(1600, 800);
-        }
+        
+        pack();
+        setLocationRelativeTo(null);
+        
         panelButtonMain.setVisible(true);
     }
     
@@ -121,6 +140,8 @@ public class ViewToolApp extends javax.swing.JFrame {
     combined.add(bottom, BorderLayout.CENTER);
     showPanel(combined,false);
     panelButtonMain.setVisible(false);
+    
+    pack();
     
 }
 
@@ -140,7 +161,6 @@ public class ViewToolApp extends javax.swing.JFrame {
         buttonMain = new javax.swing.JButton();
         menuBarMain = new javax.swing.JMenuBar();
         MenuFile = new javax.swing.JMenu();
-        MenuItemMain = new javax.swing.JMenuItem();
         MenuLogoutItem = new javax.swing.JMenuItem();
         MenuItemExit = new javax.swing.JMenuItem();
         MenuEdit = new javax.swing.JMenu();
@@ -179,9 +199,6 @@ public class ViewToolApp extends javax.swing.JFrame {
                 formMouseClicked(evt);
             }
         });
-        getContentPane().setLayout(null);
-        getContentPane().add(mediaSyncPolling1);
-        mediaSyncPolling1.setBounds(1000, 490, 164, 126);
 
         buttonMain.setText("Main");
         buttonMain.addActionListener(new java.awt.event.ActionListener() {
@@ -189,18 +206,8 @@ public class ViewToolApp extends javax.swing.JFrame {
                 buttonMainActionPerformed(evt);
             }
         });
-        getContentPane().add(buttonMain);
-        buttonMain.setBounds(1065, 0, 100, 40);
 
         MenuFile.setText("File");
-
-        MenuItemMain.setText("Main");
-        MenuItemMain.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                MenuItemMainActionPerformed(evt);
-            }
-        });
-        MenuFile.add(MenuItemMain);
 
         MenuLogoutItem.setText("Logout");
         MenuLogoutItem.addActionListener(new java.awt.event.ActionListener() {
@@ -251,6 +258,25 @@ public class ViewToolApp extends javax.swing.JFrame {
 
         setJMenuBar(menuBarMain);
 
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(1065, 1065, 1065)
+                .addComponent(buttonMain, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(1000, 1000, 1000)
+                .addComponent(mediaSyncPolling1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(buttonMain, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(450, 450, 450)
+                .addComponent(mediaSyncPolling1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
         setBounds(0, 0, 1180, 749);
     }// </editor-fold>//GEN-END:initComponents
 
@@ -272,38 +298,27 @@ public class ViewToolApp extends javax.swing.JFrame {
 
     private void MenuItemPreferencesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuItemPreferencesActionPerformed
         if (isLoggedIn()) {
-            showPanel(new PanelPreferences(),false);
-        } else {
-            Alerts.error(this, "Please login to continue.");
-        }
+            showPanel(new PanelPreferences(),false);  
+        } 
 
 
     }//GEN-LAST:event_MenuItemPreferencesActionPerformed
 
     private void MenuLogoutItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuLogoutItemActionPerformed
-        showPanel(new Login(this),true);
-        setLoggedIn(false);
-        tokenService.deleteToken();
-        mediaSyncPolling1.setRunning(false);
-        panelButtonMain.setVisible(false);
+        if(isLoggedIn()){
+            showPanel(new Login(this),true);
+            setLoggedIn(false);
+            tokenService.deleteToken();
+            mediaSyncPolling1.setRunning(false);
+            panelButtonMain.setVisible(false);
+        }
+        
     }//GEN-LAST:event_MenuLogoutItemActionPerformed
 
-    private void MenuItemMainActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuItemMainActionPerformed
-        if (isLoggedIn()) {
-             showMainAndManagement(panelMain,panelManagement);
-
-        } else {
-            Alerts.error(this, "Please login to continue.");
-        }        // TODO add your handling code here:
-    }//GEN-LAST:event_MenuItemMainActionPerformed
-
     private void buttonMainActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonMainActionPerformed
-       if (isLoggedIn()) {
-             showMainAndManagement(panelMain,panelManagement);
-
-        } else {
-            Alerts.error(this, "Please login to continue.");
-        } 
+        if (isLoggedIn()) {
+            showMainAndManagement(panelMain,panelManagement);
+        }
     }//GEN-LAST:event_buttonMainActionPerformed
 
     /**
@@ -316,7 +331,6 @@ public class ViewToolApp extends javax.swing.JFrame {
     private javax.swing.JMenu MenuHelp;
     private javax.swing.JMenuItem MenuItemAbout;
     private javax.swing.JMenuItem MenuItemExit;
-    private javax.swing.JMenuItem MenuItemMain;
     private javax.swing.JMenuItem MenuItemPreferences;
     private javax.swing.JMenuItem MenuLogoutItem;
     private javax.swing.JTextArea TextAreaAbout;

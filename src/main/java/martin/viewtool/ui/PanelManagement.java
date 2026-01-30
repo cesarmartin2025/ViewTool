@@ -514,7 +514,7 @@ public class PanelManagement extends javax.swing.JPanel {
         jScrollPane1.setViewportView(listFiles);
 
         panelManagement.add(jScrollPane1);
-        jScrollPane1.setBounds(10, 50, 550, 400);
+        jScrollPane1.setBounds(10, 50, 550, 420);
 
         buttonRefreshList.setText("Refresh list");
         buttonRefreshList.addActionListener(new java.awt.event.ActionListener() {
@@ -523,7 +523,7 @@ public class PanelManagement extends javax.swing.JPanel {
             }
         });
         panelManagement.add(buttonRefreshList);
-        buttonRefreshList.setBounds(10, 450, 100, 23);
+        buttonRefreshList.setBounds(10, 470, 100, 23);
 
         comboFilter.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "All", "Videos", "Audios" }));
         comboFilter.addActionListener(new java.awt.event.ActionListener() {
@@ -532,7 +532,7 @@ public class PanelManagement extends javax.swing.JPanel {
             }
         });
         panelManagement.add(comboFilter);
-        comboFilter.setBounds(480, 450, 80, 22);
+        comboFilter.setBounds(480, 470, 80, 22);
 
         tableFiles.setAutoCreateRowSorter(true);
         tableFiles.setModel(new javax.swing.table.DefaultTableModel(

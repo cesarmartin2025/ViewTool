@@ -143,7 +143,6 @@ public class PanelPreferences extends javax.swing.JPanel {
         String speed = textFieldLimDown.getText();
         try {
             ValidationService.requireValidLimit(speed);
-            Alerts.info(this, "You have limited the speed in: " + speed + " // Default: 0=no limit");
             prefService.setLimitSpeed(speed);
         } catch (Exception ex) {
             Alerts.showException(this, ex.getCause() != null ? ex.getCause() : ex);

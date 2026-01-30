@@ -3,8 +3,16 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package martin.viewtool.ui;
+
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Image;
 import java.io.IOException;
 import java.nio.file.Path;
+import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
+import javax.swing.JComponent;
 import martin.viewtool.config.PreferencesService;
 import martin.viewtool.core.DownloadController;
 import martin.viewtool.core.LibraryService;
@@ -17,15 +25,15 @@ import martin.viewtool.core.YtDlpService;
  * @author cesar
  */
 public class PanelMain extends javax.swing.JPanel {
-    
+
     private final PreferencesService prefService = new PreferencesService();
-    
+
     private final DownloadController controller
             = new DownloadController(new YtDlpService(prefService.getYtDlpPath()));
-    
+
     private final PlayService playService = new PlayService();
     private final PanelPreferences preferences = new PanelPreferences();
-    
+
     private final LibraryService libraryService = new LibraryService(Path.of(prefService.getOutputDir().toString()));
 
     /**
@@ -33,24 +41,49 @@ public class PanelMain extends javax.swing.JPanel {
      */
     public PanelMain() {
         initComponents();
-        /*
-        componente1.addCustomEventListener(new CustomEventListener() {
-                @Override
-                public void customEventReceived(CustomEvent evt) {
-                    System.out.print("Evento OK" + evt.getMediaList());
-                }
-            });
-            componente1.setApiUrl("https://dimedianetapi9.azurewebsites.net/");
-            componente1.setToken(tokenService.getToken());
-            componente1.setPollingInterval(5);
-            componente1.setRunning(true);
-       */
+        groupButtons();
         
+        setAudioIcon();
+        setVideoIcon();
+        setYoutubeIcon();
+       
+
     }
+
     
-    
-    
-    
+    private void setAudioIcon() {
+        ImageIcon icon = new ImageIcon(getClass().getResource("/images/audioicon.png"));
+
+        Image img = icon.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH);
+
+        audioIcon.setIcon(new ImageIcon(img));
+
+    }
+
+    private void setVideoIcon() {
+        ImageIcon icon = new ImageIcon(getClass().getResource("/images/videoicon.png"));
+
+        Image img = icon.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH);
+
+        videoIcon.setIcon(new ImageIcon(img));
+    }
+
+    private void setYoutubeIcon() {
+        ImageIcon icon = new ImageIcon(getClass().getResource("/images/youtubeicon.png"));
+
+        Image img = icon.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH);
+
+        youtubeIcon.setIcon(new ImageIcon(img));
+    }
+
+    private void groupButtons() {
+        ButtonGroup formatGroup = new ButtonGroup();
+        formatGroup.add(buttonMP3);
+        formatGroup.add(buttonMP4);
+
+        buttonMP4.setSelected(true);
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -69,31 +102,29 @@ public class PanelMain extends javax.swing.JPanel {
         buttonDownload = new javax.swing.JButton();
         buttonPlayVideo = new javax.swing.JButton();
         progressBar = new javax.swing.JProgressBar();
+        labelOnlyAudio = new javax.swing.JLabel();
+        audioIcon = new javax.swing.JLabel();
+        videoIcon = new javax.swing.JLabel();
+        youtubeIcon = new javax.swing.JLabel();
+
+        setForeground(new java.awt.Color(0, 0, 0));
+        setLayout(null);
+
+        panelMain.setBackground(new java.awt.Color(255, 255, 255));
+        panelMain.setForeground(new java.awt.Color(0, 0, 0));
 
         buttonMP3.setText("MP3");
-        buttonMP3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonMP3ActionPerformed(evt);
-            }
-        });
 
         buttonMP4.setSelected(true);
         buttonMP4.setText("MP4");
-        buttonMP4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonMP4ActionPerformed(evt);
-            }
-        });
 
-        textFieldURL.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textFieldURLActionPerformed(evt);
-            }
-        });
+        textFieldURL.setToolTipText("Paste a Youtube URL here...");
 
-        checkBoxOnlyAudio.setText("Only audio");
+        checkBoxOnlyAudio.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        checkBoxOnlyAudio.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
 
         labelUrl.setText("URL: ");
+        labelUrl.setToolTipText("");
 
         buttonDownload.setText("Download");
         buttonDownload.addActionListener(new java.awt.event.ActionListener() {
@@ -113,80 +144,83 @@ public class PanelMain extends javax.swing.JPanel {
         progressBar.setName("Progress"); // NOI18N
         progressBar.setStringPainted(true);
 
+        labelOnlyAudio.setText("Only audio");
+
+        audioIcon.setLabelFor(buttonMP3);
+
         javax.swing.GroupLayout panelMainLayout = new javax.swing.GroupLayout(panelMain);
         panelMain.setLayout(panelMainLayout);
         panelMainLayout.setHorizontalGroup(
             panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelMainLayout.createSequentialGroup()
-                .addGap(22, 22, 22)
                 .addGroup(panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelMainLayout.createSequentialGroup()
-                        .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 660, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 660, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(panelMainLayout.createSequentialGroup()
+                        .addGap(219, 219, 219)
+                        .addComponent(youtubeIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(labelUrl, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(panelMainLayout.createSequentialGroup()
-                                .addGroup(panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(labelUrl, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(panelMainLayout.createSequentialGroup()
-                                        .addGap(32, 32, 32)
-                                        .addComponent(textFieldURL, javax.swing.GroupLayout.PREFERRED_SIZE, 470, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(10, 10, 10)
-                                .addComponent(checkBoxOnlyAudio, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(textFieldURL, javax.swing.GroupLayout.PREFERRED_SIZE, 470, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(checkBoxOnlyAudio)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(labelOnlyAudio))
                             .addGroup(panelMainLayout.createSequentialGroup()
+                                .addGap(6, 6, 6)
+                                .addComponent(audioIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(buttonMP3)
-                                .addGap(51, 51, 51)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 83, Short.MAX_VALUE)
+                                .addComponent(videoIcon)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(buttonMP4)
-                                .addGap(71, 71, 71)
+                                .addGap(18, 18, 18)
                                 .addComponent(buttonDownload, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(30, 30, 30)
                                 .addComponent(buttonPlayVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 832, Short.MAX_VALUE))))
+                        .addGap(25, 25, 25)))
+                .addContainerGap())
         );
         panelMainLayout.setVerticalGroup(
             panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelMainLayout.createSequentialGroup()
-                .addGap(47, 47, 47)
-                .addGroup(panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(labelUrl, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap()
+                .addGroup(panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE, false)
                     .addComponent(textFieldURL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(checkBoxOnlyAudio))
-                .addGap(12, 12, 12)
-                .addGroup(panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(buttonMP3)
-                    .addComponent(buttonMP4)
-                    .addComponent(buttonDownload)
-                    .addComponent(buttonPlayVideo))
-                .addGap(24, 24, 24)
+                    .addComponent(labelUrl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(checkBoxOnlyAudio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(labelOnlyAudio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(youtubeIcon))
+                .addGap(15, 15, 15)
+                .addGroup(panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(buttonDownload)
+                        .addComponent(buttonMP4)
+                        .addComponent(buttonMP3)
+                        .addComponent(videoIcon))
+                    .addComponent(buttonPlayVideo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(audioIcon, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(148, 148, 148)
                 .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(1055, Short.MAX_VALUE))
+                .addContainerGap(209, Short.MAX_VALUE))
         );
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panelMain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(panelMain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
+        add(panelMain);
+        panelMain.setBounds(6, 0, 905, 453);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void buttonMP3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonMP3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_buttonMP3ActionPerformed
-
-    private void buttonMP4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonMP4ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_buttonMP4ActionPerformed
-
-    private void textFieldURLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFieldURLActionPerformed
-
-    }//GEN-LAST:event_textFieldURLActionPerformed
+    private void buttonPlayVideoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonPlayVideoActionPerformed
+        try {
+            playService.playLastDownloaded(prefService.getOutputDir());
+        } catch (IOException ex) {
+            Alerts.showException(this, ex);
+        }
+    }//GEN-LAST:event_buttonPlayVideoActionPerformed
 
     private void buttonDownloadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDownloadActionPerformed
 
@@ -211,13 +245,13 @@ public class PanelMain extends javax.swing.JPanel {
                 Alerts.info(PanelMain.this, "The download is starting, please, wait");
 
                 return controller.startDownload(textFieldURL.getText(),
-                    buttonMP3.isSelected() ? MediaFormat.MP3 : MediaFormat.MP4,
-                    checkBoxOnlyAudio.isSelected(),
-                    prefService.getOutputDir(),
-                    log,
-                    onPercent,
-                    limit,
-                    preferences.isM3USelected()
+                        buttonMP3.isSelected() ? MediaFormat.MP3 : MediaFormat.MP4,
+                        checkBoxOnlyAudio.isSelected(),
+                        prefService.getOutputDir(),
+                        log,
+                        onPercent,
+                        limit,
+                        preferences.isM3USelected()
                 );
 
             }
@@ -250,24 +284,20 @@ public class PanelMain extends javax.swing.JPanel {
         }.execute();
     }//GEN-LAST:event_buttonDownloadActionPerformed
 
-    private void buttonPlayVideoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonPlayVideoActionPerformed
-        try {
-            playService.playLastDownloaded(prefService.getOutputDir());
-        } catch (IOException ex) {
-            Alerts.showException(this, ex);
-        }
-    }//GEN-LAST:event_buttonPlayVideoActionPerformed
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel audioIcon;
     private javax.swing.JButton buttonDownload;
     private javax.swing.JRadioButton buttonMP3;
     private javax.swing.JRadioButton buttonMP4;
     private javax.swing.JButton buttonPlayVideo;
     private javax.swing.JCheckBox checkBoxOnlyAudio;
+    private javax.swing.JLabel labelOnlyAudio;
     private javax.swing.JLabel labelUrl;
     private javax.swing.JPanel panelMain;
     private javax.swing.JProgressBar progressBar;
     private javax.swing.JTextField textFieldURL;
+    private javax.swing.JLabel videoIcon;
+    private javax.swing.JLabel youtubeIcon;
     // End of variables declaration//GEN-END:variables
 }

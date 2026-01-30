@@ -5,6 +5,12 @@
 package martin.viewtool.ui;
 
 import MediaSyncPolling.MediaSyncPolling;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
@@ -13,6 +19,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 import martin.viewtool.core.TokenService;
 
 /**
@@ -30,44 +38,63 @@ public class Login extends JPanel {
     private String token;
     private TokenService tokenService;
     private ViewToolApp jframe;
-    
+
     public Login(ViewToolApp jframe) {
         this.jframe = jframe;
         this.tokenService = jframe.getTokenService();
-        setLayout(null);
+        setLayout(new BorderLayout());
         setName("Login");
+        setBorder(new EmptyBorder(20, 20, 20, 20));
 
-        buttonLogin = new JButton();
-        buttonLogin.setBounds(100, 170, 100, 30);
-        buttonLogin.setText("Login");
-
-        labelEmail = new JLabel();
-        labelEmail.setBounds(50, 40, 50, 50);
-        labelEmail.setText("Email: ");
-
-        fieldEmail = new JTextField();
-        fieldEmail.setBounds(100, 50, 300, 30);
-
-        labelPassword = new JLabel();
-        labelPassword.setBounds(30, 90, 80, 50);
-        labelPassword.setText("Password: ");
-
-        fieldPassword = new JPasswordField();
-        fieldPassword.setBounds(100, 100, 300, 30);
-
-        checkBoxRemember = new JCheckBox();
-        checkBoxRemember.setBounds(100, 140, 150, 13);
-        checkBoxRemember.setText("Remember me");
-
-        add(buttonLogin);
-        add(labelEmail);
-        add(fieldEmail);
-        add(labelPassword);
-        add(fieldPassword);
-        add(checkBoxRemember);
         
-        setPreferredSize(new java.awt.Dimension(500, 260));
+        JPanel formPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5); 
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
+        
+        labelEmail = new JLabel("Email:");
+        labelEmail.setHorizontalAlignment(SwingConstants.RIGHT); 
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 0; // No crece
+        formPanel.add(labelEmail, gbc);
+
+        fieldEmail = new JTextField(15); 
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0; 
+        formPanel.add(fieldEmail, gbc);
+
+       
+        labelPassword = new JLabel("Password:");
+        labelPassword.setHorizontalAlignment(SwingConstants.RIGHT);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.weightx = 0;
+        formPanel.add(labelPassword, gbc);
+
+        fieldPassword = new JPasswordField(15);
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.weightx = 1.0;
+        formPanel.add(fieldPassword, gbc);
+
+      
+        checkBoxRemember = new JCheckBox("Remember me");
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        gbc.weightx = 1.0;
+        formPanel.add(checkBoxRemember, gbc);
+
+      
+        buttonLogin = new JButton("Login");
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        buttonPanel.add(buttonLogin);
+
+ 
+        add(formPanel, BorderLayout.NORTH); // NORTH para que no se estiren verticalmente
+        add(buttonPanel, BorderLayout.CENTER);
 
         buttonLogin.addActionListener(new ActionListener() {
 
@@ -78,7 +105,7 @@ public class Login extends JPanel {
                 String email = fieldEmail.getText();
                 String password = new String(fieldPassword.getPassword());
                 boolean remember = checkBoxRemember.isSelected();
-                
+
                 MediaSyncPolling mediaSyncPolling = jframe.getComponent();
                 if (email.isBlank() || password.isBlank()) {
                     Alerts.error(Login.this, "Login Failed. Please, write your email and your password");
@@ -92,26 +119,21 @@ public class Login extends JPanel {
                         return;
                     }
                     if (token != null) {
-                       tokenService.setToken(token);
-                       
-                       jframe.setLoggedIn(true);
+                        tokenService.setToken(token);
+
+                        jframe.setLoggedIn(true);
                     }
-                    
+
                     if (remember && token != null) {
                         tokenService.saveToken(token);
-                       
+
                     }
-                    
-                     jframe.loggedSuccess(token);
+
+                    jframe.loggedSuccess(token);
                 }
-                
-                
-                
-               
 
             }
         });
     }
-    
-    
+
 }
