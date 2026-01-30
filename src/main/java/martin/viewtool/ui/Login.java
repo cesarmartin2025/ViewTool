@@ -10,9 +10,11 @@ import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -54,6 +56,10 @@ public class Login extends JPanel {
 
         
         labelEmail = new JLabel("Email:");
+        ImageIcon emailIcon = new ImageIcon(getClass().getResource("/images/correoicon.png"));
+        Image emailimg = emailIcon.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH);
+        labelEmail.setIcon(new ImageIcon(emailimg));
+        
         labelEmail.setHorizontalAlignment(SwingConstants.RIGHT); 
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -67,7 +73,11 @@ public class Login extends JPanel {
         formPanel.add(fieldEmail, gbc);
 
        
-        labelPassword = new JLabel("Password:");
+        labelPassword = new JLabel("Pass :");
+        ImageIcon passwordIcon = new ImageIcon(getClass().getResource("/images/passwordicon.png"));
+        Image passimg = passwordIcon.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH);
+        labelPassword.setIcon(new ImageIcon(passimg));
+        
         labelPassword.setHorizontalAlignment(SwingConstants.RIGHT);
         gbc.gridx = 0;
         gbc.gridy = 1;

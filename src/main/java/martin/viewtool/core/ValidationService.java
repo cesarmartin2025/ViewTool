@@ -19,7 +19,6 @@ public final class ValidationService {
     }
 
     public static URI requireValidUrl(String raw) {
-        requireHasText(raw, "URL");
         try {
             URI uri = URI.create(raw.trim());
             if (uri.getScheme() == null || uri.getHost() == null)
