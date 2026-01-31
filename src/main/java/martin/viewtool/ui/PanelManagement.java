@@ -16,6 +16,7 @@ import martin.viewtool.config.PreferencesService;
 import martin.viewtool.core.LibraryService;
 import MediaSyncPolling.Media;
 import java.awt.Cursor;
+import java.awt.Image;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -36,6 +37,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.TableRowSorter;
 import java.util.regex.Pattern;
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.SwingUtilities;
@@ -78,6 +80,7 @@ public class PanelManagement extends javax.swing.JPanel {
         this.jframe = jframe;
         this.tokenService = jframe.getTokenService();
         initComponents();
+        agrupedIcon();
         //Para que el ToolTipText del JList desaparezca despues de 3 segundos.
         ToolTipManager.sharedInstance().setDismissDelay(3000);
         //Para que desaparezca el scroll horizontal
@@ -89,6 +92,27 @@ public class PanelManagement extends javax.swing.JPanel {
         LiveSearchOnTable();
 
     }
+    
+    //Metodo para establecer un tamaño fijo de iconos.
+    
+    public ImageIcon fixedSizeIcon(String ruta, int ancho, int alto) {
+    ImageIcon icono = new ImageIcon(getClass().getResource(ruta));
+    Image img = icono.getImage().getScaledInstance(ancho, alto, Image.SCALE_SMOOTH);
+    return new ImageIcon(img);
+    }
+    
+    private void agrupedIcon(){
+       buttonRefreshList.setIcon(fixedSizeIcon("/images/refreshicon.png",25,25));
+       buttonDeleteFile.setIcon(fixedSizeIcon("/images/deleteicon.png",25,25));
+       buttonDownloadFile.setIcon(fixedSizeIcon("/images/downloadicon.png",25,25));
+       buttonOpenFile.setIcon(fixedSizeIcon("/images/playvideoicon.png",25,25));
+       buttonRefreshTable.setIcon(fixedSizeIcon("/images/refreshicon.png",25,25));
+       buttonUploadFile.setIcon(fixedSizeIcon("/images/uploadicon.png",25,25));
+    }
+    
+    
+
+    
 
     // Crea un panel opaco que muestra el cursor de 'cargando' en el raton
     private void initLoadingPanel() {
@@ -518,14 +542,18 @@ public class PanelManagement extends javax.swing.JPanel {
         panelManagement.add(jScrollPane1);
         jScrollPane1.setBounds(10, 50, 550, 420);
 
-        buttonRefreshList.setText("Refresh");
+        buttonRefreshList.setBackground(new java.awt.Color(255, 255, 255));
+        buttonRefreshList.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/refreshicon.png"))); // NOI18N
+        buttonRefreshList.setBorder(null);
+        buttonRefreshList.setBorderPainted(false);
+        buttonRefreshList.setPreferredSize(new java.awt.Dimension(40, 40));
         buttonRefreshList.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonRefreshListActionPerformed(evt);
             }
         });
         panelManagement.add(buttonRefreshList);
-        buttonRefreshList.setBounds(10, 470, 90, 23);
+        buttonRefreshList.setBounds(10, 470, 40, 40);
 
         comboFilter.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "All", "Videos", "Audios" }));
         comboFilter.addActionListener(new java.awt.event.ActionListener() {
@@ -534,7 +562,7 @@ public class PanelManagement extends javax.swing.JPanel {
             }
         });
         panelManagement.add(comboFilter);
-        comboFilter.setBounds(480, 470, 80, 22);
+        comboFilter.setBounds(480, 470, 80, 20);
 
         tableFiles.setAutoCreateRowSorter(true);
         tableFiles.setModel(new javax.swing.table.DefaultTableModel(
@@ -553,14 +581,18 @@ public class PanelManagement extends javax.swing.JPanel {
         panelManagement.add(jScrollPane2);
         jScrollPane2.setBounds(580, 50, 950, 420);
 
-        buttonRefreshTable.setText("Refresh");
+        buttonRefreshTable.setBackground(new java.awt.Color(255, 255, 255));
+        buttonRefreshTable.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/refreshicon.png"))); // NOI18N
+        buttonRefreshTable.setBorder(null);
+        buttonRefreshTable.setBorderPainted(false);
+        buttonRefreshTable.setPreferredSize(new java.awt.Dimension(40, 40));
         buttonRefreshTable.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonRefreshTableActionPerformed(evt);
             }
         });
         panelManagement.add(buttonRefreshTable);
-        buttonRefreshTable.setBounds(580, 470, 160, 23);
+        buttonRefreshTable.setBounds(580, 470, 50, 50);
 
         textFieldFile.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -575,56 +607,79 @@ public class PanelManagement extends javax.swing.JPanel {
         panelManagement.add(textFieldFile);
         textFieldFile.setBounds(1150, 20, 380, 22);
 
+        labelSearchFile.setBackground(new java.awt.Color(255, 255, 255));
         labelSearchFile.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        labelSearchFile.setText("Search :");
+        labelSearchFile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/lupaicon.png"))); // NOI18N
         panelManagement.add(labelSearchFile);
-        labelSearchFile.setBounds(1100, 10, 50, 40);
+        labelSearchFile.setBounds(1110, 15, 30, 25);
 
-        buttonDeleteFile.setText("Delete File");
+        buttonDeleteFile.setBackground(new java.awt.Color(255, 255, 255));
+        buttonDeleteFile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/deleteicon.png"))); // NOI18N
+        buttonDeleteFile.setBorder(null);
+        buttonDeleteFile.setBorderPainted(false);
+        buttonDeleteFile.setPreferredSize(new java.awt.Dimension(40, 40));
         buttonDeleteFile.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonDeleteFileActionPerformed(evt);
             }
         });
         panelManagement.add(buttonDeleteFile);
-        buttonDeleteFile.setBounds(990, 470, 130, 23);
+        buttonDeleteFile.setBounds(840, 470, 50, 50);
 
+        jLabel1.setBackground(new java.awt.Color(255, 255, 255));
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel1.setText("Media downloaded by ytb-dlp:");
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/libraryicon.png"))); // NOI18N
+        jLabel1.setText("Media downloaded:");
+        jLabel1.setPreferredSize(new java.awt.Dimension(40, 40));
         panelManagement.add(jLabel1);
-        jLabel1.setBounds(10, 20, 210, 30);
+        jLabel1.setBounds(10, 10, 170, 40);
 
+        jLabel2.setBackground(new java.awt.Color(255, 255, 255));
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel2.setText("DI Media Network Library :");
+        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/databaseicon.png"))); // NOI18N
+        jLabel2.setText("Media network library:");
+        jLabel2.setPreferredSize(new java.awt.Dimension(40, 40));
         panelManagement.add(jLabel2);
-        jLabel2.setBounds(580, 20, 170, 30);
+        jLabel2.setBounds(580, 10, 180, 40);
 
-        buttonDownloadFile.setText("Download File");
+        buttonDownloadFile.setBackground(new java.awt.Color(255, 255, 255));
+        buttonDownloadFile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/downloadicon.png"))); // NOI18N
+        buttonDownloadFile.setBorder(null);
+        buttonDownloadFile.setBorderPainted(false);
+        buttonDownloadFile.setPreferredSize(new java.awt.Dimension(40, 40));
         buttonDownloadFile.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonDownloadFileActionPerformed(evt);
             }
         });
         panelManagement.add(buttonDownloadFile);
-        buttonDownloadFile.setBounds(1120, 470, 140, 23);
+        buttonDownloadFile.setBounds(940, 470, 40, 50);
 
-        buttonUploadFile.setText("Upload File");
+        buttonUploadFile.setBackground(new java.awt.Color(255, 255, 255));
+        buttonUploadFile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/uploadicon.png"))); // NOI18N
+        buttonUploadFile.setBorder(null);
+        buttonUploadFile.setBorderPainted(false);
+        buttonUploadFile.setPreferredSize(new java.awt.Dimension(40, 40));
         buttonUploadFile.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonUploadFileActionPerformed(evt);
             }
         });
         panelManagement.add(buttonUploadFile);
-        buttonUploadFile.setBounds(860, 470, 130, 23);
+        buttonUploadFile.setBounds(750, 470, 50, 50);
 
-        buttonOpenFile.setText("Open File");
+        buttonOpenFile.setBackground(new java.awt.Color(255, 255, 255));
+        buttonOpenFile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/playvideoicon.png"))); // NOI18N
+        buttonOpenFile.setBorder(null);
+        buttonOpenFile.setBorderPainted(false);
+        buttonOpenFile.setPreferredSize(new java.awt.Dimension(40, 40));
         buttonOpenFile.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonOpenFileActionPerformed(evt);
             }
         });
         panelManagement.add(buttonOpenFile);
-        buttonOpenFile.setBounds(740, 470, 120, 23);
+        buttonOpenFile.setBounds(670, 470, 40, 50);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -635,8 +690,8 @@ public class PanelManagement extends javax.swing.JPanel {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(panelManagement, javax.swing.GroupLayout.PREFERRED_SIZE, 504, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 208, Short.MAX_VALUE))
+                .addComponent(panelManagement, javax.swing.GroupLayout.PREFERRED_SIZE, 527, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 107, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 

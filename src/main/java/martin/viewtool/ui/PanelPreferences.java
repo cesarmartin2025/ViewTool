@@ -4,39 +4,64 @@
  */
 package martin.viewtool.ui;
 
+import java.awt.Font;
+import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
-import java.nio.file.Path;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import martin.viewtool.config.PreferencesService;
-import martin.viewtool.core.DownloadController;
-import martin.viewtool.core.LibraryService;
-import martin.viewtool.core.PlayService;
 import martin.viewtool.core.ValidationService;
-import martin.viewtool.core.YtDlpService;
 
 /**
  *
  * @author cesar
  */
 public class PanelPreferences extends javax.swing.JPanel {
-     private final PreferencesService prefService = new PreferencesService();
-    private final DownloadController controller
-            = new DownloadController(new YtDlpService(prefService.getYtDlpPath()));
-    private final PlayService playService = new PlayService();
 
-    private final LibraryService libraryService = new LibraryService(Path.of(prefService.getOutputDir().toString()));
-   
+    private final PreferencesService prefService = new PreferencesService();
+    private final Font BOLD_FONT = new Font("Segoe UI", java.awt.Font.BOLD, 13);
+    private final Font PLAIN_FONT = new Font("Segoe UI", java.awt.Font.PLAIN, 13);
 
     /**
      * Creates new form PanelPreferences
      */
     public PanelPreferences() {
         initComponents();
+        checkBoxActionListener();
+        agrupedIcon();
     }
-    
+
+    public ImageIcon fixedSizeIcon(String ruta, int ancho, int alto) {
+        ImageIcon icono = new ImageIcon(getClass().getResource(ruta));
+        Image img = icono.getImage().getScaledInstance(ancho, alto, Image.SCALE_SMOOTH);
+        return new ImageIcon(img);
+    }
+
+    private void agrupedIcon() {
+        buttonDirYt.setIcon(fixedSizeIcon("/images/ytdlpicon.png", 40, 40));
+        //buttonDirectory.setIcon(fixedSizeIcon("/images/selectfoldericon.png",30,30));
+        buttonLimitDownload.setIcon(fixedSizeIcon("/images/saveicon.png", 20, 20));
+
+    }
+
     public boolean isM3USelected() {
-    return checkBoxM3u.isSelected();
-}
+        return checkBoxM3u.isSelected();
+    }
+
+    private void checkBoxActionListener() {
+        checkBoxM3u.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (checkBoxM3u.isSelected()) {
+                    checkBoxM3u.setFont(BOLD_FONT);
+                } else {
+                    checkBoxM3u.setFont(PLAIN_FONT);
+                }
+            }
+        });
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -56,6 +81,10 @@ public class PanelPreferences extends javax.swing.JPanel {
         textFieldLimDown = new javax.swing.JTextField();
         labelLimDown = new javax.swing.JLabel();
         checkBoxM3u = new javax.swing.JCheckBox();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
 
         fileChooserDirDown.setAcceptAllFileFilterUsed(false);
         fileChooserDirDown.setCurrentDirectory(new java.io.File("C:\\Users\\cesar\\ViewToolDownloads"));
@@ -67,57 +96,82 @@ public class PanelPreferences extends javax.swing.JPanel {
 
         panelPreferences.setLayout(null);
 
-        buttonDirectory.setText("Choose a directory for to store the file downloaded");
+        buttonDirectory.setBackground(new java.awt.Color(255, 255, 255));
+        buttonDirectory.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/selectfoldericon.png"))); // NOI18N
+        buttonDirectory.setBorder(null);
+        buttonDirectory.setBorderPainted(false);
+        buttonDirectory.setOpaque(true);
         buttonDirectory.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonDirectoryActionPerformed(evt);
             }
         });
         panelPreferences.add(buttonDirectory);
-        buttonDirectory.setBounds(30, 30, 320, 30);
+        buttonDirectory.setBounds(150, 30, 50, 36);
 
-        buttonLimitDownload.setText("Limite download");
+        buttonLimitDownload.setBackground(new java.awt.Color(255, 255, 255));
+        buttonLimitDownload.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/saveicon.png"))); // NOI18N
+        buttonLimitDownload.setBorder(null);
+        buttonLimitDownload.setBorderPainted(false);
         buttonLimitDownload.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonLimitDownloadActionPerformed(evt);
             }
         });
         panelPreferences.add(buttonLimitDownload);
-        buttonLimitDownload.setBounds(270, 127, 220, 30);
+        buttonLimitDownload.setBounds(240, 110, 20, 20);
 
-        buttonDirYt.setText("Choose a directory where is \"yt-dlb.exe\"");
+        buttonDirYt.setBackground(new java.awt.Color(255, 255, 255));
+        buttonDirYt.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/ytdlpicon.png"))); // NOI18N
+        buttonDirYt.setBorder(null);
+        buttonDirYt.setBorderPainted(false);
         buttonDirYt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonDirYtActionPerformed(evt);
             }
         });
         panelPreferences.add(buttonDirYt);
-        buttonDirYt.setBounds(40, 180, 270, 27);
+        buttonDirYt.setBounds(350, 30, 50, 40);
 
         textFieldLimDown.setText("0");
         panelPreferences.add(textFieldLimDown);
-        textFieldLimDown.setBounds(140, 126, 120, 30);
+        textFieldLimDown.setBounds(150, 110, 80, 20);
 
         labelLimDown.setText("Limit download: ");
         panelPreferences.add(labelLimDown);
-        labelLimDown.setBounds(30, 130, 100, 16);
+        labelLimDown.setBounds(50, 110, 120, 16);
 
-        checkBoxM3u.setText("create a .m3u for playlist");
+        checkBoxM3u.setText("Create a .m3u for playlist");
         checkBoxM3u.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 checkBoxM3uActionPerformed(evt);
             }
         });
         panelPreferences.add(checkBoxM3u);
-        checkBoxM3u.setBounds(50, 80, 190, 30);
+        checkBoxM3u.setBounds(50, 170, 190, 30);
+
+        jLabel1.setText("Select Folder :");
+        panelPreferences.add(jLabel1);
+        jLabel1.setBounds(50, 30, 110, 40);
+
+        jLabel2.setText("Locate yt-dlp.exe :");
+        panelPreferences.add(jLabel2);
+        jLabel2.setBounds(230, 40, 120, 16);
+
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/workicon.png"))); // NOI18N
+        panelPreferences.add(jLabel3);
+        jLabel3.setBounds(270, 180, 270, 250);
+
+        jLabel4.setFont(new java.awt.Font("Segoe UI", 3, 18)); // NOI18N
+        jLabel4.setText("More features coming soon...");
+        panelPreferences.add(jLabel4);
+        jLabel4.setBounds(270, 440, 260, 50);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(panelPreferences, javax.swing.GroupLayout.PREFERRED_SIZE, 808, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 6, Short.MAX_VALUE))
+            .addComponent(panelPreferences, javax.swing.GroupLayout.DEFAULT_SIZE, 814, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -134,8 +188,8 @@ public class PanelPreferences extends javax.swing.JPanel {
 
             prefService.setOutputDir(selectedDir.toPath());
             JOptionPane.showMessageDialog(this,
-                "Selected directory:\n" + selectedDir.getAbsolutePath(),
-                "Download folder", JOptionPane.INFORMATION_MESSAGE);
+                    "Selected directory:\n" + selectedDir.getAbsolutePath(),
+                    "Download folder", JOptionPane.INFORMATION_MESSAGE);
         }
     }//GEN-LAST:event_buttonDirectoryActionPerformed
 
@@ -156,8 +210,8 @@ public class PanelPreferences extends javax.swing.JPanel {
 
             prefService.setYtDlpPath(selectedDir.toPath());
             JOptionPane.showMessageDialog(this,
-                "Selected directory:\n" + selectedDir.getAbsolutePath(),
-                "Download folder", JOptionPane.INFORMATION_MESSAGE);
+                    "Selected directory:\n" + selectedDir.getAbsolutePath(),
+                    "Download folder", JOptionPane.INFORMATION_MESSAGE);
         }
     }//GEN-LAST:event_buttonDirYtActionPerformed
 
@@ -173,6 +227,10 @@ public class PanelPreferences extends javax.swing.JPanel {
     private javax.swing.JCheckBox checkBoxM3u;
     private javax.swing.JFileChooser fileChooserDirDown;
     private javax.swing.JFileChooser fileChooserYt;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel labelLimDown;
     private javax.swing.JPanel panelPreferences;
     private javax.swing.JTextField textFieldLimDown;

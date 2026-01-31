@@ -9,7 +9,9 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.FlowLayout;
+import java.awt.Image;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
@@ -61,6 +63,14 @@ public class ViewToolApp extends javax.swing.JFrame {
 
     }
     
+    public ImageIcon sizeIcon(String ruta, int ancho, int alto) {
+        ImageIcon icono = new ImageIcon(getClass().getResource(ruta));
+        Image img = icono.getImage().getScaledInstance(ancho, alto, Image.SCALE_SMOOTH);
+        return new ImageIcon(img);
+    }
+    
+    
+    
     public static void applyGlobalUI() {
     // Definir los estilos
     Color myBackgroundColor = Color.WHITE;
@@ -91,6 +101,8 @@ public class ViewToolApp extends javax.swing.JFrame {
     //Panel del Boton fijo para volver a Main
     panelButtonMain = new JPanel(new FlowLayout(FlowLayout.RIGHT));
     panelButtonMain.add(buttonMain);
+    
+    buttonMain.setIcon(sizeIcon("/images/homeicon.png",30,30));
 
    //Panel dinamico que muestra los paneles de la app
     dinamicPanel = new JPanel(new BorderLayout());
@@ -212,7 +224,11 @@ public class ViewToolApp extends javax.swing.JFrame {
             }
         });
 
-        buttonMain.setText("Main");
+        buttonMain.setBackground(new java.awt.Color(255, 255, 255));
+        buttonMain.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/homeicon.png"))); // NOI18N
+        buttonMain.setBorder(null);
+        buttonMain.setBorderPainted(false);
+        buttonMain.setPreferredSize(new java.awt.Dimension(54, 48));
         buttonMain.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonMainActionPerformed(evt);
@@ -275,17 +291,19 @@ public class ViewToolApp extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(1065, 1065, 1065)
-                .addComponent(buttonMain, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addGroup(layout.createSequentialGroup()
                 .addGap(1000, 1000, 1000)
-                .addComponent(mediaSyncPolling1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(mediaSyncPolling1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(1110, Short.MAX_VALUE)
+                .addComponent(buttonMain, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(buttonMain, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(450, 450, 450)
+                .addComponent(buttonMain, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(435, 435, 435)
                 .addComponent(mediaSyncPolling1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
