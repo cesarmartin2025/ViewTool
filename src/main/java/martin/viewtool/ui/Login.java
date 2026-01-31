@@ -6,8 +6,6 @@ package martin.viewtool.ui;
 
 import MediaSyncPolling.MediaSyncPolling;
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -40,10 +38,8 @@ public class Login extends JPanel {
     private JLabel labelPassword;
     private String token;
     private TokenService tokenService;
-    private ViewToolApp jframe;
 
     public Login(ViewToolApp jframe) {
-        this.jframe = jframe;
         this.tokenService = jframe.getTokenService();
         setLayout(new BorderLayout());
         setName("Login");

@@ -16,14 +16,12 @@ import java.nio.file.Path;
  */
 public final class MediaTableModel extends AbstractTableModel {
 
-    private final MediaService mediaService;
     private final List<Media> files;
     private final String[] columns = {"Location", "Name", "URL"};
     private final Path downloadPath;
 
     public MediaTableModel(List<Media> files, MediaService mediaService) {
         this.files = files;
-        this.mediaService = mediaService;
         this.downloadPath = mediaService.getDownloadBaseDir();
     }
 

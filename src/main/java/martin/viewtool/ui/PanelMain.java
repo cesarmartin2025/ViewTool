@@ -6,10 +6,13 @@ package martin.viewtool.ui;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.nio.file.Path;
 import javax.swing.ButtonGroup;
@@ -58,6 +61,11 @@ public class PanelMain extends JPanel {
 
     private final LibraryService libraryService = new LibraryService(Path.of(prefService.getOutputDir().toString()));
     
+    private final Font BOLD_FONT = new Font("Segoe UI", java.awt.Font.BOLD, 13);
+    private final Font PLAIN_FONT =new Font("Segoe UI", java.awt.Font.PLAIN, 13);
+    
+
+    
     public PanelMain(){
         initComponents();
         setupEvents();
@@ -90,10 +98,11 @@ public class PanelMain extends JPanel {
         
         youtubeIcon = new JLabel();
         labelUrl = new JLabel("URL:");
+        labelUrl.setFont(new Font("Segoe UI", java.awt.Font.BOLD, 13));
         textFieldURL = new JTextField(40);
         checkBoxOnlyAudio = new JCheckBox();
         labelOnlyAudio = new JLabel("Only Audio");
-
+        
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
         topPanel.setOpaque(false);
         topPanel.add(youtubeIcon);
@@ -104,12 +113,22 @@ public class PanelMain extends JPanel {
         topPanel.add(labelOnlyAudio);
 
         audioIcon = new JLabel();
-        buttonMP3 = new JRadioButton("MP3");
-        videoIcon = new JLabel();
-        buttonMP4 = new JRadioButton("MP4");
-        buttonDownload = new JButton("Download");
-        buttonPlayVideo = new JButton("Play last video");
         
+        buttonMP3 = new JRadioButton("MP3");
+        
+        videoIcon = new JLabel();
+        
+        buttonMP4 = new JRadioButton("MP4");
+        buttonMP4.setFont(BOLD_FONT);
+        
+        buttonDownload = new JButton("Download");
+        buttonDownload.setBackground(java.awt.Color.lightGray);
+        buttonDownload.setForeground(java.awt.Color.BLACK);
+  
+        buttonPlayVideo = new JButton("Play last video");
+        buttonPlayVideo.setBackground(java.awt.Color.lightGray);
+        buttonPlayVideo.setForeground(java.awt.Color.BLACK);
+  
         //Panel para agrupar los botones y los iconos MP3,MP4.
         
         JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
@@ -121,7 +140,8 @@ public class PanelMain extends JPanel {
         buttonsPanel.add(buttonMP4);
         buttonsPanel.add(new javax.swing.Box.Filler(new java.awt.Dimension(40, 0), null, null)); 
         buttonsPanel.add(buttonDownload);
-        buttonsPanel.add(buttonPlayVideo);
+        buttonsPanel.add(buttonPlayVideo); 
+        
         
          //Configuracion comun para todos los paneles esten a la izquierda
          //Esta comentado porque no es segura su posicion
@@ -161,12 +181,53 @@ public class PanelMain extends JPanel {
         repaint();
     }
     
+   
+    
+    
     private void setupEvents() {
         // Evento para reproducir el video
         buttonPlayVideo.addActionListener(e -> handlePlayVideo());
 
         // Evento para descargar
         buttonDownload.addActionListener(e -> handleDownload());
+        
+        //Evento para chequear si el checkBox esta activado o no y poner en negrita el label cuando lo esta.
+        checkBoxActionListener();
+        
+        //Lo mismo que el evento anterior pero con los botones MP3 y MP4.
+        checkMP3AndMP4Listener();
+        
+    }
+    
+     private void checkBoxActionListener() {
+        checkBoxOnlyAudio.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (checkBoxOnlyAudio.isSelected()) {
+                    labelOnlyAudio.setFont(BOLD_FONT);
+                } else {
+                    labelOnlyAudio.setFont(PLAIN_FONT);
+                }
+            }
+        });
+    }
+     
+    private void checkMP3AndMP4Listener() {
+        ActionListener changeFont = new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (buttonMP3.isSelected()) {
+                buttonMP3.setFont(BOLD_FONT);
+                buttonMP4.setFont(PLAIN_FONT);
+            } else if (buttonMP4.isSelected()) {
+                buttonMP4.setFont(BOLD_FONT);
+                buttonMP3.setFont(PLAIN_FONT);
+            }  
+            }   
+        };
+        
+        buttonMP3.addActionListener(changeFont);
+        buttonMP4.addActionListener(changeFont);
     }
 
     private void handlePlayVideo() {
@@ -176,6 +237,8 @@ public class PanelMain extends JPanel {
             Alerts.showException(this, ex);
         }
     }
+    
+    
 
     private void handleDownload() {
         buttonDownload.setEnabled(false);
@@ -224,7 +287,7 @@ public class PanelMain extends JPanel {
                     int exit = get();
                     if (exit == 0) {
                         Alerts.info(PanelMain.this, "Download complete to "+prefService.getOutputDir().toString());
-                        progressBar.setValue(100);
+                        progressBar.setValue(0);
                     } else {
                         Alerts.warn(PanelMain.this, "Process finished with error code: " + exit);
                     }
