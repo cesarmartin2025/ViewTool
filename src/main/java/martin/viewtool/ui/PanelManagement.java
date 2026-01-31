@@ -26,7 +26,6 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.io.File;
 import java.nio.file.Files;
-import java.util.ArrayList;
 import javax.swing.JFileChooser;
 import martin.viewtool.core.MediaItem;
 import martin.viewtool.core.MediaTableModel;
@@ -41,6 +40,8 @@ import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
+import javax.swing.ToolTipManager;
+import martin.viewtool.core.MediaRowRenderer;
 
 /**
  *
@@ -51,10 +52,9 @@ public class PanelManagement extends javax.swing.JPanel {
     private final PreferencesService prefService = new PreferencesService();
 
     private final LibraryService libraryService = new LibraryService(Path.of(prefService.getOutputDir().toString()));
-    private ViewToolApp jframe;
+    private final ViewToolApp jframe;
     private final TokenService tokenService;
     private final MediaService mediaService = new MediaService();
-    private List<Media> listMedia = new ArrayList<>();
     private MediaTableModel tableModel;
 
     private boolean listenerAdded = false;
@@ -64,9 +64,8 @@ public class PanelManagement extends javax.swing.JPanel {
     private boolean isLiveSearchActive = false;
 
     private JPanel loadingPanel;
-    
+
     // Uso algunos boolean tipo volatile para que todos procesos puedan ver si cambia la variable en el instante.
-    
     private volatile boolean isLoadingOverlayVisible = false;
     private volatile boolean localReady = false;
     private volatile boolean networkReady = false;
@@ -79,6 +78,10 @@ public class PanelManagement extends javax.swing.JPanel {
         this.jframe = jframe;
         this.tokenService = jframe.getTokenService();
         initComponents();
+        //Para que el ToolTipText del JList desaparezca despues de 3 segundos.
+        ToolTipManager.sharedInstance().setDismissDelay(3000);
+        //Para que desaparezca el scroll horizontal
+        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         initLoadingPanel();
         token = tokenService.getToken();
 
@@ -143,9 +146,8 @@ public class PanelManagement extends javax.swing.JPanel {
                 e.consume();
             }
         });
-        
-        //Bloquea el teclado para que no interactue con la app
 
+        //Bloquea el teclado para que no interactue con la app
         loadingPanel.addKeyListener(new java.awt.event.KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -163,9 +165,8 @@ public class PanelManagement extends javax.swing.JPanel {
             }
         });
     }
-    
+
     // Metodo que bloquea la pantalla del usuario mostrando el loadingPanel creado anteriormente.
-    
     private void freezeUI() {
         if (isLoadingOverlayVisible) {
             return;
@@ -182,23 +183,20 @@ public class PanelManagement extends javax.swing.JPanel {
                     loadingPanel.setVisible(true);
                     loadingPanel.requestFocusInWindow();
                 }
-                
-                // Refuerza que aparezca la rueda de 'cargando' por si el raton no esta exactamente sobre el glassPane
 
+                // Refuerza que aparezca la rueda de 'cargando' por si el raton no esta exactamente sobre el glassPane
                 Window window = SwingUtilities.getWindowAncestor(PanelManagement.this);
                 if (window != null) {
                     window.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                 }
             }
         };
-        
-         //Uso el invokeLater para que el runnable 'showLoadingPanel' que se ejecute en el hilo EDT.
 
+        //Uso el invokeLater para que el runnable 'showLoadingPanel' que se ejecute en el hilo EDT.
         SwingUtilities.invokeLater(showLoadingPanel);
     }
-    
-    //Metodo que desbloquea la pantalla y le quita la visibilidad al loadingPanel.
 
+    //Metodo que desbloquea la pantalla y le quita la visibilidad al loadingPanel.
     private void unfreezeUI() {
         isLoadingOverlayVisible = false;
 
@@ -215,15 +213,13 @@ public class PanelManagement extends javax.swing.JPanel {
             }
 
         };
-        
-         //Uso el invokeLater para que el runnable 'showMainPanel' que se ejecute en el hilo EDT.
-        
+
+        //Uso el invokeLater para que el runnable 'showMainPanel' que se ejecute en el hilo EDT.
         SwingUtilities.invokeLater(showMainPanel);
     }
-    
+
     //Metodo para comprobar que tanto los datos locales como los que provienen de la red estan cargados para descongelar la pantalla.
-    
-        private void checkSynchronization() {
+    private void checkSynchronization() {
         if (!initialLoadInProgress) {
             return;
         }
@@ -357,11 +353,11 @@ public class PanelManagement extends javax.swing.JPanel {
                         if (initialLoadInProgress && !networkReady) {
                             networkReady = true;
                         }
-                        
+
                         if (newMedias != null && !newMedias.isEmpty()) {
                             applyNetworkUpdateTable(newMedias);
-                        } 
-                                               
+                        }
+
                         if (initialLoadInProgress) {
                             checkSynchronization();
                         }
@@ -440,10 +436,13 @@ public class PanelManagement extends javax.swing.JPanel {
         tableModel = new MediaTableModel(mediaListCombined, mediaService);
         tableFiles.setModel(tableModel);
 
+        MediaRowRenderer renderer = new MediaRowRenderer();
+        for (int i = 0; i < tableFiles.getColumnCount(); i++) {
+            tableFiles.getColumnModel().getColumn(i).setCellRenderer(renderer);
+        }
+
         tableSorter = new TableRowSorter<>(tableModel);
         tableFiles.setRowSorter(tableSorter);
-
-        listMedia = new ArrayList<>(mediaListCombined);
 
         columnPrefs();
         applyTableFilter();
@@ -511,19 +510,22 @@ public class PanelManagement extends javax.swing.JPanel {
         panelManagement.setName(""); // NOI18N
         panelManagement.setLayout(null);
 
+        listFiles.setToolTipText("Archivos descargados en: "+prefService.getOutputDir().toString());
+        listFiles.setSelectionBackground(new java.awt.Color(153, 153, 153));
+        listFiles.setSelectionForeground(new java.awt.Color(255, 255, 255));
         jScrollPane1.setViewportView(listFiles);
 
         panelManagement.add(jScrollPane1);
         jScrollPane1.setBounds(10, 50, 550, 420);
 
-        buttonRefreshList.setText("Refresh list");
+        buttonRefreshList.setText("Refresh");
         buttonRefreshList.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonRefreshListActionPerformed(evt);
             }
         });
         panelManagement.add(buttonRefreshList);
-        buttonRefreshList.setBounds(10, 470, 100, 23);
+        buttonRefreshList.setBounds(10, 470, 90, 23);
 
         comboFilter.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "All", "Videos", "Audios" }));
         comboFilter.addActionListener(new java.awt.event.ActionListener() {
@@ -543,12 +545,15 @@ public class PanelManagement extends javax.swing.JPanel {
 
             }
         ));
+        tableFiles.setSelectionBackground(new java.awt.Color(153, 153, 153));
+        tableFiles.setSelectionForeground(new java.awt.Color(255, 255, 255));
+        tableFiles.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane2.setViewportView(tableFiles);
 
         panelManagement.add(jScrollPane2);
         jScrollPane2.setBounds(580, 50, 950, 420);
 
-        buttonRefreshTable.setText("Refresh table");
+        buttonRefreshTable.setText("Refresh");
         buttonRefreshTable.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonRefreshTableActionPerformed(evt);
@@ -570,6 +575,7 @@ public class PanelManagement extends javax.swing.JPanel {
         panelManagement.add(textFieldFile);
         textFieldFile.setBounds(1150, 20, 380, 22);
 
+        labelSearchFile.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         labelSearchFile.setText("Search :");
         panelManagement.add(labelSearchFile);
         labelSearchFile.setBounds(1100, 10, 50, 40);
@@ -583,10 +589,12 @@ public class PanelManagement extends javax.swing.JPanel {
         panelManagement.add(buttonDeleteFile);
         buttonDeleteFile.setBounds(990, 470, 130, 23);
 
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel1.setText("Media downloaded by ytb-dlp:");
         panelManagement.add(jLabel1);
         jLabel1.setBounds(10, 20, 210, 30);
 
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel2.setText("DI Media Network Library :");
         panelManagement.add(jLabel2);
         jLabel2.setBounds(580, 20, 170, 30);
@@ -627,8 +635,8 @@ public class PanelManagement extends javax.swing.JPanel {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(panelManagement, javax.swing.GroupLayout.PREFERRED_SIZE, 501, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(30, Short.MAX_VALUE))
+                .addComponent(panelManagement, javax.swing.GroupLayout.PREFERRED_SIZE, 504, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 208, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 

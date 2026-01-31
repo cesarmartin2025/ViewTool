@@ -9,6 +9,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.FlowLayout;
+import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
@@ -67,10 +68,16 @@ public class ViewToolApp extends javax.swing.JFrame {
 
     // Aplicar a todos los Paneles
     UIManager.put("Panel.background", myBackgroundColor);
-    
     //Aplica a todos los componentes
     UIManager.put("Label.font", myFont);
     UIManager.put("Button.font", myFont);
+    // Lo dejo comentado porque esta en duda
+    // UIManager.put("Button.border", BorderFactory.createLineBorder(Color.GRAY));
+    UIManager.put("Button.background", java.awt.Color.lightGray);
+    UIManager.put("Button.foreground", java.awt.Color.BLACK);
+    UIManager.put("ComboBox.background", java.awt.Color.lightGray);
+    UIManager.put("ComboBox.foreground", java.awt.Color.BLACK);
+    UIManager.put("ToolTip.background", java.awt.Color.lightGray);
     UIManager.put("CheckBox.background", myBackgroundColor);
     UIManager.put("RadioButton.background", myBackgroundColor);
     
