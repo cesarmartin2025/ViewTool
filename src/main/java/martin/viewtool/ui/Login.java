@@ -6,7 +6,9 @@ package martin.viewtool.ui;
 
 import MediaSyncPolling.MediaSyncPolling;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
@@ -62,7 +64,7 @@ public class Login extends JPanel {
         labelEmail.setHorizontalAlignment(SwingConstants.RIGHT); 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.weightx = 0; // No crece
+        gbc.weightx = 0; 
         formPanel.add(labelEmail, gbc);
 
         fieldEmail = new JTextField(15); 
@@ -72,9 +74,9 @@ public class Login extends JPanel {
         formPanel.add(fieldEmail, gbc);
 
        
-        labelPassword = new JLabel("Pass :");
+        labelPassword = new JLabel("Pass:");
         ImageIcon passwordIcon = new ImageIcon(getClass().getResource("/images/passwordicon.png"));
-        Image passimg = passwordIcon.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH);
+        Image passimg = passwordIcon.getImage().getScaledInstance(30, 25, Image.SCALE_SMOOTH);
         labelPassword.setIcon(new ImageIcon(passimg));
         
         labelPassword.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -91,6 +93,8 @@ public class Login extends JPanel {
 
       
         checkBoxRemember = new JCheckBox("Remember me");
+        checkBoxRemember.setFont(new Font("Segoe UI", java.awt.Font.PLAIN, 13));
+        
         gbc.gridx = 1;
         gbc.gridy = 2;
         gbc.weightx = 1.0;
@@ -98,12 +102,20 @@ public class Login extends JPanel {
 
       
         buttonLogin = new JButton("Login");
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        buttonPanel.add(buttonLogin);
+        // Color de fondo + letra
+        buttonLogin.setBackground(java.awt.Color.lightGray); 
+        buttonLogin.setForeground(java.awt.Color.BLACK);
+        
+        gbc.gridx=1;
+        gbc.gridy=3;
+        gbc.weightx=1.0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(15, 5, 5, 5);
+        formPanel.add(buttonLogin,gbc);
+        
+       
 
- 
-        add(formPanel, BorderLayout.NORTH); // NORTH para que no se estiren verticalmente
-        add(buttonPanel, BorderLayout.CENTER);
+        add(formPanel, BorderLayout.CENTER); // NORTH para que no se estiren verticalmente
 
         buttonLogin.addActionListener(new ActionListener() {
 

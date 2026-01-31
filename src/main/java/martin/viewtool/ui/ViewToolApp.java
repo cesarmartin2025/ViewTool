@@ -68,13 +68,13 @@ public class ViewToolApp extends javax.swing.JFrame {
     // Aplicar a todos los Paneles
     UIManager.put("Panel.background", myBackgroundColor);
     
-    // Aplicar a otros componentes (opcional pero recomendado para coherencia)
+    //Aplica a todos los componentes
     UIManager.put("Label.font", myFont);
     UIManager.put("Button.font", myFont);
     UIManager.put("CheckBox.background", myBackgroundColor);
     UIManager.put("RadioButton.background", myBackgroundColor);
     
-    // Si quieres que el fondo de los paneles sea siempre opaco por defecto
+    // Fondo de panel siempre opaco por coherencia a la hora de implementar las caracteristicas visuales.
     UIManager.put("Panel.opaque", true);
 }
     private void buildLayout() {

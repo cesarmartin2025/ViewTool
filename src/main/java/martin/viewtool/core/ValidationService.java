@@ -33,9 +33,7 @@ public final class ValidationService {
     if (userInput == null) return null;
     String s = userInput.trim();
     if (s.isEmpty() || s.equals("0")) return null;
-
     if (s.matches("\\d+")) return s + "M";
-    
     throw new IllegalArgumentException("invalid speed. Please, write only digits number example: 1 , 20 , 30 .");
 }
 }
