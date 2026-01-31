@@ -11,6 +11,7 @@ import java.awt.Container;
 import java.awt.FlowLayout;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
 
 import martin.viewtool.core.TokenService;
 
@@ -40,9 +41,9 @@ public class ViewToolApp extends javax.swing.JFrame {
      * Creates new form ViewToolApp
      */
     public ViewToolApp() {
+        applyGlobalUI();
         initComponents();
         buildLayout();
-        unifyBackground(getContentPane(),Color.white);
         token = tokenService.getToken();
         mediaSyncPolling1.setApiUrl(apiUrl);
         panelManagement = new PanelManagement(this);
@@ -59,23 +60,23 @@ public class ViewToolApp extends javax.swing.JFrame {
 
     }
     
-    public static void unifyBackground(Container container, Color bg) {
-        container.setBackground(bg);
+    public static void applyGlobalUI() {
+    // Definir los estilos
+    Color myBackgroundColor = Color.WHITE;
+    java.awt.Font myFont = new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 14);
 
-        for (Component c : container.getComponents()) {
-            if (c instanceof JComponent jc) {
-                jc.setBackground(bg);
-                jc.setOpaque(true);
-            }
-            if (c instanceof Container child) {
-                unifyBackground(child, bg);
-            }
-        }
-    }
+    // Aplicar a todos los Paneles
+    UIManager.put("Panel.background", myBackgroundColor);
     
+    // Aplicar a otros componentes (opcional pero recomendado para coherencia)
+    UIManager.put("Label.font", myFont);
+    UIManager.put("Button.font", myFont);
+    UIManager.put("CheckBox.background", myBackgroundColor);
+    UIManager.put("RadioButton.background", myBackgroundColor);
     
-
-            
+    // Si quieres que el fondo de los paneles sea siempre opaco por defecto
+    UIManager.put("Panel.opaque", true);
+}
     private void buildLayout() {
 
     root = new JPanel(new BorderLayout());
@@ -123,6 +124,8 @@ public class ViewToolApp extends javax.swing.JFrame {
 
     public void showPanel(JPanel panel,boolean autoSize) {
         dinamicPanel.removeAll();
+        panel.setOpaque(true);
+        
         dinamicPanel.add(panel, BorderLayout.CENTER);
         dinamicPanel.revalidate();
         dinamicPanel.repaint();
@@ -193,6 +196,8 @@ public class ViewToolApp extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("ViewTool");
+        setBackground(new java.awt.Color(255, 255, 255));
+        setFocusCycleRoot(false);
         setSize(new java.awt.Dimension(800, 600));
         addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -277,7 +282,7 @@ public class ViewToolApp extends javax.swing.JFrame {
                 .addComponent(mediaSyncPolling1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        setBounds(0, 0, 1180, 749);
+        setBounds(0, 0, 1180, 506);
     }// </editor-fold>//GEN-END:initComponents
 
     private void MenuItemExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuItemExitActionPerformed

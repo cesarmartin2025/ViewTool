@@ -4,6 +4,7 @@
  */
 package martin.viewtool.ui;
 
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -81,86 +82,73 @@ public class PanelMain extends JPanel {
 
     private void initComponents() {
         setLayout(new GridBagLayout());
-        setBackground(java.awt.Color.WHITE);
         GridBagConstraints gbc = new GridBagConstraints();
 
         
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.fill = GridBagConstraints.HORIZONTAL;
-
-        //Fila URL + Icono YT
-        youtubeIcon = new JLabel();
-        gbc.gridy = 0;
-        gbc.gridx = 0;
-        gbc.weightx = 0;
-        add(youtubeIcon, gbc);
         
-        labelUrl = new JLabel("URL: ");
-        gbc.gridx = 1;
-        add(labelUrl, gbc);
-
-        textFieldURL = new JTextField();
-        gbc.gridx = 2;
-        gbc.weightx = 1.0; 
-        add(textFieldURL, gbc);
-
+        youtubeIcon = new JLabel();
+        labelUrl = new JLabel("URL:");
+        textFieldURL = new JTextField(40);
         checkBoxOnlyAudio = new JCheckBox();
-        gbc.gridx = 3;
-        gbc.weightx = 0;
-        add(checkBoxOnlyAudio, gbc);
+        labelOnlyAudio = new JLabel("Only Audio");
 
-        labelOnlyAudio = new JLabel("Only audio");
-        gbc.gridx = 4;
-        add(labelOnlyAudio, gbc);
-
-        //Fila botones MP3 Y MP4 +Iconos
-        gbc.gridy = 1;
-        gbc.gridx = 2; 
-        gbc.weightx = 1.0;
+        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+        topPanel.setOpaque(false);
+        topPanel.add(youtubeIcon);
+        topPanel.add(labelUrl);
+        topPanel.add(textFieldURL);
+        topPanel.add(new javax.swing.Box.Filler(new java.awt.Dimension(20, 0), null, null)); 
+        topPanel.add(checkBoxOnlyAudio);
+        topPanel.add(labelOnlyAudio);
 
         audioIcon = new JLabel();
         buttonMP3 = new JRadioButton("MP3");
         videoIcon = new JLabel();
         buttonMP4 = new JRadioButton("MP4");
+        buttonDownload = new JButton("Download");
+        buttonPlayVideo = new JButton("Play last video");
         
         //Panel para agrupar los botones y los iconos MP3,MP4.
         
-        JPanel formatPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
-        formatPanel.setOpaque(false);
-        formatPanel.add(audioIcon);
-        formatPanel.add(buttonMP3);
-        formatPanel.add(new javax.swing.Box.Filler(new java.awt.Dimension(20, 0), null, null)); 
-        formatPanel.add(videoIcon);
-        formatPanel.add(buttonMP4);
-
-        gbc.anchor = GridBagConstraints.WEST;
-        add(formatPanel, gbc);
-
-        //Fila de botones de descarga y reproducir ultimo video
-        gbc.gridy = 2;
-        gbc.gridx = 2;
-        gbc.gridwidth = 3; 
+        JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+        buttonsPanel.setOpaque(false);
+        buttonsPanel.add(audioIcon);
+        buttonsPanel.add(buttonMP3);
+        buttonsPanel.add(new javax.swing.Box.Filler(new java.awt.Dimension(20, 0), null, null)); 
+        buttonsPanel.add(videoIcon);
+        buttonsPanel.add(buttonMP4);
+        buttonsPanel.add(new javax.swing.Box.Filler(new java.awt.Dimension(40, 0), null, null)); 
+        buttonsPanel.add(buttonDownload);
+        buttonsPanel.add(buttonPlayVideo);
         
-        buttonDownload = new JButton("Download");
-        buttonPlayVideo = new JButton("Play last video");
-        JPanel actionPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 0));
-        actionPanel.setOpaque(false);
-        actionPanel.add(buttonDownload);
-        actionPanel.add(buttonPlayVideo);
-
-        gbc.anchor = GridBagConstraints.EAST;
-        add(actionPanel, gbc);
-
-        //Fila para la barra de progreso.
-        progressBar = new JProgressBar();
-        gbc.gridy = 3;
+         //Configuracion comun para todos los paneles esten a la izquierda
+         //Esta comentado porque no es segura su posicion
+       /* 
         gbc.gridx = 0;
-        gbc.gridwidth = 5;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0; 
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.SOUTH; 
-        gbc.insets = new Insets(40, 10, 10, 10); 
+        gbc.gridwidth = GridBagConstraints.REMAINDER; // Ocupa toda la fila
+        gbc.weightx = 1.0;                            // IMPORTANTE: Estírate a lo ancho
+        gbc.fill = GridBagConstraints.HORIZONTAL;     // Rellena horizontalmente
+        gbc.anchor = GridBagConstraints.NORTHWEST;  
+        */
+        gbc.gridy=0;
+        add(topPanel, gbc);
+        gbc.gridy=1;
+        add(buttonsPanel, gbc);
+        
+       
+        //Fila para la barra de progreso.
+        progressBar = new JProgressBar(0,100);
+        progressBar.setStringPainted(true);
+        progressBar.setValue(0);
+       
+     
+        
+        gbc.gridy = 2;
+        gbc.weightx=0;
+        gbc.fill = GridBagConstraints.NONE;
+        progressBar.setPreferredSize(new Dimension(625,20));
         add(progressBar, gbc);
         
         groupButtons();

@@ -25,11 +25,11 @@ public final class ValidationService {
                 throw new IllegalArgumentException("invalid URL");
             return uri;
         } catch (IllegalArgumentException ex) {
-            throw new IllegalArgumentException("invalid URL: " + ex.getMessage(), ex);
+            throw new IllegalArgumentException("invalid URL");
         }
     }
     
-    public static String requireValidLimit(String userInput) throws IllegalArgumentException {
+    public static String requireValidLimit(String userInput) {
     if (userInput == null) return null;
     String s = userInput.trim();
     if (s.isEmpty() || s.equals("0")) return null;

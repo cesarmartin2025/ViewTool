@@ -555,7 +555,7 @@ public class PanelManagement extends javax.swing.JPanel {
             }
         });
         panelManagement.add(buttonRefreshTable);
-        buttonRefreshTable.setBounds(580, 470, 110, 23);
+        buttonRefreshTable.setBounds(580, 470, 160, 23);
 
         textFieldFile.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -581,7 +581,7 @@ public class PanelManagement extends javax.swing.JPanel {
             }
         });
         panelManagement.add(buttonDeleteFile);
-        buttonDeleteFile.setBounds(940, 470, 130, 23);
+        buttonDeleteFile.setBounds(990, 470, 130, 23);
 
         jLabel1.setText("Media downloaded by ytb-dlp:");
         panelManagement.add(jLabel1);
@@ -598,7 +598,7 @@ public class PanelManagement extends javax.swing.JPanel {
             }
         });
         panelManagement.add(buttonDownloadFile);
-        buttonDownloadFile.setBounds(1070, 470, 140, 23);
+        buttonDownloadFile.setBounds(1120, 470, 140, 23);
 
         buttonUploadFile.setText("Upload File");
         buttonUploadFile.addActionListener(new java.awt.event.ActionListener() {
@@ -607,7 +607,7 @@ public class PanelManagement extends javax.swing.JPanel {
             }
         });
         panelManagement.add(buttonUploadFile);
-        buttonUploadFile.setBounds(810, 470, 130, 23);
+        buttonUploadFile.setBounds(860, 470, 130, 23);
 
         buttonOpenFile.setText("Open File");
         buttonOpenFile.addActionListener(new java.awt.event.ActionListener() {
@@ -616,7 +616,7 @@ public class PanelManagement extends javax.swing.JPanel {
             }
         });
         panelManagement.add(buttonOpenFile);
-        buttonOpenFile.setBounds(690, 470, 120, 23);
+        buttonOpenFile.setBounds(740, 470, 120, 23);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -627,8 +627,8 @@ public class PanelManagement extends javax.swing.JPanel {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(panelManagement, javax.swing.GroupLayout.PREFERRED_SIZE, 841, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 12, Short.MAX_VALUE))
+                .addComponent(panelManagement, javax.swing.GroupLayout.PREFERRED_SIZE, 501, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(30, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
