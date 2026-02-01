@@ -6,13 +6,9 @@ package martin.viewtool.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.Image;
-import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
-import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 
@@ -33,9 +29,10 @@ public class ViewToolApp extends javax.swing.JFrame {
 
     PanelManagement panelManagement;
     PanelMain panelMain;
+    PanelPreferences panelPreferences;
     
     private JPanel root;
-    private JPanel panelButtonMain;
+    private JPanel panelButtonMainAndSetting;
     private JPanel dinamicPanel;
 
     
@@ -51,11 +48,12 @@ public class ViewToolApp extends javax.swing.JFrame {
         mediaSyncPolling1.setApiUrl(apiUrl);
         panelManagement = new PanelManagement(this);
         panelMain = new PanelMain();
+        panelPreferences = new PanelPreferences();
 
         if (token == null) {
             Login login = new Login(this);
             showPanel(login,true);
-            panelButtonMain.setVisible(false);
+            panelButtonMainAndSetting.setVisible(false);
             
         } else {
             loggedSuccess(token);
@@ -99,15 +97,20 @@ public class ViewToolApp extends javax.swing.JFrame {
     root = new JPanel(new BorderLayout());
 
     //Panel del Boton fijo para volver a Main
-    panelButtonMain = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-    panelButtonMain.add(buttonMain);
-    
+    panelButtonMainAndSetting = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+    panelButtonMainAndSetting.add(buttonMain);
+    panelButtonMainAndSetting.add(buttonSetting);
+     
+     buttonSetting.setIcon(sizeIcon("/images/settingicon.png",30,30));
     buttonMain.setIcon(sizeIcon("/images/homeicon.png",30,30));
+   
+   
+
 
    //Panel dinamico que muestra los paneles de la app
     dinamicPanel = new JPanel(new BorderLayout());
 
-    root.add(panelButtonMain, BorderLayout.NORTH);
+    root.add(panelButtonMainAndSetting, BorderLayout.NORTH);
     root.add(dinamicPanel, BorderLayout.CENTER);
 
     setContentPane(root);
@@ -152,7 +155,8 @@ public class ViewToolApp extends javax.swing.JFrame {
         pack();
         setLocationRelativeTo(null);
         
-        panelButtonMain.setVisible(true);
+        buttonSetting.setVisible(false);
+        buttonMain.setVisible(true);
     }
     
     public void showMainAndManagement(JPanel top, JPanel bottom) {
@@ -161,7 +165,8 @@ public class ViewToolApp extends javax.swing.JFrame {
     combined.add(top, BorderLayout.NORTH);
     combined.add(bottom, BorderLayout.CENTER);
     showPanel(combined,false);
-    panelButtonMain.setVisible(false);
+    buttonSetting.setVisible(true);
+    buttonMain.setVisible(false);
     
     pack();
     
@@ -181,6 +186,7 @@ public class ViewToolApp extends javax.swing.JFrame {
         jOptionPane1 = new javax.swing.JOptionPane();
         mediaSyncPolling1 = new MediaSyncPolling.MediaSyncPolling();
         buttonMain = new javax.swing.JButton();
+        buttonSetting = new javax.swing.JButton();
         menuBarMain = new javax.swing.JMenuBar();
         MenuFile = new javax.swing.JMenu();
         MenuLogoutItem = new javax.swing.JMenuItem();
@@ -228,10 +234,19 @@ public class ViewToolApp extends javax.swing.JFrame {
         buttonMain.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/homeicon.png"))); // NOI18N
         buttonMain.setBorder(null);
         buttonMain.setBorderPainted(false);
-        buttonMain.setPreferredSize(new java.awt.Dimension(54, 48));
         buttonMain.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonMainActionPerformed(evt);
+            }
+        });
+
+        buttonSetting.setBackground(new java.awt.Color(255, 255, 255));
+        buttonSetting.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/settingicon.png"))); // NOI18N
+        buttonSetting.setBorder(null);
+        buttonSetting.setBorderPainted(false);
+        buttonSetting.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonSettingActionPerformed(evt);
             }
         });
 
@@ -295,14 +310,18 @@ public class ViewToolApp extends javax.swing.JFrame {
                 .addComponent(mediaSyncPolling1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(1110, Short.MAX_VALUE)
-                .addComponent(buttonMain, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(buttonSetting)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(buttonMain)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(buttonMain, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(buttonMain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(buttonSetting, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(435, 435, 435)
                 .addComponent(mediaSyncPolling1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -340,7 +359,7 @@ public class ViewToolApp extends javax.swing.JFrame {
             setLoggedIn(false);
             tokenService.deleteToken();
             mediaSyncPolling1.setRunning(false);
-            panelButtonMain.setVisible(false);
+            panelButtonMainAndSetting.setVisible(false);
         }
         
     }//GEN-LAST:event_MenuLogoutItemActionPerformed
@@ -350,6 +369,10 @@ public class ViewToolApp extends javax.swing.JFrame {
             showMainAndManagement(panelMain,panelManagement);
         }
     }//GEN-LAST:event_buttonMainActionPerformed
+
+    private void buttonSettingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSettingActionPerformed
+       showPanel(panelPreferences,false);
+    }//GEN-LAST:event_buttonSettingActionPerformed
 
     /**
      * @param args the command line arguments
@@ -365,6 +388,7 @@ public class ViewToolApp extends javax.swing.JFrame {
     private javax.swing.JMenuItem MenuLogoutItem;
     private javax.swing.JTextArea TextAreaAbout;
     private javax.swing.JButton buttonMain;
+    private javax.swing.JButton buttonSetting;
     private javax.swing.JDialog dialogAbout;
     private javax.swing.JOptionPane jOptionPane1;
     private MediaSyncPolling.MediaSyncPolling mediaSyncPolling1;

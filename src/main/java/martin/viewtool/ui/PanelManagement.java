@@ -108,6 +108,8 @@ public class PanelManagement extends javax.swing.JPanel {
        buttonOpenFile.setIcon(fixedSizeIcon("/images/playvideoicon.png",25,25));
        buttonRefreshTable.setIcon(fixedSizeIcon("/images/refreshicon.png",25,25));
        buttonUploadFile.setIcon(fixedSizeIcon("/images/uploadicon.png",25,25));
+       titleListLabel.setIcon(fixedSizeIcon("/images/libraryicon.png",40,40));
+
     }
     
     
@@ -523,8 +525,8 @@ public class PanelManagement extends javax.swing.JPanel {
         textFieldFile = new javax.swing.JTextField();
         labelSearchFile = new javax.swing.JLabel();
         buttonDeleteFile = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
+        titleListLabel = new javax.swing.JLabel();
+        titleTableLabel = new javax.swing.JLabel();
         buttonDownloadFile = new javax.swing.JButton();
         buttonUploadFile = new javax.swing.JButton();
         buttonOpenFile = new javax.swing.JButton();
@@ -626,21 +628,21 @@ public class PanelManagement extends javax.swing.JPanel {
         panelManagement.add(buttonDeleteFile);
         buttonDeleteFile.setBounds(840, 470, 50, 50);
 
-        jLabel1.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/libraryicon.png"))); // NOI18N
-        jLabel1.setText("Media downloaded:");
-        jLabel1.setPreferredSize(new java.awt.Dimension(40, 40));
-        panelManagement.add(jLabel1);
-        jLabel1.setBounds(10, 10, 170, 40);
+        titleListLabel.setBackground(new java.awt.Color(255, 255, 255));
+        titleListLabel.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        titleListLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/libraryicon.png"))); // NOI18N
+        titleListLabel.setText("Media downloaded:");
+        titleListLabel.setPreferredSize(new java.awt.Dimension(40, 40));
+        panelManagement.add(titleListLabel);
+        titleListLabel.setBounds(10, 10, 170, 40);
 
-        jLabel2.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/databaseicon.png"))); // NOI18N
-        jLabel2.setText("Media network library:");
-        jLabel2.setPreferredSize(new java.awt.Dimension(40, 40));
-        panelManagement.add(jLabel2);
-        jLabel2.setBounds(580, 10, 180, 40);
+        titleTableLabel.setBackground(new java.awt.Color(255, 255, 255));
+        titleTableLabel.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        titleTableLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/databaseicon.png"))); // NOI18N
+        titleTableLabel.setText("Media network library:");
+        titleTableLabel.setPreferredSize(new java.awt.Dimension(40, 40));
+        panelManagement.add(titleTableLabel);
+        titleTableLabel.setBounds(580, 10, 180, 40);
 
         buttonDownloadFile.setBackground(new java.awt.Color(255, 255, 255));
         buttonDownloadFile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/downloadicon.png"))); // NOI18N
@@ -859,8 +861,6 @@ public class PanelManagement extends javax.swing.JPanel {
     private javax.swing.JButton buttonRefreshTable;
     private javax.swing.JButton buttonUploadFile;
     private javax.swing.JComboBox<String> comboFilter;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel labelSearchFile;
@@ -868,5 +868,7 @@ public class PanelManagement extends javax.swing.JPanel {
     private javax.swing.JPanel panelManagement;
     private javax.swing.JTable tableFiles;
     private javax.swing.JTextField textFieldFile;
+    private javax.swing.JLabel titleListLabel;
+    private javax.swing.JLabel titleTableLabel;
     // End of variables declaration//GEN-END:variables
 }

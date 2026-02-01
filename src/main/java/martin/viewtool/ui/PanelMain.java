@@ -50,6 +50,7 @@ public class PanelMain extends JPanel {
     private javax.swing.JTextField textFieldURL;
     private javax.swing.JLabel videoIcon;
     private javax.swing.JLabel youtubeIcon;
+     private javax.swing.JButton buttonSetting;
     
     private final PreferencesService prefService = new PreferencesService();
 
@@ -59,7 +60,6 @@ public class PanelMain extends JPanel {
     private final PlayService playService = new PlayService();
     private final PanelPreferences preferences = new PanelPreferences();
 
-    private final LibraryService libraryService = new LibraryService(Path.of(prefService.getOutputDir().toString()));
     
     private final Font BOLD_FONT = new Font("Segoe UI", java.awt.Font.BOLD, 13);
     private final Font PLAIN_FONT =new Font("Segoe UI", java.awt.Font.PLAIN, 13);
@@ -96,6 +96,8 @@ public class PanelMain extends JPanel {
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.fill = GridBagConstraints.HORIZONTAL;
         
+        //primera fila
+                
         youtubeIcon = new JLabel();
         labelUrl = new JLabel("URL:");
         labelUrl.setFont(new Font("Segoe UI", java.awt.Font.BOLD, 13));
@@ -111,6 +113,8 @@ public class PanelMain extends JPanel {
         topPanel.add(new javax.swing.Box.Filler(new java.awt.Dimension(20, 0), null, null)); 
         topPanel.add(checkBoxOnlyAudio);
         topPanel.add(labelOnlyAudio);
+        
+        //segunda fila
 
         audioIcon = new JLabel();
         
@@ -144,18 +148,23 @@ public class PanelMain extends JPanel {
         
         
          //Configuracion comun para todos los paneles esten a la izquierda
-         //Esta comentado porque no es segura su posicion
-       /* 
+         
+        /*
         gbc.gridx = 0;
-        gbc.gridwidth = GridBagConstraints.REMAINDER; // Ocupa toda la fila
-        gbc.weightx = 1.0;                            // IMPORTANTE: Estírate a lo ancho
-        gbc.fill = GridBagConstraints.HORIZONTAL;     // Rellena horizontalmente
-        gbc.anchor = GridBagConstraints.NORTHWEST;  
+        gbc.gridwidth = 1; // Ocupa toda la fila
+        gbc.weightx = 1.0;                            
+        gbc.fill = GridBagConstraints.HORIZONTAL;     
+        gbc.anchor = GridBagConstraints.NORTHWEST;
         */
+        
         gbc.gridy=0;
         add(topPanel, gbc);
         gbc.gridy=1;
         add(buttonsPanel, gbc);
+        
+
+        
+        
         
        
         //Fila para la barra de progreso.
@@ -198,6 +207,7 @@ public class PanelMain extends JPanel {
         checkMP3AndMP4Listener();
         
     }
+    
     
      private void checkBoxActionListener() {
         checkBoxOnlyAudio.addActionListener(new ActionListener() {
