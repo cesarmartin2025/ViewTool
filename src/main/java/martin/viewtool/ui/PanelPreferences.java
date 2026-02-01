@@ -29,6 +29,9 @@ public class PanelPreferences extends javax.swing.JPanel {
      */
     public PanelPreferences() {
         initComponents();
+        //Mostrar el valor guardado del limite de velocidad
+        textFieldLimDown.setText(prefService.getLimitSpeed());
+        labelLimDown.setText("Speed: (Current: "+ prefService.getLimitSpeed()+"MB)");
         checkBoxActionListener();
         agrupedIcon();
     }
@@ -41,7 +44,6 @@ public class PanelPreferences extends javax.swing.JPanel {
 
     private void agrupedIcon() {
         buttonDirYt.setIcon(fixedSizeIcon("/images/ytdlpicon.png", 40, 40));
-        //buttonDirectory.setIcon(fixedSizeIcon("/images/selectfoldericon.png",30,30));
         buttonLimitDownload.setIcon(fixedSizeIcon("/images/saveicon.png", 20, 20));
 
     }
@@ -81,10 +83,11 @@ public class PanelPreferences extends javax.swing.JPanel {
         textFieldLimDown = new javax.swing.JTextField();
         labelLimDown = new javax.swing.JLabel();
         checkBoxM3u = new javax.swing.JCheckBox();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
+        labelSelectFolder = new javax.swing.JLabel();
+        labelYtdDlp = new javax.swing.JLabel();
+        labelWorkers = new javax.swing.JLabel();
+        labelTextComingSoon = new javax.swing.JLabel();
+        labelExtraInfo = new javax.swing.JLabel();
 
         fileChooserDirDown.setAcceptAllFileFilterUsed(false);
         fileChooserDirDown.setCurrentDirectory(new java.io.File("C:\\Users\\cesar\\ViewToolDownloads"));
@@ -107,10 +110,11 @@ public class PanelPreferences extends javax.swing.JPanel {
             }
         });
         panelPreferences.add(buttonDirectory);
-        buttonDirectory.setBounds(150, 30, 50, 36);
+        buttonDirectory.setBounds(150, 30, 50, 33);
 
         buttonLimitDownload.setBackground(new java.awt.Color(255, 255, 255));
         buttonLimitDownload.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/saveicon.png"))); // NOI18N
+        buttonLimitDownload.setToolTipText("");
         buttonLimitDownload.setBorder(null);
         buttonLimitDownload.setBorderPainted(false);
         buttonLimitDownload.addActionListener(new java.awt.event.ActionListener() {
@@ -119,7 +123,7 @@ public class PanelPreferences extends javax.swing.JPanel {
             }
         });
         panelPreferences.add(buttonLimitDownload);
-        buttonLimitDownload.setBounds(240, 110, 20, 20);
+        buttonLimitDownload.setBounds(300, 110, 40, 20);
 
         buttonDirYt.setBackground(new java.awt.Color(255, 255, 255));
         buttonDirYt.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/ytdlpicon.png"))); // NOI18N
@@ -135,11 +139,10 @@ public class PanelPreferences extends javax.swing.JPanel {
 
         textFieldLimDown.setText("0");
         panelPreferences.add(textFieldLimDown);
-        textFieldLimDown.setBounds(150, 110, 80, 20);
+        textFieldLimDown.setBounds(200, 110, 100, 20);
 
-        labelLimDown.setText("Limit download: ");
         panelPreferences.add(labelLimDown);
-        labelLimDown.setBounds(50, 110, 120, 16);
+        labelLimDown.setBounds(40, 110, 160, 16);
 
         checkBoxM3u.setText("Create a .m3u for playlist");
         checkBoxM3u.addActionListener(new java.awt.event.ActionListener() {
@@ -148,24 +151,29 @@ public class PanelPreferences extends javax.swing.JPanel {
             }
         });
         panelPreferences.add(checkBoxM3u);
-        checkBoxM3u.setBounds(50, 170, 190, 30);
+        checkBoxM3u.setBounds(50, 210, 190, 30);
 
-        jLabel1.setText("Select Folder :");
-        panelPreferences.add(jLabel1);
-        jLabel1.setBounds(50, 30, 110, 40);
+        labelSelectFolder.setText("Select Folder :");
+        panelPreferences.add(labelSelectFolder);
+        labelSelectFolder.setBounds(50, 30, 110, 40);
 
-        jLabel2.setText("Locate yt-dlp.exe :");
-        panelPreferences.add(jLabel2);
-        jLabel2.setBounds(230, 40, 120, 16);
+        labelYtdDlp.setText("Locate yt-dlp.exe :");
+        panelPreferences.add(labelYtdDlp);
+        labelYtdDlp.setBounds(230, 40, 120, 16);
 
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/workicon.png"))); // NOI18N
-        panelPreferences.add(jLabel3);
-        jLabel3.setBounds(270, 180, 270, 250);
+        labelWorkers.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/workicon.png"))); // NOI18N
+        panelPreferences.add(labelWorkers);
+        labelWorkers.setBounds(270, 220, 270, 250);
 
-        jLabel4.setFont(new java.awt.Font("Segoe UI", 3, 18)); // NOI18N
-        jLabel4.setText("More features coming soon...");
-        panelPreferences.add(jLabel4);
-        jLabel4.setBounds(270, 440, 260, 50);
+        labelTextComingSoon.setFont(new java.awt.Font("Segoe UI", 3, 18)); // NOI18N
+        labelTextComingSoon.setText("More features coming soon...");
+        panelPreferences.add(labelTextComingSoon);
+        labelTextComingSoon.setBounds(270, 480, 260, 50);
+
+        labelExtraInfo.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
+        labelExtraInfo.setText("Set to 0 for no limit.");
+        panelPreferences.add(labelExtraInfo);
+        labelExtraInfo.setBounds(200, 140, 140, 16);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -198,6 +206,9 @@ public class PanelPreferences extends javax.swing.JPanel {
         try {
             ValidationService.requireValidLimit(speed);
             prefService.setLimitSpeed(speed);
+            
+            textFieldLimDown.setText(prefService.getLimitSpeed());
+            labelLimDown.setText("Speed: (Current: "+ prefService.getLimitSpeed()+"MB)");
         } catch (Exception ex) {
             Alerts.showException(this, ex.getCause() != null ? ex.getCause() : ex);
         }
@@ -227,11 +238,12 @@ public class PanelPreferences extends javax.swing.JPanel {
     private javax.swing.JCheckBox checkBoxM3u;
     private javax.swing.JFileChooser fileChooserDirDown;
     private javax.swing.JFileChooser fileChooserYt;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel labelExtraInfo;
     private javax.swing.JLabel labelLimDown;
+    private javax.swing.JLabel labelSelectFolder;
+    private javax.swing.JLabel labelTextComingSoon;
+    private javax.swing.JLabel labelWorkers;
+    private javax.swing.JLabel labelYtdDlp;
     private javax.swing.JPanel panelPreferences;
     private javax.swing.JTextField textFieldLimDown;
     // End of variables declaration//GEN-END:variables
