@@ -90,7 +90,5 @@ public final class MediaTableModel extends AbstractTableModel {
 
     public Media getFile(int row) {
         return files.get(row);
-    }
-    
-    
+    }  
 }

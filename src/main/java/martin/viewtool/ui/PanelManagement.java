@@ -16,7 +16,6 @@ import martin.viewtool.config.PreferencesService;
 import martin.viewtool.core.LibraryService;
 import MediaSyncPolling.Media;
 import java.awt.Cursor;
-import java.awt.Image;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -37,13 +36,14 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.TableRowSorter;
 import java.util.regex.Pattern;
-import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.ToolTipManager;
+import martin.viewtool.core.ManagementService;
 import martin.viewtool.core.MediaRowRenderer;
+import martin.viewtool.core.UIUtils;
 
 /**
  *
@@ -58,6 +58,8 @@ public class PanelManagement extends javax.swing.JPanel {
     private final TokenService tokenService;
     private final MediaService mediaService = new MediaService();
     private MediaTableModel tableModel;
+    private final UIUtils utils = new UIUtils();
+    private final ManagementService managementService = new ManagementService(libraryService, mediaService, prefService);
 
     private boolean listenerAdded = false;
     private String token;
@@ -92,29 +94,17 @@ public class PanelManagement extends javax.swing.JPanel {
         LiveSearchOnTable();
 
     }
-    
-    //Metodo para establecer un tamaño fijo de iconos.
-    
-    public ImageIcon fixedSizeIcon(String ruta, int ancho, int alto) {
-    ImageIcon icono = new ImageIcon(getClass().getResource(ruta));
-    Image img = icono.getImage().getScaledInstance(ancho, alto, Image.SCALE_SMOOTH);
-    return new ImageIcon(img);
-    }
-    
-    private void agrupedIcon(){
-       buttonRefreshList.setIcon(fixedSizeIcon("/images/refreshicon.png",25,25));
-       buttonDeleteFile.setIcon(fixedSizeIcon("/images/deleteicon.png",25,25));
-       buttonDownloadFile.setIcon(fixedSizeIcon("/images/downloadicon.png",25,25));
-       buttonOpenFile.setIcon(fixedSizeIcon("/images/playvideoicon.png",25,25));
-       buttonRefreshTable.setIcon(fixedSizeIcon("/images/refreshicon.png",25,25));
-       buttonUploadFile.setIcon(fixedSizeIcon("/images/uploadicon.png",25,25));
-       titleListLabel.setIcon(fixedSizeIcon("/images/libraryicon.png",40,40));
+
+    private void agrupedIcon() {
+        buttonRefreshList.setIcon(utils.getFixedSizeIcon("refreshicon.png", 25, 25));
+        buttonDeleteFile.setIcon(utils.getFixedSizeIcon("deleteicon.png", 25, 25));
+        buttonDownloadFile.setIcon(utils.getFixedSizeIcon("downloadicon.png", 25, 25));
+        buttonOpenFile.setIcon(utils.getFixedSizeIcon("playvideoicon.png", 25, 25));
+        buttonRefreshTable.setIcon(utils.getFixedSizeIcon("refreshicon.png", 25, 25));
+        buttonUploadFile.setIcon(utils.getFixedSizeIcon("uploadicon.png", 25, 25));
+        titleListLabel.setIcon(utils.getFixedSizeIcon("libraryicon.png", 40, 40));
 
     }
-    
-    
-
-    
 
     // Crea un panel opaco que muestra el cursor de 'cargando' en el raton
     private void initLoadingPanel() {
@@ -348,12 +338,9 @@ public class PanelManagement extends javax.swing.JPanel {
     private void refreshLocalList() {
         try {
             String selected = (String) comboFilter.getSelectedItem();
-            List<MediaItem> files = libraryService.getFilteredFiles(selected);
 
-            DefaultListModel<String> model = new DefaultListModel<String>();
-            for (MediaItem file : files) {
-                model.addElement(file.getName());
-            }
+            DefaultListModel<String> model = managementService.getUpdatedLocalListModel(selected);
+
             listFiles.setModel(model);
 
         } catch (IOException ex) {
@@ -725,117 +712,63 @@ public class PanelManagement extends javax.swing.JPanel {
             return;
         }
 
-        File localFile = mediaService.getLocalFile(file);
-
         try {
-            boolean deleted = Files.deleteIfExists(localFile.toPath());
-
-            if (deleted) {
+            if (managementService.deleteMedia(file)) {
                 Alerts.info(this, "File deleted successfully.");
+                refreshLocalList();
             } else {
                 Alerts.error(this, "File is on network, could not be deleted.");
             }
-
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Error deleting file: " + ex.getMessage());
+            Alerts.error(this, "Error deleting file: " + ex.getMessage());
         }
 
     }//GEN-LAST:event_buttonDeleteFileActionPerformed
 
     private void buttonDownloadFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDownloadFileActionPerformed
-        MediaSyncPolling mediaSyncPolling = jframe.getComponent();
         Media file = getSelectedMedia("Download");
-
         if (file == null) {
             return;
         }
-        int idMedia = file.id;
 
-        Path destPath = mediaService.getDownloadBaseDir().resolve(file.mediaFileName);
-        if (Files.exists(destPath)) {
-            Alerts.error(this, "This file is already downloaded.");
-            return;
-        }
-        File destFile = destPath.toFile();
         try {
-            mediaSyncPolling.download(idMedia, destFile, token);
+            managementService.downloadMedia(file, jframe.getComponent(), token);
             Alerts.info(this, "File successfully downloaded to " + prefService.getOutputDir().toString());
+            refreshLocalList();
         } catch (Exception ex) {
-            Alerts.error(this, "Error downloading file: " + ex.getMessage());
+            Alerts.error(this, "Error: " + ex.getMessage());
         }
     }//GEN-LAST:event_buttonDownloadFileActionPerformed
 
     private void buttonUploadFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonUploadFileActionPerformed
-        JFileChooser jFileChooserUpload = new JFileChooser();
-        int result = jFileChooserUpload.showOpenDialog(this);
-        if (result == javax.swing.JFileChooser.APPROVE_OPTION) {
-            File selectedFile = jFileChooserUpload.getSelectedFile();
-            if (selectedFile.isDirectory()) {
-                Alerts.error(this,
-                        "Please select a file, not a directory.");
+        JFileChooser chooser = new JFileChooser();
+        if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = chooser.getSelectedFile();
+
+            String youtubeUrl = JOptionPane.showInputDialog(this, "Enter the YouTube URL:");
+            if (youtubeUrl == null || youtubeUrl.trim().isEmpty()) {
                 return;
             }
 
-            String name = selectedFile.getName().toLowerCase();
-            if (!name.endsWith(".mp3") && !name.endsWith(".mp4") && !name.endsWith(".m4a")) {
-                Alerts.error(this,
-                        "Only MP3, MP4 or M4A files are allowed.");
-                return;
-            }
-
-            String youtubeUrl = JOptionPane.showInputDialog(
-                    this,
-                    "Enter the YouTube URL for this media:",
-                    "YouTube URL",
-                    JOptionPane.QUESTION_MESSAGE
-            );
-
-            if (youtubeUrl == null) {
-                return;
-            }
-
-            youtubeUrl = youtubeUrl.trim();
-            if (youtubeUrl.isEmpty()) {
-                Alerts.error(this,
-                        "URL cannot be empty.");
-                return;
-            }
-            MediaSyncPolling msp = jframe.getComponent();
             try {
-                msp.uploadFileMultipart(selectedFile, youtubeUrl, token);
-            } catch (Exception e) {
-                Alerts.error(this, e.getMessage());
+                managementService.uploadMedia(selectedFile, youtubeUrl.trim(), jframe.getComponent(), token);
+                Alerts.info(this, "File uploaded:\n" + selectedFile.getAbsolutePath());
+            } catch (Exception ex) {
+                Alerts.error(this, ex.getMessage());
             }
-
-            Alerts.info(this,
-                    "File uploaded:\n" + selectedFile.getAbsolutePath());
         }
-
     }//GEN-LAST:event_buttonUploadFileActionPerformed
 
     private void buttonOpenFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonOpenFileActionPerformed
-
         Media file = getSelectedMedia("Open");
         if (file == null) {
             return;
         }
 
-        File localFile = mediaService.getLocalFile(file);
-
-        if (!localFile.exists()) {
-            Alerts.error(this,
-                    "This media is not downloaded in the local directory.");
-            return;
-        }
-
         try {
-            if (!java.awt.Desktop.isDesktopSupported()) {
-                throw new UnsupportedOperationException("Desktop API not supported on this platform.");
-            }
-            java.awt.Desktop.getDesktop().open(localFile);
+            managementService.openLocalFile(file);
         } catch (Exception ex) {
-            Alerts.error(this,
-                    "Error opening file: " + ex.getMessage());
+            Alerts.error(this, "Error: " + ex.getMessage());
         }
     }//GEN-LAST:event_buttonOpenFileActionPerformed
 

@@ -159,8 +159,7 @@ public class PanelMain extends JPanel {
         gbc.gridy=1;
         add(buttonsPanel, gbc);
         
-
-       
+ 
         //Fila para la barra de progreso.
         progressBar = new JProgressBar(0,100);
         progressBar.setStringPainted(true);

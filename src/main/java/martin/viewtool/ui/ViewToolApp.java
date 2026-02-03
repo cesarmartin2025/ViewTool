@@ -20,7 +20,6 @@ import martin.viewtool.core.TokenService;
  */
 public class ViewToolApp extends javax.swing.JFrame {
 
-
     private final TokenService tokenService = new TokenService();
     private String token;
     private final String apiUrl = "https://dimedianetapi9.azurewebsites.net/";
@@ -29,12 +28,10 @@ public class ViewToolApp extends javax.swing.JFrame {
     PanelManagement panelManagement;
     PanelMain panelMain;
     PanelPreferences panelPreferences;
-    
+
     private JPanel root;
     private JPanel panelButtonMainAndSetting;
     private JPanel dinamicPanel;
-
-    
 
     /**
      * Creates new form ViewToolApp
@@ -52,83 +49,78 @@ public class ViewToolApp extends javax.swing.JFrame {
         if (token == null) {
             Login login = new Login(this);
             showPanel(login);
-           
+
         } else {
             loggedSuccess(token);
         }
 
     }
-    
+
     private ImageIcon sizeIcon(String ruta, int ancho, int alto) {
         ImageIcon icono = new ImageIcon(getClass().getResource(ruta));
         Image img = icono.getImage().getScaledInstance(ancho, alto, Image.SCALE_SMOOTH);
         return new ImageIcon(img);
     }
-    
-    
-    
+
     private static void applyGlobalUI() {
-    // Definir los estilos
-    Color myBackgroundColor = Color.WHITE;
-    java.awt.Font myFont = new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 14);
+        // Definir los estilos
+        Color myBackgroundColor = Color.WHITE;
+        java.awt.Font myFont = new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 14);
 
-    // Aplicar a todos los Paneles
-    UIManager.put("Panel.background", myBackgroundColor);
-    //Aplica a todos los componentes
-    UIManager.put("Label.font", myFont);
-    UIManager.put("Button.font", myFont);
-    // Lo dejo comentado porque esta en duda
-    // UIManager.put("Button.border", BorderFactory.createLineBorder(Color.GRAY));
-    UIManager.put("Button.background", java.awt.Color.lightGray);
-    UIManager.put("Button.foreground", java.awt.Color.BLACK);
-    UIManager.put("ComboBox.background", java.awt.Color.lightGray);
-    UIManager.put("ComboBox.foreground", java.awt.Color.BLACK);
-    UIManager.put("ToolTip.background", java.awt.Color.lightGray);
-    UIManager.put("CheckBox.background", myBackgroundColor);
-    UIManager.put("RadioButton.background", myBackgroundColor);
-    UIManager.put("OptionPane.background", myBackgroundColor);
-    UIManager.put("OptionPane.foreground", myFont);
-    
-    // Fondo de panel siempre opaco por coherencia a la hora de implementar las caracteristicas visuales.
-    UIManager.put("Panel.opaque", true);
-}
-    private void buildLayout() {
+        // Aplicar a todos los Paneles
+        UIManager.put("Panel.background", myBackgroundColor);
+        //Aplica a todos los componentes
+        UIManager.put("Label.font", myFont);
+        UIManager.put("Button.font", myFont);
+        // Lo dejo comentado porque esta en duda
+        // UIManager.put("Button.border", BorderFactory.createLineBorder(Color.GRAY));
+        UIManager.put("Button.background", java.awt.Color.lightGray);
+        UIManager.put("Button.foreground", java.awt.Color.BLACK);
+        UIManager.put("ComboBox.background", java.awt.Color.lightGray);
+        UIManager.put("ComboBox.foreground", java.awt.Color.BLACK);
+        UIManager.put("ToolTip.background", java.awt.Color.lightGray);
+        UIManager.put("CheckBox.background", myBackgroundColor);
+        UIManager.put("RadioButton.background", myBackgroundColor);
+        UIManager.put("OptionPane.background", myBackgroundColor);
+        UIManager.put("OptionPane.foreground", myFont);
 
-    root = new JPanel(new BorderLayout());
-
-    //Panel del Boton fijo para volver a Main
-    panelButtonMainAndSetting = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-    panelButtonMainAndSetting.add(buttonMain);
-    panelButtonMainAndSetting.add(buttonSetting);
-     
-     buttonSetting.setIcon(sizeIcon("/images/settingicon.png",30,30));
-    buttonMain.setIcon(sizeIcon("/images/homeicon.png",30,30));
-   
-   
-
-
-   //Panel dinamico que muestra los paneles de la app
-    dinamicPanel = new JPanel(new BorderLayout());
-
-    root.add(panelButtonMainAndSetting, BorderLayout.NORTH);
-    root.add(dinamicPanel, BorderLayout.CENTER);
-
-    setContentPane(root);
+        // Fondo de panel siempre opaco por coherencia a la hora de implementar las caracteristicas visuales.
+        UIManager.put("Panel.opaque", true);
     }
 
+    private void buildLayout() {
 
-    public void loggedSuccess(String token) {
+        root = new JPanel(new BorderLayout());
+
+        //Panel del Boton fijo para volver a Main
+        panelButtonMainAndSetting = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        panelButtonMainAndSetting.add(buttonMain);
+        panelButtonMainAndSetting.add(buttonSetting);
+
+        buttonSetting.setIcon(sizeIcon("/images/settingicon.png", 30, 30));
+        buttonMain.setIcon(sizeIcon("/images/homeicon.png", 30, 30));
+
+        //Panel dinamico que muestra los paneles de la app
+        dinamicPanel = new JPanel(new BorderLayout());
+
+        root.add(panelButtonMainAndSetting, BorderLayout.NORTH);
+        root.add(dinamicPanel, BorderLayout.CENTER);
+
+        setContentPane(root);
+    }
+
+    public final void loggedSuccess(String token) {
         this.token = token;
         this.loggedIn = true;
-       showMainAndManagement(panelMain,panelManagement);
-       buttonSetting.setVisible(true);
+        showMainAndManagement(panelMain, panelManagement);
+        buttonSetting.setVisible(true);
 
     }
 
     public MediaSyncPolling.MediaSyncPolling getComponent() {
         return mediaSyncPolling1;
     }
-    
+
     public TokenService getTokenService() {
         return tokenService;
     }
@@ -148,39 +140,38 @@ public class ViewToolApp extends javax.swing.JFrame {
     private void showPanel(JPanel panel) {
         dinamicPanel.removeAll();
         panel.setOpaque(true);
-        
+
         dinamicPanel.add(panel, BorderLayout.CENTER);
-        
-        if(!isLoggedIn()){
+
+        if (!isLoggedIn()) {
             panelButtonMainAndSetting.setVisible(false);
-        }
-        else{
-             panelButtonMainAndSetting.setVisible(true);
+        } else {
+            panelButtonMainAndSetting.setVisible(true);
         }
 
         dinamicPanel.revalidate();
         dinamicPanel.repaint();
-        
+
         pack();
         setLocationRelativeTo(null);
-        
+
         buttonSetting.setVisible(false);
         buttonMain.setVisible(true);
-      
+
     }
-    
+
     public void showMainAndManagement(JPanel top, JPanel bottom) {
-    JPanel combined = new JPanel(new BorderLayout());
-    top.setPreferredSize(new java.awt.Dimension(0, 167));
-    combined.add(top, BorderLayout.NORTH);
-    combined.add(bottom, BorderLayout.CENTER);
-    showPanel(combined);
-    buttonSetting.setVisible(true);
-    buttonMain.setVisible(false);
-    
-    pack();
-    
-}
+        JPanel combined = new JPanel(new BorderLayout());
+        top.setPreferredSize(new java.awt.Dimension(0, 167));
+        combined.add(top, BorderLayout.NORTH);
+        combined.add(bottom, BorderLayout.CENTER);
+        showPanel(combined);
+        buttonSetting.setVisible(true);
+        buttonMain.setVisible(false);
+
+        pack();
+
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -357,31 +348,31 @@ public class ViewToolApp extends javax.swing.JFrame {
 
     private void MenuItemPreferencesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuItemPreferencesActionPerformed
         if (isLoggedIn()) {
-            showPanel(panelPreferences);  
-        } 
+            showPanel(panelPreferences);
+        }
 
 
     }//GEN-LAST:event_MenuItemPreferencesActionPerformed
 
     private void MenuLogoutItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuLogoutItemActionPerformed
-        if(isLoggedIn()){
+        if (isLoggedIn()) {
             showPanel(new Login(this));
             setLoggedIn(false);
             tokenService.deleteToken();
             mediaSyncPolling1.setRunning(false);
             panelButtonMainAndSetting.setVisible(false);
         }
-        
+
     }//GEN-LAST:event_MenuLogoutItemActionPerformed
 
     private void buttonMainActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonMainActionPerformed
         if (isLoggedIn()) {
-            showMainAndManagement(panelMain,panelManagement);
+            showMainAndManagement(panelMain, panelManagement);
         }
     }//GEN-LAST:event_buttonMainActionPerformed
 
     private void buttonSettingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSettingActionPerformed
-       showPanel(panelPreferences);
+        showPanel(panelPreferences);
     }//GEN-LAST:event_buttonSettingActionPerformed
 
     /**
