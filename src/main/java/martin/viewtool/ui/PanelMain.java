@@ -148,7 +148,6 @@ public class PanelMain extends JPanel {
         
         
          //Configuracion comun para todos los paneles esten a la izquierda
-         
         /*
         gbc.gridx = 0;
         gbc.gridwidth = 1; // Ocupa toda la fila
@@ -163,9 +162,6 @@ public class PanelMain extends JPanel {
         add(buttonsPanel, gbc);
         
 
-        
-        
-        
        
         //Fila para la barra de progreso.
         progressBar = new JProgressBar(0,100);

@@ -137,8 +137,10 @@ public class Login extends JPanel {
                     }
                     if (token != null) {
                         tokenService.setToken(token);
+                         jframe.loggedSuccess(token);
 
                         jframe.setLoggedIn(true);
+                       
                     }
 
                     if (remember && token != null) {

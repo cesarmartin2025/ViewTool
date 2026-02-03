@@ -53,8 +53,7 @@ public class ViewToolApp extends javax.swing.JFrame {
         if (token == null) {
             Login login = new Login(this);
             showPanel(login,true);
-            panelButtonMainAndSetting.setVisible(false);
-            
+           
         } else {
             loggedSuccess(token);
         }
@@ -88,6 +87,8 @@ public class ViewToolApp extends javax.swing.JFrame {
     UIManager.put("ToolTip.background", java.awt.Color.lightGray);
     UIManager.put("CheckBox.background", myBackgroundColor);
     UIManager.put("RadioButton.background", myBackgroundColor);
+    UIManager.put("OptionPane.background", myBackgroundColor);
+    UIManager.put("OptionPane.foreground", myFont);
     
     // Fondo de panel siempre opaco por coherencia a la hora de implementar las caracteristicas visuales.
     UIManager.put("Panel.opaque", true);
@@ -121,6 +122,7 @@ public class ViewToolApp extends javax.swing.JFrame {
         this.token = token;
         this.loggedIn = true;
        showMainAndManagement(panelMain,panelManagement);
+       buttonSetting.setVisible(true);
 
     }
 
@@ -149,6 +151,14 @@ public class ViewToolApp extends javax.swing.JFrame {
         panel.setOpaque(true);
         
         dinamicPanel.add(panel, BorderLayout.CENTER);
+        
+        if(!isLoggedIn()){
+            panelButtonMainAndSetting.setVisible(false);
+        }
+        else{
+             panelButtonMainAndSetting.setVisible(true);
+        }
+
         dinamicPanel.revalidate();
         dinamicPanel.repaint();
         
@@ -157,6 +167,7 @@ public class ViewToolApp extends javax.swing.JFrame {
         
         buttonSetting.setVisible(false);
         buttonMain.setVisible(true);
+      
     }
     
     public void showMainAndManagement(JPanel top, JPanel bottom) {
@@ -347,7 +358,7 @@ public class ViewToolApp extends javax.swing.JFrame {
 
     private void MenuItemPreferencesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuItemPreferencesActionPerformed
         if (isLoggedIn()) {
-            showPanel(new PanelPreferences(),false);  
+            showPanel(panelPreferences,false);  
         } 
 
 
