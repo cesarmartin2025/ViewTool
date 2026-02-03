@@ -16,7 +16,7 @@ import java.nio.file.Path;
  */
 public final class MediaTableModel extends AbstractTableModel {
 
-    private final List<Media> files;
+    private  List<Media> files;
     private final String[] columns = {"Location", "Name", "URL"};
     private final Path downloadPath;
 
@@ -91,4 +91,6 @@ public final class MediaTableModel extends AbstractTableModel {
     public Media getFile(int row) {
         return files.get(row);
     }
+    
+    
 }

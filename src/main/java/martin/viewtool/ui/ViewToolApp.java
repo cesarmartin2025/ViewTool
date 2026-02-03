@@ -20,11 +20,10 @@ import martin.viewtool.core.TokenService;
  */
 public class ViewToolApp extends javax.swing.JFrame {
 
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ViewToolApp.class.getName());
 
     private final TokenService tokenService = new TokenService();
     private String token;
-    private String apiUrl = "https://dimedianetapi9.azurewebsites.net/";
+    private final String apiUrl = "https://dimedianetapi9.azurewebsites.net/";
     private boolean loggedIn = false;
 
     PanelManagement panelManagement;
@@ -52,7 +51,7 @@ public class ViewToolApp extends javax.swing.JFrame {
 
         if (token == null) {
             Login login = new Login(this);
-            showPanel(login,true);
+            showPanel(login);
            
         } else {
             loggedSuccess(token);
@@ -60,7 +59,7 @@ public class ViewToolApp extends javax.swing.JFrame {
 
     }
     
-    public ImageIcon sizeIcon(String ruta, int ancho, int alto) {
+    private ImageIcon sizeIcon(String ruta, int ancho, int alto) {
         ImageIcon icono = new ImageIcon(getClass().getResource(ruta));
         Image img = icono.getImage().getScaledInstance(ancho, alto, Image.SCALE_SMOOTH);
         return new ImageIcon(img);
@@ -68,7 +67,7 @@ public class ViewToolApp extends javax.swing.JFrame {
     
     
     
-    public static void applyGlobalUI() {
+    private static void applyGlobalUI() {
     // Definir los estilos
     Color myBackgroundColor = Color.WHITE;
     java.awt.Font myFont = new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 14);
@@ -146,7 +145,7 @@ public class ViewToolApp extends javax.swing.JFrame {
         this.loggedIn = loggedIn;
     }
 
-    public void showPanel(JPanel panel,boolean autoSize) {
+    private void showPanel(JPanel panel) {
         dinamicPanel.removeAll();
         panel.setOpaque(true);
         
@@ -175,7 +174,7 @@ public class ViewToolApp extends javax.swing.JFrame {
     top.setPreferredSize(new java.awt.Dimension(0, 167));
     combined.add(top, BorderLayout.NORTH);
     combined.add(bottom, BorderLayout.CENTER);
-    showPanel(combined,false);
+    showPanel(combined);
     buttonSetting.setVisible(true);
     buttonMain.setVisible(false);
     
@@ -358,7 +357,7 @@ public class ViewToolApp extends javax.swing.JFrame {
 
     private void MenuItemPreferencesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuItemPreferencesActionPerformed
         if (isLoggedIn()) {
-            showPanel(panelPreferences,false);  
+            showPanel(panelPreferences);  
         } 
 
 
@@ -366,7 +365,7 @@ public class ViewToolApp extends javax.swing.JFrame {
 
     private void MenuLogoutItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuLogoutItemActionPerformed
         if(isLoggedIn()){
-            showPanel(new Login(this),true);
+            showPanel(new Login(this));
             setLoggedIn(false);
             tokenService.deleteToken();
             mediaSyncPolling1.setRunning(false);
@@ -382,7 +381,7 @@ public class ViewToolApp extends javax.swing.JFrame {
     }//GEN-LAST:event_buttonMainActionPerformed
 
     private void buttonSettingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSettingActionPerformed
-       showPanel(panelPreferences,false);
+       showPanel(panelPreferences);
     }//GEN-LAST:event_buttonSettingActionPerformed
 
     /**

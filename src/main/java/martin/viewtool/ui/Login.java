@@ -38,6 +38,9 @@ public class Login extends JPanel {
     private JLabel labelPassword;
     private String token;
     private TokenService tokenService;
+    
+    private final Font BOLD_FONT = new Font("Segoe UI", java.awt.Font.BOLD, 13);
+    private final Font PLAIN_FONT =new Font("Segoe UI", java.awt.Font.PLAIN, 13);
 
     public Login(ViewToolApp jframe) {
         this.tokenService = jframe.getTokenService();
@@ -111,7 +114,21 @@ public class Login extends JPanel {
         
        
 
-        add(formPanel, BorderLayout.CENTER); // NORTH para que no se estiren verticalmente
+        add(formPanel, BorderLayout.CENTER); 
+        
+        checkBoxRemember.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(checkBoxRemember.isSelected()){
+                    checkBoxRemember.setFont(BOLD_FONT);
+                } else{
+                    checkBoxRemember.setFont(PLAIN_FONT);
+                }
+            }  
+        });
+        
+        
+        
 
         buttonLogin.addActionListener(new ActionListener() {
 
@@ -137,7 +154,6 @@ public class Login extends JPanel {
                     }
                     if (token != null) {
                         tokenService.setToken(token);
-                         jframe.loggedSuccess(token);
 
                         jframe.setLoggedIn(true);
                        
