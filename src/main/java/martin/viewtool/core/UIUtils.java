@@ -4,6 +4,7 @@
  */
 package martin.viewtool.core;
 
+import java.awt.Font;
 import java.awt.Image;
 import java.net.URL;
 import javax.swing.ImageIcon;
@@ -13,6 +14,9 @@ import javax.swing.ImageIcon;
  * @author cesar
  */
 public class UIUtils {
+    
+     public static final Font BOLD_FONT = new Font("Segoe UI", java.awt.Font.BOLD, 13);
+    public static final Font PLAIN_FONT = new Font("Segoe UI", java.awt.Font.PLAIN, 13);
     
     //Metodo para establecer un tamaño fijo de iconos.
     

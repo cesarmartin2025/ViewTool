@@ -25,7 +25,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.io.File;
-import java.nio.file.Files;
 import javax.swing.JFileChooser;
 import martin.viewtool.core.MediaItem;
 import martin.viewtool.core.MediaTableModel;

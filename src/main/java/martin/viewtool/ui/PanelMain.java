@@ -9,13 +9,11 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -28,6 +26,7 @@ import martin.viewtool.config.PreferencesService;
 import martin.viewtool.core.DownloadController;
 import martin.viewtool.core.MediaFormat;
 import martin.viewtool.core.PlayService;
+import martin.viewtool.core.UIUtils;
 import martin.viewtool.core.YtDlpService;
 
 
@@ -57,26 +56,14 @@ public class PanelMain extends JPanel {
 
     private final PlayService playService = new PlayService();
     private final PanelPreferences preferences = new PanelPreferences();
-
     
-    private final Font BOLD_FONT = new Font("Segoe UI", java.awt.Font.BOLD, 13);
-    private final Font PLAIN_FONT =new Font("Segoe UI", java.awt.Font.PLAIN, 13);
-    
-
-    
+    private final UIUtils utils = new UIUtils();
+ 
     public PanelMain(){
         initComponents();
         setupEvents();
     }
     
-    private void setIcon(String path, JLabel label) {
-        ImageIcon icon = new ImageIcon(getClass().getResource(path));
-
-        Image img = icon.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH);
-
-        label.setIcon(new ImageIcon(img));
-
-    }
     
     private void groupButtons() {
         ButtonGroup formatGroup = new ButtonGroup();
@@ -121,7 +108,7 @@ public class PanelMain extends JPanel {
         videoIcon = new JLabel();
         
         buttonMP4 = new JRadioButton("MP4");
-        buttonMP4.setFont(BOLD_FONT);
+        buttonMP4.setFont(UIUtils.BOLD_FONT);
         
         buttonDownload = new JButton("Download");
         buttonDownload.setBackground(java.awt.Color.lightGray);
@@ -174,18 +161,15 @@ public class PanelMain extends JPanel {
         add(progressBar, gbc);
         
         groupButtons();
-        setIcon("/images/audioicon.png", audioIcon);
-        setIcon("/images/videoicon.png", videoIcon);
-        setIcon("/images/youtubeicon.png", youtubeIcon);
+        audioIcon.setIcon(utils.getFixedSizeIcon("audioicon.png", 25, 25));
+        videoIcon.setIcon(utils.getFixedSizeIcon("videoicon.png", 25, 25));
+        youtubeIcon.setIcon(utils.getFixedSizeIcon("youtubeicon.png", 25, 25)); 
         
         //Para asegurarme que funcione correctamente, repinta el panel.
         revalidate();
         repaint();
     }
-    
-   
-    
-    
+
     private void setupEvents() {
         // Evento para reproducir el video
         buttonPlayVideo.addActionListener(e -> handlePlayVideo());
@@ -207,9 +191,9 @@ public class PanelMain extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (checkBoxOnlyAudio.isSelected()) {
-                    labelOnlyAudio.setFont(BOLD_FONT);
+                    labelOnlyAudio.setFont(UIUtils.BOLD_FONT);
                 } else {
-                    labelOnlyAudio.setFont(PLAIN_FONT);
+                    labelOnlyAudio.setFont(UIUtils.PLAIN_FONT);
                 }
             }
         });
@@ -220,11 +204,11 @@ public class PanelMain extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (buttonMP3.isSelected()) {
-                buttonMP3.setFont(BOLD_FONT);
-                buttonMP4.setFont(PLAIN_FONT);
+                buttonMP3.setFont(UIUtils.BOLD_FONT);
+                buttonMP4.setFont(UIUtils.PLAIN_FONT);
             } else if (buttonMP4.isSelected()) {
-                buttonMP4.setFont(BOLD_FONT);
-                buttonMP3.setFont(PLAIN_FONT);
+                buttonMP4.setFont(UIUtils.BOLD_FONT);
+                buttonMP3.setFont(UIUtils.PLAIN_FONT);
             }  
             }   
         };

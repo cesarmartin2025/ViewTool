@@ -4,14 +4,12 @@
  */
 package martin.viewtool.ui;
 
-import java.awt.Font;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import martin.viewtool.config.PreferencesService;
+import martin.viewtool.core.UIUtils;
 import martin.viewtool.core.ValidationService;
 
 /**
@@ -21,10 +19,8 @@ import martin.viewtool.core.ValidationService;
 public class PanelPreferences extends javax.swing.JPanel {
 
     private final PreferencesService prefService = new PreferencesService();
-    private final Font BOLD_FONT = new Font("Segoe UI", java.awt.Font.BOLD, 13);
-    private final Font PLAIN_FONT = new Font("Segoe UI", java.awt.Font.PLAIN, 13);
-
-    /**
+    private final UIUtils utils = new UIUtils();
+ /**
      * Creates new form PanelPreferences
      */
     public PanelPreferences() {
@@ -35,17 +31,10 @@ public class PanelPreferences extends javax.swing.JPanel {
         checkBoxActionListener();
         agrupedIcon();
     }
-
-    public ImageIcon fixedSizeIcon(String ruta, int ancho, int alto) {
-        ImageIcon icono = new ImageIcon(getClass().getResource(ruta));
-        Image img = icono.getImage().getScaledInstance(ancho, alto, Image.SCALE_SMOOTH);
-        return new ImageIcon(img);
-    }
-
     private void agrupedIcon() {
-        buttonDirYt.setIcon(fixedSizeIcon("/images/ytdlpicon.png", 40, 40));
-        buttonLimitDownload.setIcon(fixedSizeIcon("/images/saveicon.png", 20, 20));
-
+        buttonDirYt.setIcon(utils.getFixedSizeIcon("ytdlpicon.png", 40, 40));
+        buttonLimitDownload.setIcon(utils.getFixedSizeIcon("saveicon.png", 21, 21));
+        buttonDirectory.setIcon(utils.getFixedSizeIcon("selectfoldericon.png", 40, 40));
     }
 
     public boolean isM3USelected() {
@@ -57,9 +46,9 @@ public class PanelPreferences extends javax.swing.JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (checkBoxM3u.isSelected()) {
-                    checkBoxM3u.setFont(BOLD_FONT);
+                    checkBoxM3u.setFont(UIUtils.BOLD_FONT);
                 } else {
-                    checkBoxM3u.setFont(PLAIN_FONT);
+                    checkBoxM3u.setFont(UIUtils.PLAIN_FONT);
                 }
             }
         });
@@ -114,7 +103,6 @@ public class PanelPreferences extends javax.swing.JPanel {
 
         buttonLimitDownload.setBackground(new java.awt.Color(255, 255, 255));
         buttonLimitDownload.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/saveicon.png"))); // NOI18N
-        buttonLimitDownload.setToolTipText("");
         buttonLimitDownload.setBorder(null);
         buttonLimitDownload.setBorderPainted(false);
         buttonLimitDownload.addActionListener(new java.awt.event.ActionListener() {
@@ -141,6 +129,7 @@ public class PanelPreferences extends javax.swing.JPanel {
         panelPreferences.add(textFieldLimDown);
         textFieldLimDown.setBounds(200, 110, 100, 20);
 
+        labelLimDown.setText("Speed: ");
         panelPreferences.add(labelLimDown);
         labelLimDown.setBounds(40, 110, 160, 16);
 

@@ -23,6 +23,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import martin.viewtool.core.TokenService;
+import martin.viewtool.core.UIUtils;
 
 /**
  *
@@ -39,9 +40,6 @@ public class Login extends JPanel {
     private String token;
     private TokenService tokenService;
     
-    private final Font BOLD_FONT = new Font("Segoe UI", java.awt.Font.BOLD, 13);
-    private final Font PLAIN_FONT =new Font("Segoe UI", java.awt.Font.PLAIN, 13);
-
     public Login(ViewToolApp jframe) {
         this.tokenService = jframe.getTokenService();
         setLayout(new BorderLayout());
@@ -120,9 +118,9 @@ public class Login extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(checkBoxRemember.isSelected()){
-                    checkBoxRemember.setFont(BOLD_FONT);
+                    checkBoxRemember.setFont(UIUtils.BOLD_FONT);
                 } else{
-                    checkBoxRemember.setFont(PLAIN_FONT);
+                    checkBoxRemember.setFont(UIUtils.PLAIN_FONT);
                 }
             }  
         });
