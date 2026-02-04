@@ -31,9 +31,11 @@ import martin.viewtool.core.MediaItem;
 import martin.viewtool.core.MediaTableModel;
 import martin.viewtool.core.MediaService;
 import martin.viewtool.core.TokenService;
+import javax.swing.RowFilter;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.TableRowSorter;
+import java.util.regex.Pattern;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.SwingUtilities;
@@ -75,8 +77,9 @@ public class PanelManagement extends javax.swing.JPanel {
     private boolean hasBeenInitialized = false;
 
     private SwingWorker<List<Media>, Void> rebuildWorker;
-
+    
     //Atributos para paginar la tabla
+
     private List<Media> fullMediaList = new java.util.ArrayList<>();
     private int currentPage = 1;
     private final int pageSize = 50;
@@ -293,7 +296,7 @@ public class PanelManagement extends javax.swing.JPanel {
 
             tableModel.setFullList(filtered);
             //Cambia el valor a 1 para que se muestre el resultado en la pagina principal de la lista.
-            currentPage = 1;
+            currentPage = 1; 
         }
 
         updatePagination();
@@ -470,7 +473,7 @@ public class PanelManagement extends javax.swing.JPanel {
             }
             columnPrefs();
         } else {
-
+           
             tableModel.setFullList(mediaListCombined);
             tableModel.updatePage(currentPage, pageSize);
         }
@@ -510,9 +513,8 @@ public class PanelManagement extends javax.swing.JPanel {
     }
 
     private void updatePagination() {
-        //Usa el Math.ceil para redondear hacia arriba y que ningun archivo quede fuera del conteo de paginacion.
         int totalItems = fullMediaList.size();
-        double result = totalItems / pageSize;
+        double result = totalItems/pageSize;
         int totalPages = (int) Math.ceil(result);
 
         labelPageStatus.setText("Page " + currentPage + " of " + totalPages);
@@ -521,8 +523,9 @@ public class PanelManagement extends javax.swing.JPanel {
         buttonPrev.setEnabled(currentPage > 1);
 
         tableModel.updatePage(currentPage, pageSize);
-
+        
         //Crea un runnable para que se ejecute en el Event Dispatch Thread (EDT) usando el invokeLater.
+
         Runnable scrollReset = new Runnable() {
             @Override
             public void run() {
@@ -847,6 +850,8 @@ public class PanelManagement extends javax.swing.JPanel {
             @Override
             protected Void doInBackground() throws Exception {
                 managementService.openLocalFile(file);
+                //Hace un delay artificial para que no desaparezca el label automaticamente si el reproductor del usuario tarda un poco mas en abrir el archivo.
+                Thread.sleep(3000);
                 return null;
             }
 
@@ -880,19 +885,23 @@ public class PanelManagement extends javax.swing.JPanel {
     }//GEN-LAST:event_textFieldFileKeyPressed
 
     private void buttonNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonNextActionPerformed
-        double totalItems = fullMediaList.size();
-        double result = totalItems / pageSize;
-        int totalPages = (int) Math.ceil(result);
 
+        double numberOfMedia = fullMediaList.size();
+        double result = numberOfMedia/pageSize;
+        
+        //Usa el Math.ceil para redondear hacia arriba y que ningun archivo quede fuera del conteo de paginacion.
+        
+        int totalPages = (int) Math.ceil(result);
+       
         if (currentPage < totalPages) {
-            currentPage++;
+            currentPage++; 
             updatePagination();
         }
     }//GEN-LAST:event_buttonNextActionPerformed
 
     private void buttonPrevActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonPrevActionPerformed
         if (currentPage > 1) {
-            currentPage--;
+            currentPage--; 
             updatePagination();
         }
     }//GEN-LAST:event_buttonPrevActionPerformed

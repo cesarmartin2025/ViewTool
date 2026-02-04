@@ -79,7 +79,7 @@ public final class MediaTableModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        //Protege al sistema si la lista de la pagina actual es null o la fila es mayor que el tamaño de la lista, devuelve un texto vacio para evitar el NullPointerException.
+        //Protege al sistema si la lista de la pagina actual es null  o si la fila es mayor a la pagina que esta ejecutandose.
         if (currentView == null || rowIndex >= currentView.size()) {
             return "";
         }

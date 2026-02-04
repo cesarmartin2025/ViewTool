@@ -12,7 +12,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -232,6 +231,8 @@ public class PanelMain extends JPanel {
             @Override
             protected Void doInBackground() throws Exception {
                 playService.playLastDownloaded(prefService.getOutputDir());
+                //Hace un delay artificial para que no desaparezca el label automaticamente por si el reproductor del usuario tarda un poco mas en abrir el archivo.
+                Thread.sleep(3000);
                 return null;
             }
 
