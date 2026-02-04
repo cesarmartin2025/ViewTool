@@ -13,6 +13,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -47,7 +48,7 @@ public class PanelMain extends JPanel {
     private javax.swing.JTextField textFieldURL;
     private javax.swing.JLabel videoIcon;
     private javax.swing.JLabel youtubeIcon;
-     private javax.swing.JButton buttonSetting;
+    private javax.swing.JLabel infoLabel;
     
     private final PreferencesService prefService = new PreferencesService();
 
@@ -117,6 +118,12 @@ public class PanelMain extends JPanel {
         buttonPlayVideo = new JButton("Play last video");
         buttonPlayVideo.setBackground(java.awt.Color.lightGray);
         buttonPlayVideo.setForeground(java.awt.Color.BLACK);
+        
+        infoLabel = new JLabel("");
+        infoLabel.setFont(UIUtils.BOLD_FONT);
+        
+        
+        
   
         //Panel para agrupar los botones y los iconos MP3,MP4.
         
@@ -130,6 +137,7 @@ public class PanelMain extends JPanel {
         buttonsPanel.add(new javax.swing.Box.Filler(new java.awt.Dimension(40, 0), null, null)); 
         buttonsPanel.add(buttonDownload);
         buttonsPanel.add(buttonPlayVideo); 
+        buttonsPanel.add(infoLabel);
         
         
          //Configuracion comun para todos los paneles esten a la izquierda
@@ -218,11 +226,29 @@ public class PanelMain extends JPanel {
     }
 
     private void handlePlayVideo() {
-        try {
-            playService.playLastDownloaded(prefService.getOutputDir());
-        } catch (IOException ex) {
-            Alerts.showException(this, ex);
-        }
+        infoLabel.setText("Opening...");
+
+        SwingWorker<Void, Void> openFileWorker = new SwingWorker<>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                playService.playLastDownloaded(prefService.getOutputDir());
+                return null;
+            }
+
+            @Override
+            protected void done() {
+               
+                try {
+                    get();
+                } catch (InterruptedException | ExecutionException ex) {
+                    Alerts.error(null, "Error: " + ex.getMessage());
+                } finally {
+                    infoLabel.setText("");
+                }
+            }
+        };
+        
+        openFileWorker.execute();
     }
     
     

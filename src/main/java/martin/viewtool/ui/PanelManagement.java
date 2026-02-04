@@ -25,6 +25,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.io.File;
+import java.util.concurrent.ExecutionException;
 import javax.swing.JFileChooser;
 import martin.viewtool.core.MediaItem;
 import martin.viewtool.core.MediaTableModel;
@@ -81,6 +82,7 @@ public class PanelManagement extends javax.swing.JPanel {
         this.jframe = jframe;
         this.tokenService = jframe.getTokenService();
         initComponents();
+        openingLabel.setFont(UIUtils.BOLD_FONT);
         agrupedIcon();
         //Para que el ToolTipText del JList desaparezca despues de 3 segundos.
         ToolTipManager.sharedInstance().setDismissDelay(3000);
@@ -516,6 +518,7 @@ public class PanelManagement extends javax.swing.JPanel {
         buttonDownloadFile = new javax.swing.JButton();
         buttonUploadFile = new javax.swing.JButton();
         buttonOpenFile = new javax.swing.JButton();
+        openingLabel = new javax.swing.JLabel();
 
         panelManagement.setMaximumSize(new java.awt.Dimension(1920, 1080));
         panelManagement.setMinimumSize(new java.awt.Dimension(800, 600));
@@ -669,6 +672,10 @@ public class PanelManagement extends javax.swing.JPanel {
         panelManagement.add(buttonOpenFile);
         buttonOpenFile.setBounds(670, 470, 40, 50);
 
+        openingLabel.setText("             ");
+        panelManagement.add(openingLabel);
+        openingLabel.setBounds(1000, 490, 200, 16);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -763,12 +770,29 @@ public class PanelManagement extends javax.swing.JPanel {
         if (file == null) {
             return;
         }
+        openingLabel.setText("Opening...");
 
-        try {
-            managementService.openLocalFile(file);
-        } catch (Exception ex) {
-            Alerts.error(this, "Error: " + ex.getMessage());
-        }
+        SwingWorker<Void, Void> openFileWorker = new SwingWorker<>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                managementService.openLocalFile(file);
+                return null;
+            }
+
+            @Override
+            protected void done() {
+               
+                try {
+                    get();
+                } catch (InterruptedException | ExecutionException ex) {
+                    Alerts.error(null, "Error: " + ex.getMessage());
+                } finally {
+                    openingLabel.setText("");
+                }
+            }
+        };
+        
+        openFileWorker.execute();
     }//GEN-LAST:event_buttonOpenFileActionPerformed
 
     private void textFieldFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFieldFileActionPerformed
@@ -797,6 +821,7 @@ public class PanelManagement extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel labelSearchFile;
     private javax.swing.JList<String> listFiles;
+    private javax.swing.JLabel openingLabel;
     private javax.swing.JPanel panelManagement;
     private javax.swing.JTable tableFiles;
     private javax.swing.JTextField textFieldFile;
