@@ -381,6 +381,8 @@ public class PanelManagement extends javax.swing.JPanel {
             }
 
             mediaSyncPolling.setRunning(true);
+            //He añadido un segundo intervalo despues del inicial para que la app no este actualizando de manera tan seguida y se quede pillada la app
+            mediaSyncPolling.setPollingInterval(60);
 
         } catch (Exception ex) {
             Alerts.error(this, "Error: " + ex.getMessage());
@@ -785,7 +787,7 @@ public class PanelManagement extends javax.swing.JPanel {
                 try {
                     get();
                 } catch (InterruptedException | ExecutionException ex) {
-                    Alerts.error(null, "Error: " + ex.getMessage());
+                    Alerts.error(null,"This media is not downloaded in the local directory.");
                 } finally {
                     openingLabel.setText("");
                 }

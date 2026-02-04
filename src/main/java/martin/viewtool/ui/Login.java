@@ -140,14 +140,14 @@ public class Login extends JPanel {
 
                 MediaSyncPolling mediaSyncPolling = jframe.getComponent();
                 if (email.isBlank() || password.isBlank()) {
-                    Alerts.error(Login.this, "Login Failed. Please, write your email and your password");
+                    Alerts.error(Login.this, "Login Failed. Please, write your email and your password.");
                     return;
                 } else {
 
                     try {
                         token = mediaSyncPolling.login(email, password);
                     } catch (Exception ex) {
-                        Alerts.error(Login.this, "Login failed. Please try again.");
+                        Alerts.error(Login.this, "Login failed. Email or password not found. Please try again.");
                         return;
                     }
                     if (token != null) {
