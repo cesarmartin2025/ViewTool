@@ -31,11 +31,9 @@ import martin.viewtool.core.MediaItem;
 import martin.viewtool.core.MediaTableModel;
 import martin.viewtool.core.MediaService;
 import martin.viewtool.core.TokenService;
-import javax.swing.RowFilter;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.TableRowSorter;
-import java.util.regex.Pattern;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.SwingUtilities;
@@ -78,6 +76,11 @@ public class PanelManagement extends javax.swing.JPanel {
 
     private SwingWorker<List<Media>, Void> rebuildWorker;
 
+    //Atributos para paginar la tabla
+    private List<Media> fullMediaList = new java.util.ArrayList<>();
+    private int currentPage = 1;
+    private final int pageSize = 50;
+
     public PanelManagement(ViewToolApp jframe) {
         this.jframe = jframe;
         this.tokenService = jframe.getTokenService();
@@ -87,7 +90,7 @@ public class PanelManagement extends javax.swing.JPanel {
         //Para que el ToolTipText del JList desaparezca despues de 3 segundos.
         ToolTipManager.sharedInstance().setDismissDelay(3000);
         //Para que desaparezca el scroll horizontal
-        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        listScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         initLoadingPanel();
         token = tokenService.getToken();
 
@@ -104,6 +107,8 @@ public class PanelManagement extends javax.swing.JPanel {
         buttonRefreshTable.setIcon(utils.getFixedSizeIcon("refreshicon.png", 25, 25));
         buttonUploadFile.setIcon(utils.getFixedSizeIcon("uploadicon.png", 25, 25));
         titleListLabel.setIcon(utils.getFixedSizeIcon("libraryicon.png", 40, 40));
+        buttonPrev.setIcon(utils.getFixedSizeIcon("backicon.png", 25, 25));
+        buttonNext.setIcon(utils.getFixedSizeIcon("fronticon.png", 25, 25));
 
     }
 
@@ -274,20 +279,24 @@ public class PanelManagement extends javax.swing.JPanel {
 
     // Metodo que usa la TableRowSorter en el modelo de la tabla para filtrar el texto que hay en el TextField.
     private void applyTableFilter() {
-        if (tableSorter == null) {
-            return;
+        String text = textFieldFile.getText().toLowerCase();
+
+        if (text.isBlank()) {
+            //Si no hay texto muestra la lista completa (paginada con el metodo creado).
+            tableModel.setFullList(fullMediaList);
+        } else {
+            //Cuando busca, busca en la lista completa y no solo en la paginacion que esta el usuario.
+            List<Media> filtered = fullMediaList.stream()
+                    .filter(m -> m.mediaFileName.toLowerCase().contains(text)
+                    || (m.downloadedFromUrl != null && m.downloadedFromUrl.toLowerCase().contains(text)))
+                    .toList();
+
+            tableModel.setFullList(filtered);
+            //Cambia el valor a 1 para que se muestre el resultado en la pagina principal de la lista.
+            currentPage = 1;
         }
 
-        String text = textFieldFile.getText();
-
-        if (text == null || text.isBlank()) {
-            tableSorter.setRowFilter(null);
-            return;
-        }
-
-        tableSorter.setRowFilter(
-                RowFilter.regexFilter("(?i)" + Pattern.quote(text))
-        );
+        updatePagination();
     }
 
     public final void comboFilterListener() {
@@ -424,9 +433,8 @@ public class PanelManagement extends javax.swing.JPanel {
                     if (isCancelled()) {
                         return;
                     }
-
-                    List<Media> mediaListCombined = get();
-                    applyMediaTableModel(mediaListCombined);
+                    fullMediaList = get();
+                    applyMediaTableModel(fullMediaList);
 
                     if (isInitialLoad) {
                         localReady = true;
@@ -449,18 +457,24 @@ public class PanelManagement extends javax.swing.JPanel {
     }
 
     private void applyMediaTableModel(List<Media> mediaListCombined) {
-        tableModel = new MediaTableModel(mediaListCombined, mediaService);
-        tableFiles.setModel(tableModel);
+        if (tableModel == null) {
+            tableModel = new MediaTableModel(mediaListCombined, mediaService, currentPage, pageSize);
+            tableFiles.setModel(tableModel);
 
-        MediaRowRenderer renderer = new MediaRowRenderer();
-        for (int i = 0; i < tableFiles.getColumnCount(); i++) {
-            tableFiles.getColumnModel().getColumn(i).setCellRenderer(renderer);
+            tableSorter = new TableRowSorter<>(tableModel);
+            tableFiles.setRowSorter(tableSorter);
+
+            MediaRowRenderer renderer = new MediaRowRenderer();
+            for (int i = 0; i < tableFiles.getColumnCount(); i++) {
+                tableFiles.getColumnModel().getColumn(i).setCellRenderer(renderer);
+            }
+            columnPrefs();
+        } else {
+
+            tableModel.setFullList(mediaListCombined);
+            tableModel.updatePage(currentPage, pageSize);
         }
 
-        tableSorter = new TableRowSorter<>(tableModel);
-        tableFiles.setRowSorter(tableSorter);
-
-        columnPrefs();
         applyTableFilter();
     }
 
@@ -495,6 +509,30 @@ public class PanelManagement extends javax.swing.JPanel {
         ;
     }
 
+    private void updatePagination() {
+        //Usa el Math.ceil para redondear hacia arriba y que ningun archivo quede fuera del conteo de paginacion.
+        int totalItems = fullMediaList.size();
+        double result = totalItems / pageSize;
+        int totalPages = (int) Math.ceil(result);
+
+        labelPageStatus.setText("Page " + currentPage + " of " + totalPages);
+
+        buttonNext.setEnabled(currentPage < totalPages);
+        buttonPrev.setEnabled(currentPage > 1);
+
+        tableModel.updatePage(currentPage, pageSize);
+
+        //Crea un runnable para que se ejecute en el Event Dispatch Thread (EDT) usando el invokeLater.
+        Runnable scrollReset = new Runnable() {
+            @Override
+            public void run() {
+
+                tableScrollPane.getVerticalScrollBar().setValue(0);
+            }
+        };
+        SwingUtilities.invokeLater(scrollReset);
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -505,11 +543,11 @@ public class PanelManagement extends javax.swing.JPanel {
     private void initComponents() {
 
         panelManagement = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        listScrollPane = new javax.swing.JScrollPane();
         listFiles = new javax.swing.JList<>();
         buttonRefreshList = new javax.swing.JButton();
         comboFilter = new javax.swing.JComboBox<>();
-        jScrollPane2 = new javax.swing.JScrollPane();
+        tableScrollPane = new javax.swing.JScrollPane();
         tableFiles = new javax.swing.JTable();
         buttonRefreshTable = new javax.swing.JButton();
         textFieldFile = new javax.swing.JTextField();
@@ -521,6 +559,9 @@ public class PanelManagement extends javax.swing.JPanel {
         buttonUploadFile = new javax.swing.JButton();
         buttonOpenFile = new javax.swing.JButton();
         openingLabel = new javax.swing.JLabel();
+        labelPageStatus = new javax.swing.JLabel();
+        buttonPrev = new javax.swing.JButton();
+        buttonNext = new javax.swing.JButton();
 
         panelManagement.setMaximumSize(new java.awt.Dimension(1920, 1080));
         panelManagement.setMinimumSize(new java.awt.Dimension(800, 600));
@@ -530,10 +571,10 @@ public class PanelManagement extends javax.swing.JPanel {
         listFiles.setToolTipText("Archivos descargados en: "+prefService.getOutputDir().toString());
         listFiles.setSelectionBackground(new java.awt.Color(153, 153, 153));
         listFiles.setSelectionForeground(new java.awt.Color(255, 255, 255));
-        jScrollPane1.setViewportView(listFiles);
+        listScrollPane.setViewportView(listFiles);
 
-        panelManagement.add(jScrollPane1);
-        jScrollPane1.setBounds(10, 50, 550, 420);
+        panelManagement.add(listScrollPane);
+        listScrollPane.setBounds(10, 50, 550, 420);
 
         buttonRefreshList.setBackground(new java.awt.Color(255, 255, 255));
         buttonRefreshList.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/refreshicon.png"))); // NOI18N
@@ -569,10 +610,10 @@ public class PanelManagement extends javax.swing.JPanel {
         tableFiles.setSelectionBackground(new java.awt.Color(153, 153, 153));
         tableFiles.setSelectionForeground(new java.awt.Color(255, 255, 255));
         tableFiles.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        jScrollPane2.setViewportView(tableFiles);
+        tableScrollPane.setViewportView(tableFiles);
 
-        panelManagement.add(jScrollPane2);
-        jScrollPane2.setBounds(580, 50, 950, 420);
+        panelManagement.add(tableScrollPane);
+        tableScrollPane.setBounds(580, 50, 950, 420);
 
         buttonRefreshTable.setBackground(new java.awt.Color(255, 255, 255));
         buttonRefreshTable.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/refreshicon.png"))); // NOI18N
@@ -677,6 +718,34 @@ public class PanelManagement extends javax.swing.JPanel {
         openingLabel.setText("             ");
         panelManagement.add(openingLabel);
         openingLabel.setBounds(1000, 490, 200, 16);
+
+        labelPageStatus.setText("Page 1 of ...");
+        panelManagement.add(labelPageStatus);
+        labelPageStatus.setBounds(1440, 480, 90, 20);
+
+        buttonPrev.setBackground(new java.awt.Color(255, 255, 255));
+        buttonPrev.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/backicon.png"))); // NOI18N
+        buttonPrev.setBorder(null);
+        buttonPrev.setBorderPainted(false);
+        buttonPrev.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonPrevActionPerformed(evt);
+            }
+        });
+        panelManagement.add(buttonPrev);
+        buttonPrev.setBounds(1360, 480, 30, 20);
+
+        buttonNext.setBackground(new java.awt.Color(255, 255, 255));
+        buttonNext.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/fronticon.png"))); // NOI18N
+        buttonNext.setBorder(null);
+        buttonNext.setBorderPainted(false);
+        buttonNext.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonNextActionPerformed(evt);
+            }
+        });
+        panelManagement.add(buttonNext);
+        buttonNext.setBounds(1390, 480, 30, 20);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -783,17 +852,17 @@ public class PanelManagement extends javax.swing.JPanel {
 
             @Override
             protected void done() {
-               
+
                 try {
                     get();
                 } catch (InterruptedException | ExecutionException ex) {
-                    Alerts.error(null,"This media is not downloaded in the local directory.");
+                    Alerts.error(null, "This media is not downloaded in the local directory.");
                 } finally {
                     openingLabel.setText("");
                 }
             }
         };
-        
+
         openFileWorker.execute();
     }//GEN-LAST:event_buttonOpenFileActionPerformed
 
@@ -810,22 +879,43 @@ public class PanelManagement extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_textFieldFileKeyPressed
 
+    private void buttonNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonNextActionPerformed
+        double totalItems = fullMediaList.size();
+        double result = totalItems / pageSize;
+        int totalPages = (int) Math.ceil(result);
+
+        if (currentPage < totalPages) {
+            currentPage++;
+            updatePagination();
+        }
+    }//GEN-LAST:event_buttonNextActionPerformed
+
+    private void buttonPrevActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonPrevActionPerformed
+        if (currentPage > 1) {
+            currentPage--;
+            updatePagination();
+        }
+    }//GEN-LAST:event_buttonPrevActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton buttonDeleteFile;
     private javax.swing.JButton buttonDownloadFile;
+    private javax.swing.JButton buttonNext;
     private javax.swing.JButton buttonOpenFile;
+    private javax.swing.JButton buttonPrev;
     private javax.swing.JButton buttonRefreshList;
     private javax.swing.JButton buttonRefreshTable;
     private javax.swing.JButton buttonUploadFile;
     private javax.swing.JComboBox<String> comboFilter;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JLabel labelPageStatus;
     private javax.swing.JLabel labelSearchFile;
     private javax.swing.JList<String> listFiles;
+    private javax.swing.JScrollPane listScrollPane;
     private javax.swing.JLabel openingLabel;
     private javax.swing.JPanel panelManagement;
     private javax.swing.JTable tableFiles;
+    private javax.swing.JScrollPane tableScrollPane;
     private javax.swing.JTextField textFieldFile;
     private javax.swing.JLabel titleListLabel;
     private javax.swing.JLabel titleTableLabel;

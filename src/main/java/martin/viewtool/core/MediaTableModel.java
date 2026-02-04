@@ -9,6 +9,7 @@ import javax.swing.table.AbstractTableModel;
 import MediaSyncPolling.Media;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 
 /**
  *
@@ -16,18 +17,40 @@ import java.nio.file.Path;
  */
 public final class MediaTableModel extends AbstractTableModel {
 
-    private  List<Media> files;
+    private List<Media> allFiles;      // Todos los datos de la API
+    private List<Media> currentView;   // Solo los datos de la página actual
     private final String[] columns = {"Location", "Name", "URL"};
     private final Path downloadPath;
 
-    public MediaTableModel(List<Media> files, MediaService mediaService) {
-        this.files = files;
+    public MediaTableModel(List<Media> allFiles, MediaService mediaService, int page, int pageSize) {
+        this.allFiles = allFiles;
         this.downloadPath = mediaService.getDownloadBaseDir();
+        updatePage(page, pageSize);
+    }
+
+    public void setFullList(List<Media> newList) {
+        this.allFiles = newList;
+    }
+
+    public void updatePage(int page, int pageSize) {
+        //Calcula cual indice de la lista comienza en la pagina actual.
+        int fromIndex = (page - 1) * pageSize;
+        // Maneja el final con el Math.min para que la pagina no de error si los archivos son menos que el tamaño de la pagina.
+        int toIndex = Math.min(fromIndex + pageSize, allFiles.size());
+        
+        //crea una vista mediante de la lista desde fromIndex hasta toIndex
+        if (fromIndex < allFiles.size()) {
+            this.currentView = allFiles.subList(fromIndex, toIndex);
+        } else {
+            //devuelve una lista vacia si no hay mas archivos
+            this.currentView = new ArrayList<>();
+        }
+        fireTableDataChanged();
     }
 
     @Override
     public int getRowCount() {
-        return files.size();
+        return currentView.size();
     }
 
     @Override
@@ -56,7 +79,13 @@ public final class MediaTableModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        Media file = files.get(rowIndex);
+        //Protege al sistema si la lista de la pagina actual es null o la fila es mayor que el tamaño de la lista, devuelve un texto vacio para evitar el NullPointerException.
+        if (currentView == null || rowIndex >= currentView.size()) {
+            return "";
+        }
+
+        Media file = currentView.get(rowIndex);
+
         return switch (columnIndex) {
             case 0 ->
                 resolveLocation(file);
@@ -89,6 +118,6 @@ public final class MediaTableModel extends AbstractTableModel {
     }
 
     public Media getFile(int row) {
-        return files.get(row);
-    }  
+        return currentView.get(row);
+    }
 }
