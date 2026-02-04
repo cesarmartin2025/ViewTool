@@ -460,8 +460,9 @@ public class PanelManagement extends javax.swing.JPanel {
     }
 
     private void applyMediaTableModel(List<Media> mediaListCombined) {
+        MediaSyncPolling mediaSyncPolling = jframe.getComponent();
         if (tableModel == null) {
-            tableModel = new MediaTableModel(mediaListCombined, mediaService, currentPage, pageSize);
+            tableModel = new MediaTableModel(mediaListCombined, mediaService, currentPage, pageSize,mediaSyncPolling,token);
             tableFiles.setModel(tableModel);
 
             tableSorter = new TableRowSorter<>(tableModel);
@@ -502,14 +503,17 @@ public class PanelManagement extends javax.swing.JPanel {
         var columnModel = tableFiles.getColumnModel();
 
         // Columna 0: Location
-        columnModel.getColumn(0).setPreferredWidth(50);
+        columnModel.getColumn(0).setPreferredWidth(10);
 
         // Columna 1:Name
         columnModel.getColumn(1).setPreferredWidth(300);
 
         // Columna 2: URL
         columnModel.getColumn(2).setPreferredWidth(300);
-        ;
+        
+        // Columna 3: NickName
+        columnModel.getColumn(3).setPreferredWidth(100);
+        
     }
 
     private void updatePagination() {
@@ -850,7 +854,7 @@ public class PanelManagement extends javax.swing.JPanel {
             @Override
             protected Void doInBackground() throws Exception {
                 managementService.openLocalFile(file);
-                //Hace un delay artificial para que no desaparezca el label automaticamente si el reproductor del usuario tarda un poco mas en abrir el archivo.
+                //Hace un delay artificial para que no desaparezca el label automaticamente por si el reproductor del usuario tarda un poco mas en abrir el archivo.
                 Thread.sleep(3000);
                 return null;
             }

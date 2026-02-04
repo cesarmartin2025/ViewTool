@@ -41,7 +41,7 @@ public class ViewToolApp extends javax.swing.JFrame {
         initComponents();
         buildLayout();
         token = tokenService.getToken();
-        mediaSyncPolling1.setApiUrl(apiUrl);
+        mediaSyncPolling.setApiUrl(apiUrl);
         panelManagement = new PanelManagement(this);
         panelMain = new PanelMain();
         panelPreferences = new PanelPreferences();
@@ -118,7 +118,7 @@ public class ViewToolApp extends javax.swing.JFrame {
     }
 
     public MediaSyncPolling.MediaSyncPolling getComponent() {
-        return mediaSyncPolling1;
+        return mediaSyncPolling;
     }
 
     public TokenService getTokenService() {
@@ -185,7 +185,7 @@ public class ViewToolApp extends javax.swing.JFrame {
         dialogAbout = new javax.swing.JDialog();
         TextAreaAbout = new javax.swing.JTextArea();
         jOptionPane1 = new javax.swing.JOptionPane();
-        mediaSyncPolling1 = new MediaSyncPolling.MediaSyncPolling();
+        mediaSyncPolling = new MediaSyncPolling.MediaSyncPolling();
         buttonMain = new javax.swing.JButton();
         buttonSetting = new javax.swing.JButton();
         menuBarMain = new javax.swing.JMenuBar();
@@ -308,7 +308,7 @@ public class ViewToolApp extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(1000, 1000, 1000)
-                .addComponent(mediaSyncPolling1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(mediaSyncPolling, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -324,7 +324,7 @@ public class ViewToolApp extends javax.swing.JFrame {
                     .addComponent(buttonMain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(buttonSetting, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(435, 435, 435)
-                .addComponent(mediaSyncPolling1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(mediaSyncPolling, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         setBounds(0, 0, 1180, 506);
@@ -359,7 +359,7 @@ public class ViewToolApp extends javax.swing.JFrame {
             showPanel(new Login(this));
             setLoggedIn(false);
             tokenService.deleteToken();
-            mediaSyncPolling1.setRunning(false);
+            mediaSyncPolling.setRunning(false);
             panelButtonMainAndSetting.setVisible(false);
         }
 
@@ -392,7 +392,7 @@ public class ViewToolApp extends javax.swing.JFrame {
     private javax.swing.JButton buttonSetting;
     private javax.swing.JDialog dialogAbout;
     private javax.swing.JOptionPane jOptionPane1;
-    private MediaSyncPolling.MediaSyncPolling mediaSyncPolling1;
+    private MediaSyncPolling.MediaSyncPolling mediaSyncPolling;
     private javax.swing.JMenuBar menuBarMain;
     // End of variables declaration//GEN-END:variables
 }

@@ -7,9 +7,12 @@ package martin.viewtool.core;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
 import MediaSyncPolling.Media;
+import MediaSyncPolling.MediaSyncPolling;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -19,12 +22,18 @@ public final class MediaTableModel extends AbstractTableModel {
 
     private List<Media> allFiles;      // Todos los datos de la API
     private List<Media> currentView;   // Solo los datos de la página actual
-    private final String[] columns = {"Location", "Name", "URL"};
+    private final String[] columns = {"Location", "Name", "URL", "Nick"};
     private final Path downloadPath;
 
-    public MediaTableModel(List<Media> allFiles, MediaService mediaService, int page, int pageSize) {
+    private final Map<Integer, String> userNames = new HashMap<>();
+    private final MediaSyncPolling mediaSyncPolling;
+    private final String token;
+
+    public MediaTableModel(List<Media> allFiles, MediaService mediaService, int page, int pageSize, MediaSyncPolling mediaSyncPolling, String token) {
         this.allFiles = allFiles;
         this.downloadPath = mediaService.getDownloadBaseDir();
+        this.mediaSyncPolling = mediaSyncPolling;
+        this.token = token;
         updatePage(page, pageSize);
     }
 
@@ -37,7 +46,7 @@ public final class MediaTableModel extends AbstractTableModel {
         int fromIndex = (page - 1) * pageSize;
         // Maneja el final con el Math.min para que la pagina no de error si los archivos son menos que el tamaño de la pagina.
         int toIndex = Math.min(fromIndex + pageSize, allFiles.size());
-        
+
         //crea una vista mediante de la lista desde fromIndex hasta toIndex
         if (fromIndex < allFiles.size()) {
             this.currentView = allFiles.subList(fromIndex, toIndex);
@@ -72,6 +81,8 @@ public final class MediaTableModel extends AbstractTableModel {
                 String.class;
             case 2 ->
                 String.class;
+            case 3 ->
+                String.class;
             default ->
                 Object.class;
         };
@@ -93,9 +104,49 @@ public final class MediaTableModel extends AbstractTableModel {
                 file.mediaFileName;
             case 2 ->
                 file.downloadedFromUrl;
+            case 3 ->
+                resolveNickName(file.id);
             default ->
                 "";
         };
+    }
+
+    private String resolveNickName(int userId) {
+        if (userNames.containsKey(userId)) {
+            return userNames.get(userId);
+        }
+        
+        userNames.put(userId, "Cargando...");
+
+       //Un hilo en segundo plano que ejecuta la busqueda y guardado de los nombres de usuario. 
+        Thread hiloBusqueda = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    
+                    String nickName = mediaSyncPolling.getNickName(userId, token);
+                    //Clave-Valor
+                    userNames.put(userId, nickName);
+
+                } catch (Exception e) {
+                    // En caso de no encontrar el nombre, rescribe con el user ID.
+                    userNames.put(userId, "Not found. ( USER ID: " + userId + ")");
+                }
+
+                // Usa el hilo EDT para actualizar la tabla.
+                javax.swing.SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        fireTableDataChanged();
+                    }
+                });
+            }
+        });
+
+        
+        hiloBusqueda.start();
+
+        return userNames.get(userId);
     }
 
     private String resolveLocation(Media media) {
