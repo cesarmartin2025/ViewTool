@@ -25,16 +25,17 @@ public class PanelPreferences extends javax.swing.JPanel {
      */
     public PanelPreferences() {
         initComponents();
+        agrupedIcon();
         //Mostrar el valor guardado del limite de velocidad
         textFieldLimDown.setText(prefService.getLimitSpeed());
         labelLimDown.setText("Speed: (Current: "+ prefService.getLimitSpeed()+"MB)");
         checkBoxActionListener();
-        agrupedIcon();
+       
     }
     private void agrupedIcon() {
         buttonDirYt.setIcon(utils.getFixedSizeIcon("ytdlpicon.png", 40, 40));
         buttonLimitDownload.setIcon(utils.getFixedSizeIcon("saveicon.png", 21, 21));
-        buttonDirectory.setIcon(utils.getFixedSizeIcon("selectfoldericon.png", 40, 40));
+        buttonDirectory.setIcon(utils.getFixedSizeIcon("selectfoldericon.png", 35, 30));
     }
 
     public boolean isM3USelected() {

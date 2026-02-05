@@ -39,6 +39,9 @@ public class Login extends JPanel {
     private JLabel labelPassword;
     private String token;
     private TokenService tokenService;
+    private JLabel infoLabel;
+    private JLabel spaceLabel;
+    private UIUtils utils = new UIUtils();
 
     public Login(ViewToolApp jframe) {
         this.tokenService = jframe.getTokenService();
@@ -109,6 +112,21 @@ public class Login extends JPanel {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(15, 5, 5, 5);
         formPanel.add(buttonLogin, gbc);
+        
+        infoLabel = new JLabel("");
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gbc.gridwidth=2;
+        gbc.fill = GridBagConstraints.CENTER;
+        formPanel.add(infoLabel,gbc);
+        
+        spaceLabel = new JLabel("");
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        formPanel.add(spaceLabel,gbc);
+        
+        
+        
 
         add(formPanel, BorderLayout.CENTER);
 
@@ -135,14 +153,14 @@ public class Login extends JPanel {
 
                 MediaSyncPolling mediaSyncPolling = jframe.getComponent();
                 if (email.isBlank() || password.isBlank()) {
-                    Alerts.error(Login.this, "Login Failed. Please, write your email and your password.");
+                   utils.showFeedback(infoLabel, "Can't be empty.", true);
                     return;
                 } else {
 
                     try {
                         token = mediaSyncPolling.login(email, password);
                     } catch (Exception ex) {
-                        Alerts.error(Login.this, "Login failed. Email or password not found. Please try again.");
+                        utils.showFeedback(infoLabel, "Email or password not found.", true);
                         return;
                     }
                     if (token != null) {
