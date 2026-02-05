@@ -11,8 +11,9 @@ import MediaSyncPolling.MediaSyncPolling;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import javax.swing.SwingUtilities;
 
 /**
  *
@@ -25,7 +26,7 @@ public final class MediaTableModel extends AbstractTableModel {
     private final String[] columns = {"Location", "Name", "URL", "Nick"};
     private final Path downloadPath;
 
-    private final Map<Integer, String> userNames = new HashMap<>();
+    private final Map<Integer, String> userNames = new ConcurrentHashMap<>();
     private final MediaSyncPolling mediaSyncPolling;
     private final String token;
 
@@ -37,8 +38,12 @@ public final class MediaTableModel extends AbstractTableModel {
         updatePage(page, pageSize);
     }
 
-    public void setFullList(List<Media> newList) {
+    public void setList(List<Media> newList) {
         this.allFiles = newList;
+    }
+    
+    public Map<Integer, String> getUserNames() {
+        return userNames;
     }
 
     public void updatePage(int page, int pageSize) {
@@ -90,7 +95,7 @@ public final class MediaTableModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        //Protege al sistema si la lista de la pagina actual es null  o si la fila es mayor a la pagina que esta ejecutandose.
+        //Protege al sistema si la lista de la pagina actual es null  o si la fila es mayor al tamaño de la pagina que esta ejecutandose.
         if (currentView == null || rowIndex >= currentView.size()) {
             return "";
         }
@@ -105,7 +110,7 @@ public final class MediaTableModel extends AbstractTableModel {
             case 2 ->
                 file.downloadedFromUrl;
             case 3 ->
-                resolveNickName(file.id);
+                resolveNickName(file.userId);
             default ->
                 "";
         };
@@ -115,15 +120,16 @@ public final class MediaTableModel extends AbstractTableModel {
         if (userNames.containsKey(userId)) {
             return userNames.get(userId);
         }
-        
+        //Mientras la app busca el nick, aparece Cargando... en la tabla.
+
         userNames.put(userId, "Cargando...");
 
-       //Un hilo en segundo plano que ejecuta la busqueda y guardado de los nombres de usuario. 
+        //Un hilo en segundo plano que ejecuta la busqueda y guardado de los nombres de usuario. 
         Thread hiloBusqueda = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    
+
                     String nickName = mediaSyncPolling.getNickName(userId, token);
                     //Clave-Valor
                     userNames.put(userId, nickName);
@@ -133,17 +139,18 @@ public final class MediaTableModel extends AbstractTableModel {
                     userNames.put(userId, "Not found. ( USER ID: " + userId + ")");
                 }
 
-                // Usa el hilo EDT para actualizar la tabla.
-                javax.swing.SwingUtilities.invokeLater(new Runnable() {
+                Runnable fireTableRunnable = new Runnable() {
                     @Override
                     public void run() {
                         fireTableDataChanged();
                     }
-                });
+                };
+
+                // Usa el hilo EDT para actualizar la tabla.
+                SwingUtilities.invokeLater(fireTableRunnable);
             }
         });
 
-        
         hiloBusqueda.start();
 
         return userNames.get(userId);

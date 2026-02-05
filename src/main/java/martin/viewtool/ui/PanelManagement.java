@@ -19,23 +19,23 @@ import java.awt.Cursor;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import javax.swing.JFileChooser;
 import martin.viewtool.core.MediaItem;
 import martin.viewtool.core.MediaTableModel;
 import martin.viewtool.core.MediaService;
 import martin.viewtool.core.TokenService;
-import javax.swing.RowFilter;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.TableRowSorter;
-import java.util.regex.Pattern;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.SwingUtilities;
@@ -77,9 +77,8 @@ public class PanelManagement extends javax.swing.JPanel {
     private boolean hasBeenInitialized = false;
 
     private SwingWorker<List<Media>, Void> rebuildWorker;
-    
-    //Atributos para paginar la tabla
 
+    //Atributos para paginar la tabla
     private List<Media> fullMediaList = new java.util.ArrayList<>();
     private int currentPage = 1;
     private final int pageSize = 50;
@@ -87,16 +86,15 @@ public class PanelManagement extends javax.swing.JPanel {
     public PanelManagement(ViewToolApp jframe) {
         this.jframe = jframe;
         this.tokenService = jframe.getTokenService();
+        token = tokenService.getToken();
         initComponents();
         openingLabel.setFont(UIUtils.BOLD_FONT);
         agrupedIcon();
+        initLoadingPanel();
         //Para que el ToolTipText del JList desaparezca despues de 3 segundos.
         ToolTipManager.sharedInstance().setDismissDelay(3000);
         //Para que desaparezca el scroll horizontal
         listScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        initLoadingPanel();
-        token = tokenService.getToken();
-
         comboFilterListener();
         LiveSearchOnTable();
 
@@ -173,7 +171,7 @@ public class PanelManagement extends javax.swing.JPanel {
         });
 
         //Bloquea el teclado para que no interactue con la app
-        loadingPanel.addKeyListener(new java.awt.event.KeyAdapter() {
+        loadingPanel.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 e.consume();
@@ -228,7 +226,7 @@ public class PanelManagement extends javax.swing.JPanel {
         Runnable showMainPanel = new Runnable() {
             @Override
             public void run() {
-                Window window = javax.swing.SwingUtilities.getWindowAncestor(PanelManagement.this);
+                Window window = SwingUtilities.getWindowAncestor(PanelManagement.this);
                 if (window != null) {
                     window.setCursor(Cursor.getDefaultCursor());
                 }
@@ -239,7 +237,7 @@ public class PanelManagement extends javax.swing.JPanel {
 
         };
 
-        //Uso el invokeLater para que el runnable 'showMainPanel' que se ejecute en el hilo EDT.
+        //Uso el invokeLater para que el runnable 'showMainPanel' se ejecute en el hilo EDT.
         SwingUtilities.invokeLater(showMainPanel);
     }
 
@@ -282,21 +280,29 @@ public class PanelManagement extends javax.swing.JPanel {
 
     // Metodo que usa la TableRowSorter en el modelo de la tabla para filtrar el texto que hay en el TextField.
     private void applyTableFilter() {
-        String text = textFieldFile.getText().toLowerCase();
+        String searchText = textFieldFile.getText().toLowerCase();
 
-        if (text.isBlank()) {
+        if (searchText.isBlank()) {
             //Si no hay texto muestra la lista completa (paginada con el metodo creado).
-            tableModel.setFullList(fullMediaList);
+            tableModel.setList(fullMediaList);
         } else {
             //Cuando busca, busca en la lista completa y no solo en la paginacion que esta el usuario.
-            List<Media> filtered = fullMediaList.stream()
-                    .filter(m -> m.mediaFileName.toLowerCase().contains(text)
-                    || (m.downloadedFromUrl != null && m.downloadedFromUrl.toLowerCase().contains(text)))
-                    .toList();
+            List<Media> filtered = new ArrayList<>();
 
-            tableModel.setFullList(filtered);
+            for (Media media : fullMediaList) {
+                String fileName = (media.mediaFileName != null) ? media.mediaFileName.toLowerCase() : "";
+                String nickName = tableModel.getUserNames().getOrDefault(media.userId, "").toLowerCase();
+                String url = (media.downloadedFromUrl != null) ? media.downloadedFromUrl.toLowerCase() : "";
+                
+                if(fileName.contains(searchText) || nickName.contains(searchText) || url.contains(searchText) ){
+                    filtered.add(media);
+                }
+
+            }
+
+            tableModel.setList(filtered);
             //Cambia el valor a 1 para que se muestre el resultado en la pagina principal de la lista.
-            currentPage = 1; 
+            currentPage = 1;
         }
 
         updatePagination();
@@ -305,7 +311,7 @@ public class PanelManagement extends javax.swing.JPanel {
     public final void comboFilterListener() {
         comboFilter.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(java.awt.event.ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 refreshLocalList();
             }
         });
@@ -462,7 +468,7 @@ public class PanelManagement extends javax.swing.JPanel {
     private void applyMediaTableModel(List<Media> mediaListCombined) {
         MediaSyncPolling mediaSyncPolling = jframe.getComponent();
         if (tableModel == null) {
-            tableModel = new MediaTableModel(mediaListCombined, mediaService, currentPage, pageSize,mediaSyncPolling,token);
+            tableModel = new MediaTableModel(mediaListCombined, mediaService, currentPage, pageSize, mediaSyncPolling, token);
             tableFiles.setModel(tableModel);
 
             tableSorter = new TableRowSorter<>(tableModel);
@@ -474,8 +480,8 @@ public class PanelManagement extends javax.swing.JPanel {
             }
             columnPrefs();
         } else {
-           
-            tableModel.setFullList(mediaListCombined);
+
+            tableModel.setList(mediaListCombined);
             tableModel.updatePage(currentPage, pageSize);
         }
 
@@ -510,15 +516,15 @@ public class PanelManagement extends javax.swing.JPanel {
 
         // Columna 2: URL
         columnModel.getColumn(2).setPreferredWidth(300);
-        
+
         // Columna 3: NickName
         columnModel.getColumn(3).setPreferredWidth(100);
-        
+
     }
 
     private void updatePagination() {
         int totalItems = fullMediaList.size();
-        double result = totalItems/pageSize;
+        double result = totalItems / pageSize;
         int totalPages = (int) Math.ceil(result);
 
         labelPageStatus.setText("Page " + currentPage + " of " + totalPages);
@@ -527,9 +533,8 @@ public class PanelManagement extends javax.swing.JPanel {
         buttonPrev.setEnabled(currentPage > 1);
 
         tableModel.updatePage(currentPage, pageSize);
-        
-        //Crea un runnable para que se ejecute en el Event Dispatch Thread (EDT) usando el invokeLater.
 
+        //Crea un runnable para que se ejecute en el Event Dispatch Thread (EDT) usando el invokeLater.
         Runnable scrollReset = new Runnable() {
             @Override
             public void run() {
@@ -891,21 +896,20 @@ public class PanelManagement extends javax.swing.JPanel {
     private void buttonNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonNextActionPerformed
 
         double numberOfMedia = fullMediaList.size();
-        double result = numberOfMedia/pageSize;
-        
+        double result = numberOfMedia / pageSize;
+
         //Usa el Math.ceil para redondear hacia arriba y que ningun archivo quede fuera del conteo de paginacion.
-        
         int totalPages = (int) Math.ceil(result);
-       
+
         if (currentPage < totalPages) {
-            currentPage++; 
+            currentPage++;
             updatePagination();
         }
     }//GEN-LAST:event_buttonNextActionPerformed
 
     private void buttonPrevActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonPrevActionPerformed
         if (currentPage > 1) {
-            currentPage--; 
+            currentPage--;
             updatePagination();
         }
     }//GEN-LAST:event_buttonPrevActionPerformed
