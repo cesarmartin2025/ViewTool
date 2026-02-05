@@ -40,6 +40,7 @@ import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
+import javax.swing.Timer;
 import javax.swing.ToolTipManager;
 import martin.viewtool.core.ManagementService;
 import martin.viewtool.core.MediaRowRenderer;
@@ -293,11 +294,10 @@ public class PanelManagement extends javax.swing.JPanel {
                 String fileName = (media.mediaFileName != null) ? media.mediaFileName.toLowerCase() : "";
                 String nickName = tableModel.getUserNames().getOrDefault(media.userId, "").toLowerCase();
                 String url = (media.downloadedFromUrl != null) ? media.downloadedFromUrl.toLowerCase() : "";
-                
-                if(fileName.contains(searchText) || nickName.contains(searchText) || url.contains(searchText) ){
+
+                if (fileName.contains(searchText) || nickName.contains(searchText) || url.contains(searchText)) {
                     filtered.add(media);
                 }
-
             }
 
             tableModel.setList(filtered);
@@ -336,7 +336,7 @@ public class PanelManagement extends javax.swing.JPanel {
     //Uso un Timer con valor 0 para que cargue los datos una vez se pinte el panel.
     private void initialLoad() {
 
-        javax.swing.Timer timer = new javax.swing.Timer(0, new ActionListener() {
+        Timer timer = new Timer(0, new ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent e) {
                 initialLoadInProgress = true;
@@ -410,7 +410,7 @@ public class PanelManagement extends javax.swing.JPanel {
     //Añade los archivos a la Tabla mediante el metodo 'addNewMediaNetwork' y redibuja la tabla.
     //Lo hace mediante un Timer para que no colapse la aplicacion y espere a que todos los eventos en cola hayan finalizado para inciar el metodo.
     private void applyNetworkUpdateTable(final List<Media> newMedia) {
-        javax.swing.Timer timer = new javax.swing.Timer(0, new ActionListener() {
+        Timer timer = new Timer(0, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 mediaService.addNewMediaNetwork(newMedia);
@@ -480,7 +480,6 @@ public class PanelManagement extends javax.swing.JPanel {
             }
             columnPrefs();
         } else {
-
             tableModel.setList(mediaListCombined);
             tableModel.updatePage(currentPage, pageSize);
         }
@@ -834,16 +833,27 @@ public class PanelManagement extends javax.swing.JPanel {
         if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             File selectedFile = chooser.getSelectedFile();
 
-            String youtubeUrl = JOptionPane.showInputDialog(this, "Enter the YouTube URL:");
-            if (youtubeUrl == null || youtubeUrl.trim().isEmpty()) {
-                return;
+            String youtubeUrl = null;
+            //bucle infinito hasta que el usuario cancele la accion o introduzca un texto.
+            while (true) {
+                youtubeUrl = JOptionPane.showInputDialog(this, "Enter the YouTube URL:");
+                if (youtubeUrl == null) {
+                    break;
+                }
+                if (!youtubeUrl.trim().isEmpty()) {
+                    break;
+                }
+
+                Alerts.error(this, "URL can't be empty");
             }
 
-            try {
-                managementService.uploadMedia(selectedFile, youtubeUrl.trim(), jframe.getComponent(), token);
-                Alerts.info(this, "File uploaded:\n" + selectedFile.getAbsolutePath());
-            } catch (Exception ex) {
-                Alerts.error(this, ex.getMessage());
+            if (youtubeUrl != null) {
+                try {
+                    managementService.uploadMedia(selectedFile, youtubeUrl.trim(), jframe.getComponent(), token);
+                    Alerts.info(this, "File uploaded:\n" + selectedFile.getAbsolutePath());
+                } catch (Exception ex) {
+                    Alerts.error(this, ex.getMessage());
+                }
             }
         }
     }//GEN-LAST:event_buttonUploadFileActionPerformed
@@ -853,12 +863,11 @@ public class PanelManagement extends javax.swing.JPanel {
         if (file == null) {
             return;
         }
-        openingLabel.setText("Opening...");
-
         SwingWorker<Void, Void> openFileWorker = new SwingWorker<>() {
             @Override
             protected Void doInBackground() throws Exception {
                 managementService.openLocalFile(file);
+                openingLabel.setText("Opening...");
                 //Hace un delay artificial para que no desaparezca el label automaticamente por si el reproductor del usuario tarda un poco mas en abrir el archivo.
                 Thread.sleep(3000);
                 return null;

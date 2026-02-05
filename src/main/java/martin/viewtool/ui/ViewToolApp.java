@@ -7,12 +7,11 @@ package martin.viewtool.ui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
-import java.awt.Image;
-import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 
 import martin.viewtool.core.TokenService;
+import martin.viewtool.core.UIUtils;
 
 /**
  *
@@ -28,6 +27,7 @@ public class ViewToolApp extends javax.swing.JFrame {
     PanelManagement panelManagement;
     PanelMain panelMain;
     PanelPreferences panelPreferences;
+    UIUtils utils = new UIUtils();
 
     private JPanel root;
     private JPanel panelButtonMainAndSetting;
@@ -56,11 +56,6 @@ public class ViewToolApp extends javax.swing.JFrame {
 
     }
 
-    private ImageIcon sizeIcon(String ruta, int ancho, int alto) {
-        ImageIcon icono = new ImageIcon(getClass().getResource(ruta));
-        Image img = icono.getImage().getScaledInstance(ancho, alto, Image.SCALE_SMOOTH);
-        return new ImageIcon(img);
-    }
 
     private static void applyGlobalUI() {
         // Definir los estilos
@@ -96,9 +91,9 @@ public class ViewToolApp extends javax.swing.JFrame {
         panelButtonMainAndSetting = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         panelButtonMainAndSetting.add(buttonMain);
         panelButtonMainAndSetting.add(buttonSetting);
-
-        buttonSetting.setIcon(sizeIcon("/images/settingicon.png", 30, 30));
-        buttonMain.setIcon(sizeIcon("/images/homeicon.png", 30, 30));
+        
+        buttonSetting.setIcon(utils.getFixedSizeIcon("settingicon.png",30,30));
+        buttonMain.setIcon(utils.getFixedSizeIcon("homeicon.png",30,30));
 
         //Panel dinamico que muestra los paneles de la app
         dinamicPanel = new JPanel(new BorderLayout());

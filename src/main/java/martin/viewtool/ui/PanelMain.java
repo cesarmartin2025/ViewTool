@@ -222,12 +222,13 @@ public class PanelMain extends JPanel {
     }
 
     private void handlePlayVideo() {
-        infoLabel.setText("Opening...");
+        
 
         SwingWorker<Void, Void> openFileWorker = new SwingWorker<>() {
             @Override
             protected Void doInBackground() throws Exception {
                 playService.playLastDownloaded(prefService.getOutputDir());
+                infoLabel.setText("Opening...");
                 //Hace un delay artificial para que no desaparezca el label automaticamente por si el reproductor del usuario tarda un poco mas en abrir el archivo.
                 Thread.sleep(3000);
                 return null;
@@ -239,7 +240,9 @@ public class PanelMain extends JPanel {
                 try {
                     get();
                 } catch (InterruptedException | ExecutionException ex) {
-                    Alerts.error(null, "Error: " + ex.getMessage());
+                    //Filtra el mensaje para que no aparezca informacion especifica al usuario 
+                    String errorMessage = (ex.getCause() != null) ? ex.getCause().getMessage() : ex.getMessage();
+                    Alerts.error(null,errorMessage);
                 } finally {
                     infoLabel.setText("");
                 }
@@ -298,7 +301,7 @@ public class PanelMain extends JPanel {
                         Alerts.info(PanelMain.this, "Download complete to " + prefService.getOutputDir().toString());
                         progressBar.setValue(0);
                     } else {
-                        Alerts.warn(PanelMain.this, "Process finished with error code: " + exit);
+                        Alerts.warn(PanelMain.this, "Process finished with some error. Please, try again later");
                     }
                 } catch (Exception ex) {
                     Alerts.showException(PanelMain.this,
