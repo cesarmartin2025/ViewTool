@@ -8,6 +8,7 @@ import java.awt.Font;
 import java.awt.Image;
 import java.net.URL;
 import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 
 /**
  *
@@ -29,5 +30,22 @@ public class UIUtils {
         Image img = icono.getImage().getScaledInstance(ancho, alto, Image.SCALE_SMOOTH);
         return new ImageIcon(img);
     }
+    
+    public void showFeedback(JLabel infoLabel,String message, boolean isError) {
+    infoLabel.setForeground(isError ? java.awt.Color.RED : java.awt.Color.BLACK);
+    infoLabel.setText(message);
+
+    javax.swing.Timer timer = new javax.swing.Timer(5000, new java.awt.event.ActionListener() {
+        @Override
+        public void actionPerformed(java.awt.event.ActionEvent e) {
+            // Solo limpia si el mensaje actual sigue siendo el mismo 
+            if (infoLabel.getText().equals(message)) {
+                infoLabel.setText("");
+            }
+        }
+    });
+    timer.setRepeats(false);
+    timer.start();
+}
     
 }

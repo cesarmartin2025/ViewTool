@@ -77,6 +77,7 @@ public class PanelPreferences extends javax.swing.JPanel {
         labelWorkers = new javax.swing.JLabel();
         labelTextComingSoon = new javax.swing.JLabel();
         labelExtraInfo = new javax.swing.JLabel();
+        infoLabel = new javax.swing.JLabel();
 
         fileChooserDirDown.setAcceptAllFileFilterUsed(false);
         fileChooserDirDown.setCurrentDirectory(new java.io.File("C:\\Users\\cesar\\ViewToolDownloads"));
@@ -164,6 +165,11 @@ public class PanelPreferences extends javax.swing.JPanel {
         panelPreferences.add(labelExtraInfo);
         labelExtraInfo.setBounds(200, 140, 140, 16);
 
+        infoLabel.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        infoLabel.setText("     ");
+        panelPreferences.add(infoLabel);
+        infoLabel.setBounds(360, 100, 190, 30);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -199,7 +205,7 @@ public class PanelPreferences extends javax.swing.JPanel {
             textFieldLimDown.setText(prefService.getLimitSpeed());
             labelLimDown.setText("Speed: (Current: "+ prefService.getLimitSpeed()+"MB)");
         } catch (Exception ex) {
-            Alerts.showException(this, ex.getCause() != null ? ex.getCause() : ex);
+           utils.showFeedback(infoLabel,"Only integer number.", true);
         }
     }//GEN-LAST:event_buttonLimitDownloadActionPerformed
 
@@ -227,6 +233,7 @@ public class PanelPreferences extends javax.swing.JPanel {
     private javax.swing.JCheckBox checkBoxM3u;
     private javax.swing.JFileChooser fileChooserDirDown;
     private javax.swing.JFileChooser fileChooserYt;
+    private javax.swing.JLabel infoLabel;
     private javax.swing.JLabel labelExtraInfo;
     private javax.swing.JLabel labelLimDown;
     private javax.swing.JLabel labelSelectFolder;

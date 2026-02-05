@@ -227,10 +227,7 @@ public class PanelMain extends JPanel {
         SwingWorker<Void, Void> openFileWorker = new SwingWorker<>() {
             @Override
             protected Void doInBackground() throws Exception {
-                playService.playLastDownloaded(prefService.getOutputDir());
-                infoLabel.setText("Opening...");
-                //Hace un delay artificial para que no desaparezca el label automaticamente por si el reproductor del usuario tarda un poco mas en abrir el archivo.
-                Thread.sleep(3000);
+                playService.playLastDownloaded(prefService.getOutputDir());     
                 return null;
             }
 
@@ -239,13 +236,10 @@ public class PanelMain extends JPanel {
 
                 try {
                     get();
+                    utils.showFeedback(infoLabel,"Opening...", false);
                 } catch (InterruptedException | ExecutionException ex) {
-                    //Filtra el mensaje para que no aparezca informacion especifica al usuario 
-                    String errorMessage = (ex.getCause() != null) ? ex.getCause().getMessage() : ex.getMessage();
-                    Alerts.error(null,errorMessage);
-                } finally {
-                    infoLabel.setText("");
-                }
+                    utils.showFeedback(infoLabel,"You don't have videos yet.", true);
+                } 
             }
         };
 
@@ -301,11 +295,10 @@ public class PanelMain extends JPanel {
                         Alerts.info(PanelMain.this, "Download complete to " + prefService.getOutputDir().toString());
                         progressBar.setValue(0);
                     } else {
-                        Alerts.warn(PanelMain.this, "Process finished with some error. Please, try again later");
+                       utils.showFeedback(infoLabel,"Downloaded uncompleted. Try again.", true);
                     }
                 } catch (Exception ex) {
-                    Alerts.showException(PanelMain.this,
-                            ex.getCause() != null ? ex.getCause() : ex);
+                    utils.showFeedback(infoLabel,"Invalid URL.", true);
                 }
             }
         }.execute();

@@ -89,7 +89,7 @@ public class PanelManagement extends javax.swing.JPanel {
         this.tokenService = jframe.getTokenService();
         token = tokenService.getToken();
         initComponents();
-        openingLabel.setFont(UIUtils.BOLD_FONT);
+        infoLabel.setFont(UIUtils.BOLD_FONT);
         agrupedIcon();
         initLoadingPanel();
         //Para que el ToolTipText del JList desaparezca despues de 3 segundos.
@@ -490,10 +490,7 @@ public class PanelManagement extends javax.swing.JPanel {
     private Media getSelectedMedia(String action) {
         int selectedRow = tableFiles.getSelectedRow();
         if (selectedRow < 0) {
-            Alerts.error(
-                    this,
-                    "Please select a file to " + action + "."
-            );
+            utils.showFeedback(infoLabel,"Please, select a File to "+action+".", true);
             return null;
         }
         int modelRow = tableFiles.convertRowIndexToModel(selectedRow);
@@ -569,7 +566,7 @@ public class PanelManagement extends javax.swing.JPanel {
         buttonDownloadFile = new javax.swing.JButton();
         buttonUploadFile = new javax.swing.JButton();
         buttonOpenFile = new javax.swing.JButton();
-        openingLabel = new javax.swing.JLabel();
+        infoLabel = new javax.swing.JLabel();
         labelPageStatus = new javax.swing.JLabel();
         buttonPrev = new javax.swing.JButton();
         buttonNext = new javax.swing.JButton();
@@ -726,9 +723,9 @@ public class PanelManagement extends javax.swing.JPanel {
         panelManagement.add(buttonOpenFile);
         buttonOpenFile.setBounds(670, 470, 40, 50);
 
-        openingLabel.setText("             ");
-        panelManagement.add(openingLabel);
-        openingLabel.setBounds(1000, 490, 200, 16);
+        infoLabel.setText("             ");
+        panelManagement.add(infoLabel);
+        infoLabel.setBounds(1000, 490, 330, 16);
 
         labelPageStatus.setText("Page 1 of ...");
         panelManagement.add(labelPageStatus);
@@ -805,10 +802,11 @@ public class PanelManagement extends javax.swing.JPanel {
                 Alerts.info(this, "File deleted successfully.");
                 refreshLocalList();
             } else {
-                Alerts.error(this, "File is on network, could not be deleted.");
+                utils.showFeedback(infoLabel, "You can't delete this media.", true);
             }
         } catch (Exception ex) {
-            Alerts.error(this, "Error deleting file: " + ex.getMessage());
+            utils.showFeedback(infoLabel, "You can't delete this media.", true);
+            System.out.print("Error button delete: "+ex.getMessage());
         }
 
     }//GEN-LAST:event_buttonDeleteFileActionPerformed
@@ -824,7 +822,8 @@ public class PanelManagement extends javax.swing.JPanel {
             Alerts.info(this, "File successfully downloaded to " + prefService.getOutputDir().toString());
             refreshLocalList();
         } catch (Exception ex) {
-            Alerts.error(this, "Error: " + ex.getMessage());
+            utils.showFeedback(infoLabel, "This media is already downloaded.", true);
+            System.out.print("Error button Download: "+ex.getMessage());
         }
     }//GEN-LAST:event_buttonDownloadFileActionPerformed
 
@@ -843,8 +842,7 @@ public class PanelManagement extends javax.swing.JPanel {
                 if (!youtubeUrl.trim().isEmpty()) {
                     break;
                 }
-
-                Alerts.error(this, "URL can't be empty");
+                utils.showFeedback(infoLabel,"URL can't be empty.", true);
             }
 
             if (youtubeUrl != null) {
@@ -852,7 +850,8 @@ public class PanelManagement extends javax.swing.JPanel {
                     managementService.uploadMedia(selectedFile, youtubeUrl.trim(), jframe.getComponent(), token);
                     Alerts.info(this, "File uploaded:\n" + selectedFile.getAbsolutePath());
                 } catch (Exception ex) {
-                    Alerts.error(this, ex.getMessage());
+                   utils.showFeedback(infoLabel,ex.getMessage(), true);
+                   System.out.print("Error button Upload: "+ex.getMessage());
                 }
             }
         }
@@ -867,9 +866,6 @@ public class PanelManagement extends javax.swing.JPanel {
             @Override
             protected Void doInBackground() throws Exception {
                 managementService.openLocalFile(file);
-                openingLabel.setText("Opening...");
-                //Hace un delay artificial para que no desaparezca el label automaticamente por si el reproductor del usuario tarda un poco mas en abrir el archivo.
-                Thread.sleep(3000);
                 return null;
             }
 
@@ -878,10 +874,9 @@ public class PanelManagement extends javax.swing.JPanel {
 
                 try {
                     get();
+                    utils.showFeedback(infoLabel, "Opening...", false);
                 } catch (InterruptedException | ExecutionException ex) {
-                    Alerts.error(null, "This media is not downloaded in the local directory.");
-                } finally {
-                    openingLabel.setText("");
+                    utils.showFeedback(infoLabel, "This media is not downloaded.", true);
                 }
             }
         };
@@ -934,11 +929,11 @@ public class PanelManagement extends javax.swing.JPanel {
     private javax.swing.JButton buttonRefreshTable;
     private javax.swing.JButton buttonUploadFile;
     private javax.swing.JComboBox<String> comboFilter;
+    private javax.swing.JLabel infoLabel;
     private javax.swing.JLabel labelPageStatus;
     private javax.swing.JLabel labelSearchFile;
     private javax.swing.JList<String> listFiles;
     private javax.swing.JScrollPane listScrollPane;
-    private javax.swing.JLabel openingLabel;
     private javax.swing.JPanel panelManagement;
     private javax.swing.JTable tableFiles;
     private javax.swing.JScrollPane tableScrollPane;
