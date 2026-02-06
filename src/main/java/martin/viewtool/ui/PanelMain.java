@@ -26,7 +26,7 @@ import martin.viewtool.config.PreferencesService;
 import martin.viewtool.core.DownloadController;
 import martin.viewtool.core.MediaFormat;
 import martin.viewtool.core.PlayService;
-import martin.viewtool.core.UIUtils;
+import martin.viewtool.utils.UIUtils;
 import martin.viewtool.core.YtDlpService;
 
 /**

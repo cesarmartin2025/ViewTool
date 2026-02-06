@@ -2,10 +2,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package martin.viewtool.core;
+package martin.viewtool.utils;
 
 import java.awt.Font;
 import java.awt.Image;
+import java.awt.event.ActionListener;
 import java.net.URL;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -35,7 +36,7 @@ public class UIUtils {
     infoLabel.setForeground(isError ? java.awt.Color.RED : java.awt.Color.BLACK);
     infoLabel.setText(message);
 
-    javax.swing.Timer timer = new javax.swing.Timer(5000, new java.awt.event.ActionListener() {
+    javax.swing.Timer timer = new javax.swing.Timer(5000, new ActionListener() {
         @Override
         public void actionPerformed(java.awt.event.ActionEvent e) {
             // Solo limpia si el mensaje actual sigue siendo el mismo 

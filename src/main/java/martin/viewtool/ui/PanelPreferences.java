@@ -9,7 +9,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import javax.swing.JOptionPane;
 import martin.viewtool.config.PreferencesService;
-import martin.viewtool.core.UIUtils;
+import martin.viewtool.utils.UIUtils;
 import martin.viewtool.core.ValidationService;
 
 /**

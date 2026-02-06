@@ -23,7 +23,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import martin.viewtool.core.TokenService;
-import martin.viewtool.core.UIUtils;
+import martin.viewtool.utils.UIUtils;
 
 /**
  *

@@ -44,7 +44,7 @@ import javax.swing.Timer;
 import javax.swing.ToolTipManager;
 import martin.viewtool.core.ManagementService;
 import martin.viewtool.core.MediaRowRenderer;
-import martin.viewtool.core.UIUtils;
+import martin.viewtool.utils.UIUtils;
 
 /**
  *

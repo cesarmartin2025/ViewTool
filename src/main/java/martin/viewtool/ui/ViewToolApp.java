@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.UIManager;
 
 import martin.viewtool.core.TokenService;
-import martin.viewtool.core.UIUtils;
+import martin.viewtool.utils.UIUtils;
 
 /**
  *
