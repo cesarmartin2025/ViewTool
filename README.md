@@ -140,7 +140,7 @@ Iconos según el panel en el que esté el usuario:
 ### Panel Main
 - Icono de Youtube para que sea más identificativo el campo de la URL.
 - Iconos asociados a audio o video para los formatos MP3 y MP4.
-He optado por mantener los botones principales sin iconos, ya que no aportaban claridad adicional y sobrecargaban visualmente el panel.
+Se ha optado por mantener los botones principales sin iconos, ya que no aportaban claridad adicional y sobrecargaban visualmente el panel.
 
 ### Panel Management
 - Iconos representativos de la lista local y de la tabla de la base de datos en red.
@@ -155,6 +155,53 @@ En todo el programa hay un texto simple y claro, evitando frases largas o técni
 
 ## Distribución de los componentes
 La distribución de componentes se ha diseñado siguiendo los principios de diseños de interfaces de usuario vistos en la unidad, priorizando la legibilidad y el criterio de mínima sorpresa. Los elementos de cada pantalla se organizan en agrupaciones funcionales diferenciadas para que el usuario pueda identificar qué componentes pertenecen a una misma función. En todo el programa se respeta el flujo de lectura natural (de arriba a abajo y de izquierda a derecha), situando las acciones más relevantes al inicio de los paneles, facilitando el acceso al usuario. La integración de todos los paneles dentro de un JFrame único contribuye a mantener una consistencia estructural y evita cambios bruscos de contexto. De esta manera, es más fácil conseguir una coherencia visual y minimalista general en toda la aplicación.
+
+## Affordance
+Se ha implementado un **método genérico** que modifica el cursor al pasar el ratón por encima de algunos componentes interactivos, para indicar que es clicable y facilitando el reconocimiento de las acciones disponibles.
+Además, se han añadido **tooltips descriptivos** en aquellos botones que utilizan sólo iconos. De esta manera, con esta explicación breve y directa de la acción asociada a cada botón, se asegura que el significado de la interacción sea totalmente claro evitando así errores de entendimiento.
+También se ha implementado en algunos **botones** el cambio de estado para que se muestren desactivados cuando la aplicación no puede realizar la acción que requiere el usuario en ese momento.
+Se ha seleccionado una serie de iconos coherentes y representativos de las acciones asociadas, de modo que cada icono refuerza de manera gráfica su función y facilita la comprensión de la acción por parte del usuario, obviando en muchos casos la necesidad de texto visual en forma de apoyo.
+
+## Feedback
+Se han añadido mensajes de error o de éxito en casos en los que la acción puede fallar, evitando JDialogs e introduciendo JLabels que aparecen y desaparecen indicando al usuario qué error está sucediendo y por qué. 
+Se ha mantenido la barra de progreso de descarga cuando se usa la herramienta yt-dlp.
+Se han implementado cambios automáticos en la tabla y lista si la acción del usuario modifica alguna de estas, como por ejemplo: colores para diferenciar si un archivo está en la nube, en local o en ambos lugares.
+Se han mantenido los JDialogs para errores importantes que el usuario necesita prestar atención y saber lo que ocurre.
+Se ha añadido un panel de carga al inicio de la aplicación, indicando al usuario que la aplicación está cargando y que necesita esperar para poder utilizarla.
+
+## Restricciones
+Además de mantener anteriormente las restricciones ya impuestas:
+-Se han añadido restricciones visuales como botones deshabilitados para acciones que no se pueden ejecutar.
+-Se han añadido restricciones funcionales cuando el usuario intenta realizar una acción que no es posible ejecutarla (No permitir borrar/descargar/abrir si no está seleccionado el archivo, no permitir borrar/abrir un archivo que está en la nube...).
+
+## Otras mejoras de usabilidad
+### Navegación y estructura
+-Agrupar las opciones del menubar, simplificando al máximo la cantidad de menús y elementos de menú.
+-Centrar el panel Login en el JFrame, adaptando la ventana al tamaño del panel.
+-Combinación del panel main y panel management en la página principal del programa.
+-Eliminación del scroll horizontal.
+-Cambios de apariencia en JDialogs para respetar el estilo de la aplicación.
+### Rendimiento
+-Carga automática de la lista y la tabla sin intervención del usuario nada más iniciar la aplicación.
+-Mejora de rendimiento de la aplicación, añadiendo un método de paginación en la tabla.
+-Variación del tiempo de polling del mediaSyncPolling después de iniciarlo.
+-Panel de carga al iniciar la aplicación.
+### Gestión y visualización
+-Actualización de la lista automática al seleccionar en el combobox el tipo de archivo que muestra.
+-Modificación en la lista para que del directorio sólo muestre archivos de video o audio.
+-Mostrar en la tabla el nombre del usuario asociado al archivo subido en la nube.
+-Mostrar información de la carpeta en la cual se han descargado los archivos.
+-Mostrar en la tabla resultados letra por letra y no esperar a que el usuario tenga que darle al botón search.
+
+
+### Mejora del flujo de uso
+-Eliminación de JDialogs redundantes en toda la aplicación.
+-Añadir labels informativos sustituyendo a los JDialogs para mostrar información relevante al usuario.
+
+### Claridad visual
+-Modificar checkbox para que aparezca en negrita si está seleccionado.
+
+
 
 ---   
 ## 🧾 Licencia y créditos
