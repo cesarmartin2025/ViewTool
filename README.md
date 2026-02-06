@@ -122,30 +122,41 @@ o desde el IDE.
 - Se agregó la función de eliminación y apertura para medios locales.
 - Se agregó la actualización automática de la tabla de medios mediante eventos personalizados.
  ---  
+ 
 ## 06/02/2026 - Actualización Usabilidad
-**Colores**: Utiliza una paleta de colores minimalista. Simula una estética retro y funcional, basada principalmente en interfaces clásicas de programas de escritorio, intentando buscar el foco en la claridad y la legibilidad. De forma puntual, se utilizan colores más llamativos para dirigir la atención del usuario en acciones concretas. Sin embargo, los colores predominantes en la aplicacion son el blanco y el negro, buscando esa apariencia minimalista y coherente.
-**Iconos**:
-     **JFrame principal**:
-         -Iconos según el panel en el que esté el usuario:
-             *Home*: Si está en un panel distinto al principal.
-             *Setting*: Si está en un panel distinto al de ajustes(preferences).
-    **Panel Login**:
-        -Se han añadido iconos que representen la informacion que debe escribir el usuario en             los campos de entrada.
-    **Panel Main**:
-        -Icono de Youtube para que sea mas identificativo el campo de la URL.
-        -Iconos asociados a audio o video para los formatos MP3 y MP4.
-    He optado por mantener los botones principales sin iconos, ya que no aportaban claridad adicional y sobrecargaban visualmente el panel.
-    **Panel Management**:
-        -Iconos representativos de la lista local y de la tabla de la base de datos en red.
-        -Iconos de accion, sustituyendo los botones tradicionales por iconos de cada acción en            la tabla.
-    **Panel Preferences**:
-        -Iconos para las acciones disponibles que existen en el panel.
-        -Imagen que comunica visualmente que el panel se encuentra aún en desarrollo en cuanto a         funcionalidad.
-**Texto**:
-    En todo el programa hay un texto simple y claro, evitando frases largas o técnicas que el usuario no pueda comprender.
-    La tipografía utilizada es la SEGOE UI porque es la fuente estándar de aplicaciones de escritorio en Windows. Con esta tipografía se busca una coherencia con el estilo principal retro el cual está diseñado el programa.
-    Se usa puntualmente negrita para destacar acciones no permitidas en la aplicación(además de un color llamativo). También en el uso de checkboxs para que el usuario pueda reconocer si esa acción está activada o no y en los radiobuttons para que identifique cual de los botones está activo.
-       
+
+## Colores
+Utiliza una paleta de colores minimalista. Simula una estética retro y funcional, basada principalmente en interfaces clásicas de programas de escritorio, intentando buscar el foco en la claridad y la legibilidad. De forma puntual, se utilizan colores más llamativos para dirigir la atención del usuario en acciones concretas. Sin embargo, los colores predominantes en la aplicación son el blanco y el negro, buscando esa apariencia minimalista y coherente.
+
+## Iconos
+### JFrame principal
+Iconos según el panel en el que esté el usuario:
+- **Home**: si está en un panel distinto al principal.
+- **Setting**: si está en un panel distinto al de ajustes (preferences).
+
+### Panel Login
+- Se han añadido iconos que representan la información que debe escribir el usuario en los campos de entrada.
+
+### Panel Main
+- Icono de Youtube para que sea más identificativo el campo de la URL.
+- Iconos asociados a audio o video para los formatos MP3 y MP4.
+He optado por mantener los botones principales sin iconos, ya que no aportaban claridad adicional y sobrecargaban visualmente el panel.
+
+### Panel Management
+- Iconos representativos de la lista local y de la tabla de la base de datos en red.
+- Iconos de acción, sustituyendo los botones tradicionales por iconos de cada acción en la tabla.
+
+### Panel Preferences
+- Iconos para las acciones disponibles que existen en el panel.
+- Imagen que comunica visualmente que el panel se encuentra aún en desarrollo en cuanto a funcionalidad.
+
+## Texto
+En todo el programa hay un texto simple y claro, evitando frases largas o técnicas que el usuario no pueda comprender. La tipografía utilizada es la **SEGOE UI**, porque es la fuente estándar de aplicaciones de escritorio en Windows. Con esta tipografía se busca una coherencia con el estilo principal retro el cual está diseñado el programa. Se usa puntualmente negrita para destacar acciones no permitidas en la aplicación (además de un color llamativo). También en el uso de checkboxes para que el usuario pueda reconocer si esa acción está activada o no y en los radiobuttons para que identifique cuál de los botones está activo.
+
+## Distribución de los componentes
+La distribución de componentes se ha diseñado siguiendo los principios de diseños de interfaces de usuario vistos en la unidad, priorizando la legibilidad y el criterio de mínima sorpresa. Los elementos de cada pantalla se organizan en agrupaciones funcionales diferenciadas para que el usuario pueda identificar qué componentes pertenecen a una misma función. En todo el programa se respeta el flujo de lectura natural (de arriba a abajo y de izquierda a derecha), situando las acciones más relevantes al inicio de los paneles, facilitando el acceso al usuario. La integración de todos los paneles dentro de un JFrame único contribuye a mantener una consistencia estructural y evita cambios bruscos de contexto. De esta manera, es más fácil conseguir una coherencia visual y minimalista general en toda la aplicación.
+
+---   
 ## 🧾 Licencia y créditos
 
 Proyecto educativo desarrollado por **César Martín Pérez** para el módulo **Desarrollo de Interfaces(DAM)**.  
