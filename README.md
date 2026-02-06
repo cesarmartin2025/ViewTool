@@ -157,51 +157,59 @@ En todo el programa hay un texto simple y claro, evitando frases largas o técni
 La distribución de componentes se ha diseñado siguiendo los principios de diseños de interfaces de usuario vistos en la unidad, priorizando la legibilidad y el criterio de mínima sorpresa. Los elementos de cada pantalla se organizan en agrupaciones funcionales diferenciadas para que el usuario pueda identificar qué componentes pertenecen a una misma función. En todo el programa se respeta el flujo de lectura natural (de arriba a abajo y de izquierda a derecha), situando las acciones más relevantes al inicio de los paneles, facilitando el acceso al usuario. La integración de todos los paneles dentro de un JFrame único contribuye a mantener una consistencia estructural y evita cambios bruscos de contexto. De esta manera, es más fácil conseguir una coherencia visual y minimalista general en toda la aplicación.
 
 ## Affordance
-Se ha implementado un **método genérico** que modifica el cursor al pasar el ratón por encima de algunos componentes interactivos, para indicar que es clicable y facilitando el reconocimiento de las acciones disponibles.
+
+- Se ha implementado un **método genérico** que modifica el cursor al pasar el ratón por encima de algunos componentes interactivos, para indicar que es clicable y facilitando el reconocimiento de las acciones disponibles.
 Además, se han añadido **tooltips descriptivos** en aquellos botones que utilizan sólo iconos. De esta manera, con esta explicación breve y directa de la acción asociada a cada botón, se asegura que el significado de la interacción sea totalmente claro evitando así errores de entendimiento.
-También se ha implementado en algunos **botones** el cambio de estado para que se muestren desactivados cuando la aplicación no puede realizar la acción que requiere el usuario en ese momento.
-Se ha seleccionado una serie de iconos coherentes y representativos de las acciones asociadas, de modo que cada icono refuerza de manera gráfica su función y facilita la comprensión de la acción por parte del usuario, obviando en muchos casos la necesidad de texto visual en forma de apoyo.
+- También se ha implementado en algunos **botones** el cambio de estado para que se muestren desactivados cuando la aplicación no puede realizar la acción que requiere el usuario en ese momento.
+- Se ha seleccionado una serie de iconos coherentes y representativos de las acciones asociadas, de modo que cada icono refuerza de manera gráfica su función y facilita la comprensión de la acción por parte del usuario, obviando en muchos casos la necesidad de texto visual en forma de apoyo.
 
 ## Feedback
-Se han añadido mensajes de error o de éxito en casos en los que la acción puede fallar, evitando JDialogs e introduciendo JLabels que aparecen y desaparecen indicando al usuario qué error está sucediendo y por qué. 
-Se ha mantenido la barra de progreso de descarga cuando se usa la herramienta yt-dlp.
-Se han implementado cambios automáticos en la tabla y lista si la acción del usuario modifica alguna de estas, como por ejemplo: colores para diferenciar si un archivo está en la nube, en local o en ambos lugares.
-Se han mantenido los JDialogs para errores importantes que el usuario necesita prestar atención y saber lo que ocurre.
-Se ha añadido un panel de carga al inicio de la aplicación, indicando al usuario que la aplicación está cargando y que necesita esperar para poder utilizarla.
+
+- Se han añadido mensajes de error o de éxito en casos en los que la acción puede fallar, evitando JDialogs e introduciendo JLabels que aparecen y desaparecen indicando al usuario qué error está sucediendo y por qué. 
+- Se ha mantenido la barra de progreso de descarga cuando se usa la herramienta yt-dlp.
+- Se han implementado cambios automáticos en la tabla y lista si la acción del usuario modifica alguna de estas, como por ejemplo: colores para diferenciar si un archivo está en la nube, en local o en ambos lugares.
+- Se han mantenido los JDialogs para errores importantes que el usuario necesita prestar atención y saber lo que ocurre.
+- Se ha añadido un panel de carga al inicio de la aplicación, indicando al usuario que la aplicación está cargando y que necesita esperar para poder utilizarla.
 
 ## Restricciones
+
 Además de mantener anteriormente las restricciones ya impuestas:
--Se han añadido restricciones visuales como botones deshabilitados para acciones que no se pueden ejecutar.
--Se han añadido restricciones funcionales cuando el usuario intenta realizar una acción que no es posible ejecutarla (No permitir borrar/descargar/abrir si no está seleccionado el archivo, no permitir borrar/abrir un archivo que está en la nube...).
+
+- Se han añadido restricciones visuales como botones deshabilitados para acciones que no se pueden ejecutar.
+- Se han añadido restricciones funcionales cuando el usuario intenta realizar una acción que no es posible ejecutarla (No permitir borrar/descargar/abrir si no está seleccionado el archivo, no permitir borrar/abrir un archivo que está en la nube...).
 
 ## Otras mejoras de usabilidad
 ### Navegación y estructura
--Agrupar las opciones del menubar, simplificando al máximo la cantidad de menús y elementos de menú.
--Centrar el panel Login en el JFrame, adaptando la ventana al tamaño del panel.
--Combinación del panel main y panel management en la página principal del programa.
--Eliminación del scroll horizontal.
--Cambios de apariencia en JDialogs para respetar el estilo de la aplicación.
+
+- Agrupación de las opciones del menubar, simplificando al máximo la cantidad de menús y elementos de menú.
+- Encuadre del panel Login en el JFrame, adaptando la ventana al tamaño del panel.
+- Combinación del panel main y panel management en la página principal del programa.
+- Eliminación del scroll horizontal.
+- Cambios de apariencia en JDialogs para respetar el estilo de la aplicación.
+    
 ### Rendimiento
--Carga automática de la lista y la tabla sin intervención del usuario nada más iniciar la aplicación.
--Mejora de rendimiento de la aplicación, añadiendo un método de paginación en la tabla.
--Variación del tiempo de polling del mediaSyncPolling después de iniciarlo.
--Panel de carga al iniciar la aplicación.
+
+- Carga automática de la lista y la tabla sin intervención del usuario nada más iniciar la aplicación.
+- Mejora de rendimiento de la aplicación, añadiendo un método de paginación en la tabla.
+- Variación del tiempo de polling del mediaSyncPolling después de iniciarlo.
+- Panel de carga al iniciar la aplicación.
+    
 ### Gestión y visualización
--Actualización de la lista automática al seleccionar en el combobox el tipo de archivo que muestra.
--Modificación en la lista para que del directorio sólo muestre archivos de video o audio.
--Mostrar en la tabla el nombre del usuario asociado al archivo subido en la nube.
--Mostrar información de la carpeta en la cual se han descargado los archivos.
--Mostrar en la tabla resultados letra por letra y no esperar a que el usuario tenga que darle al botón search.
 
-
+- Actualización de la lista automática al seleccionar en el combobox el tipo de archivo que muestra.
+- Modificación en la lista para que del directorio sólo muestre archivos de video o audio.
+- Información en la tabla del nombre del usuario asociado al archivo subido en la nube.
+- Información de la carpeta en la cual se han descargado los archivos.
+- Información en la tabla de los resultados letra por letra de manera automática.
+    
 ### Mejora del flujo de uso
--Eliminación de JDialogs redundantes en toda la aplicación.
--Añadir labels informativos sustituyendo a los JDialogs para mostrar información relevante al usuario.
+
+- Eliminación de JDialogs redundantes en toda la aplicación.
+- Introducción de labels informativos sustituyendo a los JDialogs para mostrar información relevante al usuario.
 
 ### Claridad visual
--Modificar checkbox para que aparezca en negrita si está seleccionado.
 
-
+- Modificación checkbox para que aparezca en negrita si está seleccionado.
 
 ---   
 ## 🧾 Licencia y créditos
@@ -332,6 +340,99 @@ java -cp dist/ViewTool.jar martin.viewtool.ui.ViewToolApp
 -Added delete function for local medias.
 -Added “open local file” action.
 -Added automatic refresh of media table via custom events.
+
+---
+
+## 06/02/2026 – Usability Update
+
+## Colors
+A minimalist color palette is used. It simulates a retro and functional aesthetic, mainly based on classic desktop application interfaces, aiming to focus on clarity and readability. Occasionally, more striking colors are used to draw the user’s attention to specific actions. However, the predominant colors in the application are black and white, reinforcing a minimalist and consistent appearance.
+
+## Icons
+### Main JFrame
+Icons depending on the panel the user is currently in:
+- **Home**: when the user is on a panel other than the main one.
+- **Settings**: when the user is on a panel other than the settings (preferences) panel.
+
+### Login Panel
+- Icons have been added to represent the information the user must enter in the input fields.
+
+### Main Panel
+- YouTube icon to make the URL field more easily identifiable.
+- Icons associated with audio or video for MP3 and MP4 formats.  
+The main buttons have intentionally been kept without icons, as they did not provide additional clarity and visually overloaded the panel.
+
+### Management Panel
+- Representative icons for the local list and the network database table.
+- Action icons, replacing traditional buttons with icons for each action within the table.
+
+### Preferences Panel
+- Icons for the available actions within the panel.
+- An image that visually communicates that this panel is still under development in terms of functionality.
+
+## Text
+Throughout the application, simple and clear text is used, avoiding long or overly technical phrases that the user may not understand. The typography used is **SEGOE UI**, as it is the standard font for desktop applications on Windows. This choice seeks consistency with the overall retro style on which the application is designed. Bold text is used selectively to highlight actions that are not allowed within the application (in addition to a striking color). Bold is also used in checkboxes so the user can easily recognize whether an action is enabled or not, and in radio buttons to identify which option is currently active.
+
+## Component Layout
+The component layout has been designed following the user interface design principles studied in the unit, prioritizing readability and the principle of minimum surprise. The elements on each screen are organized into distinct functional groups so that the user can easily identify which components belong to the same function. Throughout the application, the natural reading flow (top to bottom and left to right) is respected, placing the most relevant actions at the beginning of each panel to facilitate user access. Integrating all panels within a single JFrame helps maintain structural consistency and avoids abrupt context changes. This approach makes it easier to achieve overall visual and minimalist coherence across the entire application.
+
+## Affordance
+
+- A **generic method** has been implemented that changes the cursor when hovering over certain interactive components, indicating that they are clickable and facilitating recognition of available actions.  
+  Additionally, **descriptive tooltips** have been added to buttons that use icons only. With these brief and direct explanations of the action associated with each button, the meaning of the interaction is made completely clear, thus avoiding misunderstandings.
+- A state change has also been implemented in some **buttons**, so they appear disabled when the application cannot perform the requested action at that moment.
+- A set of coherent and representative icons has been selected for the associated actions, so that each icon graphically reinforces its function and facilitates user understanding, often eliminating the need for supporting text.
+
+## Feedback
+
+- Error or success messages have been added in cases where an action may fail, avoiding JDialogs and instead introducing JLabels that appear and disappear, informing the user of what error is occurring and why.
+- The download progress bar has been retained when using the yt-dlp tool.
+- Automatic updates have been implemented in the table and list when a user action modifies them, such as using colors to differentiate whether a file is in the cloud, locally stored, or in both locations.
+- JDialogs have been retained for critical errors that require the user’s attention and awareness.
+- A loading panel has been added at application startup, informing the user that the application is loading and that they must wait before using it.
+
+## Restrictions
+
+In addition to maintaining the previously imposed restrictions:
+
+- Visual restrictions have been added, such as disabled buttons for actions that cannot be executed.
+- Functional restrictions have been added when the user attempts to perform an action that is not possible (e.g., not allowing delete/download/open actions if no file is selected, not allowing delete/open actions on a file that is stored in the cloud, etc.).
+
+## Other Usability Improvements
+### Navigation and Structure
+
+- Grouping of menubar options, minimizing the number of menus and menu items as much as possible.
+- Centering the Login panel within the JFrame, adapting the window size to the panel.
+- Combining the main panel and management panel on the main application screen.
+- Removal of horizontal scrolling.
+- Appearance changes in JDialogs to respect the application’s style.
+
+### Performance
+
+- Automatic loading of the list and table without user intervention as soon as the application starts.
+- Application performance improvements by adding a pagination method to the table.
+- Adjustment of the mediaSyncPolling polling interval after initialization.
+- Loading panel at application startup.
+
+### Management and Visualization
+
+- Automatic list update when selecting the file type to display from the combobox.
+- Modification of the list so that only video or audio files are shown from the directory.
+- Displaying in the table the username associated with the file uploaded to the cloud.
+- Displaying information about the folder where files have been downloaded.
+- Displaying table results character by character, without requiring the user to press the search button.
+
+### Improved User Flow
+
+- Removal of redundant JDialogs throughout the application.
+- Addition of informational labels to replace JDialogs when displaying relevant information to the user.
+
+### Visual Clarity
+
+- Modification of checkboxes so that they appear in bold when selected.
+  
+---
+
 
 
 ## License
