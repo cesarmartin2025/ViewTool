@@ -111,7 +111,16 @@ public class PanelManagement extends javax.swing.JPanel {
         titleListLabel.setIcon(utils.getFixedSizeIcon("libraryicon.png", 40, 40));
         buttonPrev.setIcon(utils.getFixedSizeIcon("backicon.png", 25, 25));
         buttonNext.setIcon(utils.getFixedSizeIcon("fronticon.png", 25, 25));
-
+        
+        utils.setHoverButton(buttonRefreshList);
+        utils.setHoverButton(buttonDeleteFile);
+        utils.setHoverButton(buttonDownloadFile);
+        utils.setHoverButton(buttonOpenFile);
+        utils.setHoverButton(buttonRefreshTable);
+        utils.setHoverButton(buttonUploadFile);
+        utils.setHoverButton(buttonPrev);
+        utils.setHoverButton(buttonNext);
+        
     }
 
     // Crea un panel opaco que muestra el cursor de 'cargando' en el raton
@@ -586,6 +595,7 @@ public class PanelManagement extends javax.swing.JPanel {
 
         buttonRefreshList.setBackground(new java.awt.Color(255, 255, 255));
         buttonRefreshList.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/refreshicon.png"))); // NOI18N
+        buttonRefreshList.setToolTipText("Refresh");
         buttonRefreshList.setBorder(null);
         buttonRefreshList.setBorderPainted(false);
         buttonRefreshList.setPreferredSize(new java.awt.Dimension(40, 40));
@@ -625,6 +635,7 @@ public class PanelManagement extends javax.swing.JPanel {
 
         buttonRefreshTable.setBackground(new java.awt.Color(255, 255, 255));
         buttonRefreshTable.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/refreshicon.png"))); // NOI18N
+        buttonRefreshTable.setToolTipText("Refresh");
         buttonRefreshTable.setBorder(null);
         buttonRefreshTable.setBorderPainted(false);
         buttonRefreshTable.setPreferredSize(new java.awt.Dimension(40, 40));
@@ -652,11 +663,13 @@ public class PanelManagement extends javax.swing.JPanel {
         labelSearchFile.setBackground(new java.awt.Color(255, 255, 255));
         labelSearchFile.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         labelSearchFile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/lupaicon.png"))); // NOI18N
+        labelSearchFile.setToolTipText("Search");
         panelManagement.add(labelSearchFile);
         labelSearchFile.setBounds(1110, 15, 30, 25);
 
         buttonDeleteFile.setBackground(new java.awt.Color(255, 255, 255));
         buttonDeleteFile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/deleteicon.png"))); // NOI18N
+        buttonDeleteFile.setToolTipText("Delete");
         buttonDeleteFile.setBorder(null);
         buttonDeleteFile.setBorderPainted(false);
         buttonDeleteFile.setPreferredSize(new java.awt.Dimension(40, 40));
@@ -686,6 +699,7 @@ public class PanelManagement extends javax.swing.JPanel {
 
         buttonDownloadFile.setBackground(new java.awt.Color(255, 255, 255));
         buttonDownloadFile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/downloadicon.png"))); // NOI18N
+        buttonDownloadFile.setToolTipText("Download");
         buttonDownloadFile.setBorder(null);
         buttonDownloadFile.setBorderPainted(false);
         buttonDownloadFile.setPreferredSize(new java.awt.Dimension(40, 40));
@@ -699,6 +713,7 @@ public class PanelManagement extends javax.swing.JPanel {
 
         buttonUploadFile.setBackground(new java.awt.Color(255, 255, 255));
         buttonUploadFile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/uploadicon.png"))); // NOI18N
+        buttonUploadFile.setToolTipText("Upload");
         buttonUploadFile.setBorder(null);
         buttonUploadFile.setBorderPainted(false);
         buttonUploadFile.setPreferredSize(new java.awt.Dimension(40, 40));
@@ -712,6 +727,7 @@ public class PanelManagement extends javax.swing.JPanel {
 
         buttonOpenFile.setBackground(new java.awt.Color(255, 255, 255));
         buttonOpenFile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/playvideoicon.png"))); // NOI18N
+        buttonOpenFile.setToolTipText("Play");
         buttonOpenFile.setBorder(null);
         buttonOpenFile.setBorderPainted(false);
         buttonOpenFile.setPreferredSize(new java.awt.Dimension(40, 40));
@@ -733,6 +749,7 @@ public class PanelManagement extends javax.swing.JPanel {
 
         buttonPrev.setBackground(new java.awt.Color(255, 255, 255));
         buttonPrev.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/backicon.png"))); // NOI18N
+        buttonPrev.setToolTipText("previous");
         buttonPrev.setBorder(null);
         buttonPrev.setBorderPainted(false);
         buttonPrev.addActionListener(new java.awt.event.ActionListener() {
@@ -745,6 +762,7 @@ public class PanelManagement extends javax.swing.JPanel {
 
         buttonNext.setBackground(new java.awt.Color(255, 255, 255));
         buttonNext.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/fronticon.png"))); // NOI18N
+        buttonNext.setToolTipText("Next");
         buttonNext.setBorder(null);
         buttonNext.setBorderPainted(false);
         buttonNext.addActionListener(new java.awt.event.ActionListener() {

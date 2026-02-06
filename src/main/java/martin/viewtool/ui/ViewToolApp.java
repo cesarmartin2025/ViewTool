@@ -94,6 +94,9 @@ public class ViewToolApp extends javax.swing.JFrame {
         
         buttonSetting.setIcon(utils.getFixedSizeIcon("settingicon.png",30,30));
         buttonMain.setIcon(utils.getFixedSizeIcon("homeicon.png",30,30));
+        
+        utils.setHoverButton(buttonMain);
+        utils.setHoverButton(buttonSetting);
 
         //Panel dinamico que muestra los paneles de la app
         dinamicPanel = new JPanel(new BorderLayout());
@@ -228,6 +231,7 @@ public class ViewToolApp extends javax.swing.JFrame {
 
         buttonMain.setBackground(new java.awt.Color(255, 255, 255));
         buttonMain.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/homeicon.png"))); // NOI18N
+        buttonMain.setToolTipText("Go Home");
         buttonMain.setBorder(null);
         buttonMain.setBorderPainted(false);
         buttonMain.addActionListener(new java.awt.event.ActionListener() {
@@ -238,6 +242,7 @@ public class ViewToolApp extends javax.swing.JFrame {
 
         buttonSetting.setBackground(new java.awt.Color(255, 255, 255));
         buttonSetting.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/settingicon.png"))); // NOI18N
+        buttonSetting.setToolTipText("Go Setting");
         buttonSetting.setBorder(null);
         buttonSetting.setBorderPainted(false);
         buttonSetting.addActionListener(new java.awt.event.ActionListener() {

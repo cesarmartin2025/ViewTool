@@ -36,6 +36,10 @@ public class PanelPreferences extends javax.swing.JPanel {
         buttonDirYt.setIcon(utils.getFixedSizeIcon("ytdlpicon.png", 40, 40));
         buttonLimitDownload.setIcon(utils.getFixedSizeIcon("saveicon.png", 21, 21));
         buttonDirectory.setIcon(utils.getFixedSizeIcon("selectfoldericon.png", 35, 30));
+        
+        utils.setHoverButton(buttonDirYt);
+        utils.setHoverButton(buttonLimitDownload);
+        utils.setHoverButton(buttonDirectory);
     }
 
     public boolean isM3USelected() {
@@ -105,6 +109,7 @@ public class PanelPreferences extends javax.swing.JPanel {
 
         buttonLimitDownload.setBackground(new java.awt.Color(255, 255, 255));
         buttonLimitDownload.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/saveicon.png"))); // NOI18N
+        buttonLimitDownload.setToolTipText("Save");
         buttonLimitDownload.setBorder(null);
         buttonLimitDownload.setBorderPainted(false);
         buttonLimitDownload.addActionListener(new java.awt.event.ActionListener() {

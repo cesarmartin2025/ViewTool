@@ -105,6 +105,8 @@ public class Login extends JPanel {
         // Color de fondo + letra
         buttonLogin.setBackground(java.awt.Color.lightGray);
         buttonLogin.setForeground(java.awt.Color.BLACK);
+    
+        utils.setHoverButton(buttonLogin);
 
         gbc.gridx = 1;
         gbc.gridy = 3;

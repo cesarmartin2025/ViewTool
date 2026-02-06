@@ -109,10 +109,14 @@ public class PanelMain extends JPanel {
         buttonDownload = new JButton("Download");
         buttonDownload.setBackground(java.awt.Color.lightGray);
         buttonDownload.setForeground(java.awt.Color.BLACK);
+        
 
         buttonPlayVideo = new JButton("Play last video");
         buttonPlayVideo.setBackground(java.awt.Color.lightGray);
         buttonPlayVideo.setForeground(java.awt.Color.BLACK);
+        
+        utils.setHoverButton(buttonDownload);
+        utils.setHoverButton(buttonPlayVideo);
 
         infoLabel = new JLabel("");
         infoLabel.setFont(UIUtils.BOLD_FONT);

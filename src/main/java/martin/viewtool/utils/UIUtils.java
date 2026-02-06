@@ -4,11 +4,15 @@
  */
 package martin.viewtool.utils;
 
+import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
 import java.net.URL;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 
 /**
@@ -47,6 +51,23 @@ public class UIUtils {
     });
     timer.setRepeats(false);
     timer.start();
-}
+    }
+    
+    public void setHoverButton(JButton button) {
+        button.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                
+                button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            }
+
+        });
+    }
     
 }
