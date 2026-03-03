@@ -13,11 +13,18 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
+ * Opens the most recently downloaded media file with the system default player.
  *
  * @author cesar
  */
 public class PlayService {
 
+    /**
+     * Finds the newest MP4, MP3, or M4A file in the given directory and opens it.
+     *
+     * @param downloadDir directory to search
+     * @throws IOException if the directory does not exist or no media file is found
+     */
     public void playLastDownloaded(Path downloadDir) throws IOException {
         if (!Files.isDirectory(downloadDir)) {
             throw new IOException("The download directory does not exist: " + downloadDir);

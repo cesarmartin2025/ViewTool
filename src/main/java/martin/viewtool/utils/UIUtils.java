@@ -16,16 +16,26 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 
 /**
+ * Utility class with helper methods for common Swing UI operations.
  *
  * @author cesar
  */
 public class UIUtils {
-    
-     public static final Font BOLD_FONT = new Font("Segoe UI", java.awt.Font.BOLD, 13);
+
+    /** Bold Segoe UI font at size 13. */
+    public static final Font BOLD_FONT = new Font("Segoe UI", java.awt.Font.BOLD, 13);
+    /** Plain Segoe UI font at size 13. */
     public static final Font PLAIN_FONT = new Font("Segoe UI", java.awt.Font.PLAIN, 13);
-    
-    //Metodo para establecer un tamaño fijo de iconos.
-    
+
+    /**
+     * Loads an image from the {@code /images/} classpath resource folder and
+     * scales it to the specified dimensions.
+     *
+     * @param imageName file name of the image
+     * @param ancho     desired width in pixels
+     * @param alto      desired height in pixels
+     * @return scaled {@link ImageIcon}
+     */
     public ImageIcon getFixedSizeIcon(String imageName, int ancho, int alto) {
         
         String path = "/images/" + imageName;
@@ -36,6 +46,13 @@ public class UIUtils {
         return new ImageIcon(img);
     }
     
+    /**
+     * Displays a temporary feedback message on a label and clears it after 5 seconds.
+     *
+     * @param infoLabel the label to update
+     * @param message   message text to display
+     * @param isError   if {@code true} the text is shown in red, otherwise in black
+     */
     public void showFeedback(JLabel infoLabel,String message, boolean isError) {
     infoLabel.setForeground(isError ? java.awt.Color.RED : java.awt.Color.BLACK);
     infoLabel.setText(message);
@@ -53,6 +70,12 @@ public class UIUtils {
     timer.start();
     }
     
+    /**
+     * Adds a mouse listener to the button that switches the cursor to a hand
+     * when the pointer enters the button area.
+     *
+     * @param button the button to configure
+     */
     public void setHoverButton(JButton button) {
         button.addMouseListener(new MouseAdapter() {
 

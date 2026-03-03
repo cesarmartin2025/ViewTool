@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
+ * Service that provides access to local media files through a {@link MediaLibrary}.
  *
  * @author cesar
  */
@@ -17,10 +18,21 @@ public final class LibraryService {
     private final MediaLibrary mediaLibrary = new MediaLibrary();
     private final Path downloadDir;
 
+    /**
+     * Creates a LibraryService that scans the given directory.
+     *
+     * @param downloadDir local directory containing downloaded media files
+     */
     public LibraryService(Path downloadDir) {
         this.downloadDir = downloadDir;
     }
-    
+
+    /**
+     * Returns all media files found in the download directory.
+     *
+     * @return list of all {@link MediaItem} objects
+     * @throws IOException if an I/O error occurs
+     */
     public List<MediaItem> getFiles() throws IOException {
         List<MediaItem> allItems = mediaLibrary.scan(downloadDir);
 
@@ -28,6 +40,13 @@ public final class LibraryService {
                 
     }
 
+    /**
+     * Returns media files filtered by type.
+     *
+     * @param filter one of "All", "Videos", "Audios", or any other value to skip filtering
+     * @return filtered list of {@link MediaItem} objects
+     * @throws IOException if an I/O error occurs
+     */
     public List<MediaItem> getFilteredFiles(String filter) throws IOException {
         List<MediaItem> allItems = mediaLibrary.scan(downloadDir);
 

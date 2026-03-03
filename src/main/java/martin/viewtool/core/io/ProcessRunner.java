@@ -12,6 +12,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * Utility for running external processes and parsing their output.
+ * Progress percentages are extracted from stdout/stderr.
  *
  * @author cesar
  */
@@ -19,6 +21,17 @@ public class ProcessRunner {
 
     private static final Pattern PERCENTAGE = Pattern.compile("(\\d{1,3}(?:\\.\\d+)?)%");
 
+    /**
+     * Runs a command, streams its output to {@code out}, and reports progress.
+     *
+     * @param commands      command and its arguments
+     * @param fileDirectory working directory for the process, or {@code null} for the current dir
+     * @param out           appendable that receives each output line, or {@code null} to discard
+     * @param onPercent     callback invoked with progress percentage (0–100), or {@code null} to ignore
+     * @return process exit code
+     * @throws IOException          if the process cannot be started or output cannot be read
+     * @throws InterruptedException if the thread is interrupted while waiting for the process
+     */
     public static int run(List<String> commands, File fileDirectory, Appendable out, IntConsumer onPercent)
             throws IOException, InterruptedException {
 

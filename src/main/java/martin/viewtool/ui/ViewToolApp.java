@@ -14,6 +14,9 @@ import martin.viewtool.core.TokenService;
 import martin.viewtool.utils.UIUtils;
 
 /**
+ * Main application window for ViewTool.
+ * Manages navigation between the Login, Main, Management, and Preferences panels,
+ * and handles session state (login/logout, token persistence).
  *
  * @author cesar
  */
@@ -107,6 +110,12 @@ public class ViewToolApp extends javax.swing.JFrame {
         setContentPane(root);
     }
 
+    /**
+     * Called after a successful login. Stores the token, marks the session as
+     * logged-in, and displays the main + management panels.
+     *
+     * @param token the authentication token received from the API
+     */
     public final void loggedSuccess(String token) {
         this.token = token;
         this.loggedIn = true;
@@ -115,14 +124,29 @@ public class ViewToolApp extends javax.swing.JFrame {
 
     }
 
+    /**
+     * Returns the {@code MediaSyncPolling} component used for network sync.
+     *
+     * @return the media sync polling component
+     */
     public MediaSyncPolling.MediaSyncPolling getComponent() {
         return mediaSyncPolling;
     }
 
+    /**
+     * Returns the {@link TokenService} used to persist and read the auth token.
+     *
+     * @return the token service
+     */
     public TokenService getTokenService() {
         return tokenService;
     }
 
+    /**
+     * Returns the base URL of the remote API.
+     *
+     * @return API base URL
+     */
     public String getApiUrl() {
         return apiUrl;
     }
@@ -158,6 +182,12 @@ public class ViewToolApp extends javax.swing.JFrame {
 
     }
 
+    /**
+     * Displays the main panel at the top and the management panel below it.
+     *
+     * @param top    panel displayed in the north area
+     * @param bottom panel displayed in the center area
+     */
     public void showMainAndManagement(JPanel top, JPanel bottom) {
         JPanel combined = new JPanel(new BorderLayout());
         top.setPreferredSize(new java.awt.Dimension(0, 167));
@@ -374,10 +404,6 @@ public class ViewToolApp extends javax.swing.JFrame {
     private void buttonSettingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSettingActionPerformed
         showPanel(panelPreferences);
     }//GEN-LAST:event_buttonSettingActionPerformed
-
-    /**
-     * @param args the command line arguments
-     */
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu MenuEdit;
