@@ -1,0 +1,36 @@
+# Compilación y artefactos
+target/
+build/
+dist/
+*.class
+*.jar
+*.war
+*.ear
+
+# Configuración local de NetBeans
+nbproject/private/
+nbbuild/
+.nb-gradle/
+*.orig
+
+# Archivos del sistema operativo
+Thumbs.db
+.DS_Store
+
+# Ejecubles y binarios externos
+*.exe
+*.dll
+*.so
+*.dylib
+src/main/resources/binaries/
+
+# Logs y temporales
+*.log
+*.tmp
+*.bak
+
+# IDE / editor
+.idea/
+.vscode/
+*.iml
+
