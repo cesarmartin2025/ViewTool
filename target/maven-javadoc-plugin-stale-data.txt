@@ -1,0 +1,53 @@
+@options
+@packages
+-classpath
+'C:/Users/cesar/.m2/repository/tools/jackson/core/jackson-databind/3.0.0/jackson-databind-3.0.0.jar;C:/Users/cesar/.m2/repository/com/fasterxml/jackson/core/jackson-annotations/2.20/jackson-annotations-2.20.jar;C:/Users/cesar/.m2/repository/tools/jackson/core/jackson-core/3.0.0/jackson-core-3.0.0.jar;C:/Users/cesar/.m2/repository/martin/Componente/1.0-SNAPSHOT/Componente-1.0-SNAPSHOT.jar'
+-encoding
+'UTF-8'
+-protected
+--release
+24
+-sourcepath
+'C:/Users/cesar/OneDrive/Documentos/NetBeansProjects/ViewTool/src/main/java;C:/Users/cesar/OneDrive/Documentos/NetBeansProjects/ViewTool/target/generated-sources/annotations'
+-author
+-bottom
+'Copyright &#169; 2026. All rights reserved.'
+-charset
+'UTF-8'
+-d
+'C:/Users/cesar/OneDrive/Documentos/NetBeansProjects/ViewTool/doc/apidocs'
+-docencoding
+'UTF-8'
+-doctitle
+'ViewTool 1.0-SNAPSHOT API'
+-use
+-version
+-windowtitle
+'ViewTool 1.0-SNAPSHOT API'
+martin.viewtool.config
+martin.viewtool.core
+martin.viewtool.core.io
+martin.viewtool.ui
+martin.viewtool.utils
+martin.viewtool
+C:\Users\cesar\.m2\repository\tools\jackson\core\jackson-databind\3.0.0\jackson-databind-3.0.0.jar = 1769515389108
+C:\Users\cesar\.m2\repository\com\fasterxml\jackson\core\jackson-annotations\2.20\jackson-annotations-2.20.jar = 1769515389142
+C:\Users\cesar\.m2\repository\tools\jackson\core\jackson-core\3.0.0\jackson-core-3.0.0.jar = 1769515389230
+C:\Users\cesar\.m2\repository\martin\Componente\1.0-SNAPSHOT\Componente-1.0-SNAPSHOT.jar = 1769529597337
+C:\Users\cesar\OneDrive\Documentos\NetBeansProjects\ViewTool\src\main\java = 1774526307878
+C:\Users\cesar\OneDrive\Documentos\NetBeansProjects\ViewTool\target\generated-sources\annotations = 1774526396052
+C:\Users\cesar\OneDrive\Documentos\NetBeansProjects\ViewTool\doc\apidocs\allclasses-index.html = 1774526400171
+C:\Users\cesar\OneDrive\Documentos\NetBeansProjects\ViewTool\doc\apidocs\allpackages-index.html = 1774526400173
+C:\Users\cesar\OneDrive\Documentos\NetBeansProjects\ViewTool\doc\apidocs\element-list = 1774526400019
+C:\Users\cesar\OneDrive\Documentos\NetBeansProjects\ViewTool\doc\apidocs\help-doc.html = 1774526400199
+C:\Users\cesar\OneDrive\Documentos\NetBeansProjects\ViewTool\doc\apidocs\index-all.html = 1774526400194
+C:\Users\cesar\OneDrive\Documentos\NetBeansProjects\ViewTool\doc\apidocs\index.html = 1774526400153
+C:\Users\cesar\OneDrive\Documentos\NetBeansProjects\ViewTool\doc\apidocs\member-search-index.js = 1774526400176
+C:\Users\cesar\OneDrive\Documentos\NetBeansProjects\ViewTool\doc\apidocs\module-search-index.js = 1774526400174
+C:\Users\cesar\OneDrive\Documentos\NetBeansProjects\ViewTool\doc\apidocs\overview-summary.html = 1774526400197
+C:\Users\cesar\OneDrive\Documentos\NetBeansProjects\ViewTool\doc\apidocs\overview-tree.html = 1774526400150
+C:\Users\cesar\OneDrive\Documentos\NetBeansProjects\ViewTool\doc\apidocs\package-search-index.js = 1774526400175
+C:\Users\cesar\OneDrive\Documentos\NetBeansProjects\ViewTool\doc\apidocs\search.html = 1774526400195
+C:\Users\cesar\OneDrive\Documentos\NetBeansProjects\ViewTool\doc\apidocs\serialized-form.html = 1774526400087
+C:\Users\cesar\OneDrive\Documentos\NetBeansProjects\ViewTool\doc\apidocs\tag-search-index.js = 1774526400177
+C:\Users\cesar\OneDrive\Documentos\NetBeansProjects\ViewTool\doc\apidocs\type-search-index.js = 1774526400175
