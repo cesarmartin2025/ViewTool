@@ -5,8 +5,14 @@
 package martin.viewtool.core;
 
 /**
+ * Supported media output formats for downloads.
  *
  * @author cesar
  */
-public enum MediaFormat {MP3, MP4};
+public enum MediaFormat {
+    /** Audio-only MP3 format. */
+    MP3,
+    /** Video MP4 format. */
+    MP4
+};
     

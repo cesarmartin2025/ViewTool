@@ -11,6 +11,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
+ * Persists and retrieves the authentication token
+ * ({@code datos/token_txt.txt}). A memory cache avoids repeated disk reads.
  *
  * @author cesar
  */
@@ -19,9 +21,15 @@ public class TokenService {
     private final Path TOKEN_PATH = Path.of("datos/token_txt.txt");
     private String token;
 
+    /** Creates a new TokenService. */
     public TokenService() {
     }
 
+    /**
+     * Saves the given token to disk.
+     *
+     * @param token the authentication token to persist
+     */
     public void saveToken(String token) {
 
         try {
@@ -44,6 +52,11 @@ public class TokenService {
 
     }
 
+    /**
+     * Deletes the token file from disk.
+     *
+     * @return {@code true} if the file was deleted, {@code false} if it did not exist
+     */
     public boolean deleteToken() {
         try {
             if (Files.exists(TOKEN_PATH)) {
@@ -60,6 +73,11 @@ public class TokenService {
         return false;
     }
 
+    /**
+     * Returns the token, reading it from disk.
+     *
+     * @return the authentication token, or {@code null} if none is stored
+     */
     public String getToken() {
         if(token!=null){
             return token;
@@ -76,6 +94,11 @@ public class TokenService {
         }
     }
     
+    /**
+     * Sets the in memory token.
+     *
+     * @param token authentication token to cache
+     */
     public void setToken(String token){
         this.token=token;
     }

@@ -16,11 +16,20 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
+ * Scans a local directory and builds a list of {@link MediaItem} objects.
+ * Also provides a method to delete individual files from disk.
  *
  * @author cesar
  */
 public final class MediaLibrary {
 
+    /**
+     * Scans a directory and returns all regular files sorted by date descending.
+     *
+     * @param dir directory to scan
+     * @return list of {@link MediaItem}, empty if the directory does not exist
+     * @throws IOException if an I/O error occurs reading the directory
+     */
     public List<MediaItem> scan(Path dir) throws IOException {
         if (!Files.isDirectory(dir)) 
             return List.of();
@@ -48,6 +57,13 @@ public final class MediaLibrary {
         }
     }
 
+    /**
+     * Deletes a media file from disk.
+     *
+     * @param file the item to delete
+     * @return {@code true} if the file was deleted, {@code false} if it did not exist
+     * @throws IOException if deletion fails
+     */
     public boolean delete(MediaItem file) throws IOException {
         return Files.deleteIfExists(file.getPath());
     }

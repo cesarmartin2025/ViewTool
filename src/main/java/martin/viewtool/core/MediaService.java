@@ -13,6 +13,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
+ * Manages the in-memory list of network media and provides utilities for
+ * resolving local file paths and combining local and network media lists.
  *
  * @author cesar
  */
@@ -23,10 +25,21 @@ public class MediaService {
     public MediaService() {
     }
 
+    /**
+     * Returns a copy of all network media loaded.
+     *
+     * @return list of network {@link Media} objects
+     */
     public List<Media> getNetworkMediaAll() {
         return new ArrayList<>(networkMediaAll);
     }
 
+    /**
+     * Returns the base download directory, creating it if it does not exist.
+     * Defaults to {@code ~/ViewToolDownloads}.
+     *
+     * @return path to the download directory
+     */
     public Path getDownloadBaseDir() {
         Path downloadedPath = Path.of(System.getProperty("user.home"), "ViewToolDownloads");
         File pathToFile = downloadedPath.toFile();
@@ -37,12 +50,23 @@ public class MediaService {
 
     }
 
+    /**
+     * Resolves the expected local {@link File} for the given media.
+     *
+     * @param media the media whose local path is needed
+     * @return file object pointing to the local copy
+     */
     public File getLocalFile(Media media) {
         Path downloadedPath = getDownloadBaseDir();
         Path localPath = downloadedPath.resolve(media.mediaFileName);
         return localPath.toFile();
     }
 
+    /**
+     * Adds new media from the network to the in-memory list, skipping duplicates by ID.
+     *
+     * @param newMedia list of media received from the API
+     */
     public void addNewMediaNetwork(List<Media> newMedia) {
         for (Media media : newMedia) {
             if (media == null) {
@@ -63,6 +87,12 @@ public class MediaService {
         }
     }
 
+    /**
+     * Builds a combined list of network media plus any local-only files not present on the network.
+     * Local-only entries are created with {@code id=0} and {@code userId=-1}.
+     *
+     * @return combined media list
+     */
     public List<Media> createMediaListCombined() {
         List<Media> mediaListCombined = new ArrayList<>(networkMediaAll);
         Set<String> networkNames = new HashSet<>();
@@ -94,6 +124,13 @@ public class MediaService {
         return mediaListCombined;
     }
 
+    /**
+     * Filters a media list by file name.
+     *
+     * @param textField search text entered by the user
+     * @param listMedia source list to filter
+     * @return filtered list containing only items whose file name contains the search text
+     */
     public List<Media> filterMedia(String textField, List<Media> listMedia) {
         List<Media> mediaResult = new ArrayList<>();
 

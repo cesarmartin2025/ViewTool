@@ -14,6 +14,9 @@ import java.util.function.IntConsumer;
 import martin.viewtool.core.io.ProcessRunner;
 
 /**
+ * Wraps the yt-dlp command-line tool to download audio and video.
+ * Builds the argument list from a {@link DownloadRequest} and delegates
+ * process execution to {@link ProcessRunner}.
  *
  * @author cesar
  */
@@ -21,10 +24,25 @@ public class YtDlpService {
 
     private final Path ytDplPath;
 
+    /**
+     * Creates a new YtDlpService.
+     *
+     * @param ytDlpPath path to the yt-dlp executable
+     */
     public YtDlpService(Path ytDlpPath) {
         this.ytDplPath = ytDlpPath;
     }
 
+    /**
+     * Executes yt-dlp with the parameters defined in the request.
+     *
+     * @param req       download parameters
+     * @param out       appendable that receives yt-dlp output lines
+     * @param onPersent callback invoked with the current progress percentage (0–100)
+     * @return process exit code (0 means success)
+     * @throws IOException          if the process cannot be started
+     * @throws InterruptedException if the thread is interrupted while waiting
+     */
     public int download(DownloadRequest req, Appendable out, IntConsumer onPersent) throws IOException, InterruptedException {
         List<String> commands = new ArrayList<>();
         commands.add(ytDplPath.toString());

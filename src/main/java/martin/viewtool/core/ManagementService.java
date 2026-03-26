@@ -15,6 +15,8 @@ import MediaSyncPolling.Media;
 import MediaSyncPolling.MediaSyncPolling;
 
 /**
+ * Service that handles operations on media files:
+ * listing, deleting, downloading from the network, uploading, and opening locally.
  *
  * @author cesar
  */
@@ -23,10 +25,24 @@ public class ManagementService {
     private final LibraryService libraryService;
     private final MediaService mediaService = new MediaService();
 
+    /**
+     * Creates a new ManagementService.
+     *
+     * @param lib   service for scanning local files
+     * @param media service for managing the combined local/network media list
+     * @param prefs user preferences (reserved for future use)
+     */
     public ManagementService(LibraryService lib, MediaService media, PreferencesService prefs) {
         this.libraryService = lib;
     }
 
+    /**
+     * Returns a {@link DefaultListModel} populated with the names of locally filtered media files.
+     *
+     * @param filterType filter category: "All", "Videos", or "Audios"
+     * @return list model ready to bind to a JList
+     * @throws IOException if the local directory cannot be read
+     */
     public DefaultListModel<String> getUpdatedLocalListModel(String filterType) throws IOException {
         List<MediaItem> files = libraryService.getFilteredFiles(filterType);
 
@@ -37,11 +53,26 @@ public class ManagementService {
         return model;
     }
 
+    /**
+     * Deletes the local copy of a media file.
+     *
+     * @param media the media whose local file should be deleted
+     * @return {@code true} if deleted, {@code false} if the file did not exist
+     * @throws Exception if an I/O error occurs
+     */
     public boolean deleteMedia(Media media) throws Exception {
         File localFile = mediaService.getLocalFile(media);
         return Files.deleteIfExists(localFile.toPath());
     }
 
+    /**
+     * Downloads a network media file to the local download directory.
+     *
+     * @param media  the media to download
+     * @param msp    sync polling component used to download
+     * @param token  authentication token
+     * @throws Exception if the file already exists locally or the download fails
+     */
     public void downloadMedia(Media media, MediaSyncPolling msp, String token) throws Exception {
         Path destPath = mediaService.getDownloadBaseDir().resolve(media.mediaFileName);
         if (Files.exists(destPath)) {
@@ -50,6 +81,16 @@ public class ManagementService {
         msp.download(media.id, destPath.toFile(), token);
     }
     
+    /**
+     * Uploads a local media file to the server.
+     * Only MP3, MP4, and M4A files are accepted.
+     *
+     * @param file       local file to upload
+     * @param youtubeUrl source URL associated with the file
+     * @param msp        sync polling component used to perform the upload
+     * @param token      authentication token
+     * @throws Exception if the file type is not allowed or the upload fails
+     */
     public void uploadMedia(File file, String youtubeUrl, MediaSyncPolling msp, String token) throws Exception {
         String name = file.getName().toLowerCase();
         if (!name.endsWith(".mp3") && !name.endsWith(".mp4") && !name.endsWith(".m4a")) {
@@ -59,6 +100,12 @@ public class ManagementService {
         msp.uploadFileMultipart(file, youtubeUrl, token);
     }
     
+    /**
+     * Opens the local copy of the given media with the system default application.
+     *
+     * @param media the media to open
+     * @throws Exception if the file is not downloaded locally or the Desktop API is unavailable
+     */
     public void openLocalFile(Media media) throws Exception {
         File localFile = mediaService.getLocalFile(media);
 

@@ -5,36 +5,41 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * Maps to the API Usuari JSON. Unknown JSON properties will be ignored.
- * Note: API byte[] fields (picture) are expected as base64 strings and Jackson will decode into byte[].
- * If you prefer typed date handling, register JavaTimeModule on your ObjectMapper and change date fields to LocalDate/OffsetDateTime.
+ * Represents a user returned by the remote API.
+ *
+ * @author cesar
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Usuari {
+    /** Unique identifier of the user. */
     @JsonProperty("id")
     public int id;
 
+    /** Email address of the user. */
     @JsonProperty("email")
     public String email = "";
 
+    /** Hashed password. */
     @JsonProperty("passwordHash")
     public String passwordHash;
 
+    /** Nickname of the user. */
     @JsonProperty("nickName")
     public String nickName;
 
-    // API sends binary as base64 string — Jackson will decode into byte[]
+    /** Profile picture. */
     @JsonProperty("picture")
     public byte[] picture;
 
+    /** Original file name of the profile picture. */
     @JsonProperty("pictureFileName")
     public String pictureFileName;
 
-    // Keep as String to avoid needing JavaTimeModule; change to LocalDate if you register the module.
+    /** Date of birth. */
     @JsonProperty("dateOfBirth")
     public String dateOfBirth;
 
-    // Keep as String (ISO8601) or change to OffsetDateTime with JavaTimeModule
+    /** Registration timestamp. */
     @JsonProperty("registeredAt")
     public String registeredAt;
 

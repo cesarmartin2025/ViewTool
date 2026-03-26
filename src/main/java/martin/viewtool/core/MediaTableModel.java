@@ -16,6 +16,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.swing.SwingUtilities;
 
 /**
+ * Table model that combines network media from the API and local files.
+ * Supports pagination and resolves user nicknames asynchronously.
+ *
  *
  * @author cesar
  */
@@ -30,6 +33,16 @@ public final class MediaTableModel extends AbstractTableModel {
     private final MediaSyncPolling mediaSyncPolling;
     private final String token;
 
+    /**
+     * Creates a new MediaTableModel.
+     *
+     * @param allFiles         full list of media from the API
+     * @param mediaService     used to resolve the local download directory
+     * @param page             initial page number (1-based)
+     * @param pageSize         number of rows per page
+     * @param mediaSyncPolling polling component used to fetch user nicknames
+     * @param token            authentication token passed to the API
+     */
     public MediaTableModel(List<Media> allFiles, MediaService mediaService, int page, int pageSize, MediaSyncPolling mediaSyncPolling, String token) {
         this.allFiles = allFiles;
         this.downloadPath = mediaService.getDownloadBaseDir();
@@ -46,6 +59,12 @@ public final class MediaTableModel extends AbstractTableModel {
         return userNames;
     }
 
+    /**
+     * Switches the visible page and notifies the table of data changes.
+     *
+     * @param page     page number to display
+     * @param pageSize number of rows per page
+     */
     public void updatePage(int page, int pageSize) {
         //Calcula cual indice de la lista comienza en la pagina actual.
         int fromIndex = (page - 1) * pageSize;
@@ -175,6 +194,12 @@ public final class MediaTableModel extends AbstractTableModel {
         return "None";
     }
 
+    /**
+     * Returns the {@link Media} object for the given row in the current page.
+     *
+     * @param row row index within the current page
+     * @return the media at that row
+     */
     public Media getFile(int row) {
         return currentView.get(row);
     }
